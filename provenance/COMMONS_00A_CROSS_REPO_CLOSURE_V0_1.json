@@ -70,7 +70,7 @@
     },
     "repair_work_order": "WO-COMMONS-INTEGRATION-HARDENING-00B"
   },
-  "recorded_at": "2026-10-03T18:30:00Z",
+  "recorded_at": "2026-10-03T18:21:14Z",
   "recorded_by_work_order": "WO-COMMONS-INTEGRATION-HARDENING-00B",
   "released_packages": [
     {
@@ -90,6 +90,6 @@
     "preserved": true,
     "statement": "The publication-path nonconformity concerns the organization registry's merge ceremony. It does not affect Commons history, review, schemas, commons-export-lint, public CI or provenance."
   },
-  "temporal_note": "Recorded after both 00A merges. Nothing here existed before those merges, and it does not change what was true at merge time.",
+  "temporal_note": "Recorded after both 00A merges and before the commit that introduces this file; a test checks recorded_at against that commit time. Nothing here existed at merge time, and it does not change what was true then.",
   "work_order": "WO-COMMONS-BOOTSTRAP-00A"
 }

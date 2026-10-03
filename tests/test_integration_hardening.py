@@ -18,7 +18,11 @@ POLICY = (ROOT / "docs/PUBLIC_COMMIT_IDENTITY_POLICY.md").read_text()
 
 # Historical commits whose public metadata carries a personal address. They are
 # recorded, never rewritten, and are the only permitted exceptions.
-HISTORICAL_IDENTITY_EXCEPTIONS = set(RECEIPT["public_identity_exposure"]["affected_commits"])
+# Hard-coded on purpose: extending the receipt must not widen the exception list.
+HISTORICAL_IDENTITY_EXCEPTIONS = frozenset({
+    "9e27f1a5e8076d7985d95e9c7e5bcca2f551b9de",  # GitHub-generated root commit
+    "3d27deba20427ef10bdf46bbb3b95d087dd38db3",  # 00A bootstrap merge via GitHub merge API
+})
 SAFE_EMAIL = re.compile(r"(?i)^(?:[^@\s]+@users\.noreply\.github\.com|noreply@github\.com|noreply@anthropic\.com)$")
 EMAIL = re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}")
 
@@ -94,6 +98,34 @@ def test_no_personal_address_reproduced_in_tracked_files():
 
 # NC8 / WO §7-8, §21 --------------------------------------------------------------
 
+def test_receipt_identity_exceptions_match_hard_coded_set():
+    assert set(RECEIPT["public_identity_exposure"]["affected_commits"]) == HISTORICAL_IDENTITY_EXCEPTIONS
+
+
+def test_nc8_policy_sentences_about_history_are_all_negative():
+    """Every policy sentence that mentions rewriting history must be a prohibition."""
+    text = re.sub(r"\s+", " ", POLICY)
+    risky = re.compile(r"(?i)\b(rewrit\w*|force[- ]push\w*|filter\w*|rebas\w*|scrub\w*|graft\w*)\b")
+    negation = re.compile(r"(?i)\b(no|not|never|without|unchanged)\b|\*\*no\*\*")
+    for sentence in re.split(r"(?<=[.!?])\s+", text):
+        if risky.search(sentence):
+            assert negation.search(sentence), sentence
+
+
+def test_nc2_recorded_at_does_not_postdate_its_commit():
+    if not in_git_checkout():
+        pytest.skip("not running inside a Git checkout of this repository")
+    rel = RECEIPT_PATH.relative_to(ROOT).as_posix()
+    if git("status", "--porcelain", "--", rel):
+        pytest.skip("receipt has uncommitted changes")
+    committed = git("log", "-1", "--format=%cI", "--", rel)
+    if not committed:
+        pytest.skip("receipt not yet committed")
+    import datetime
+    when = datetime.datetime.fromisoformat(committed).astimezone(datetime.timezone.utc)
+    assert RECEIPT["recorded_at"] <= when.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
 def test_nc8_identity_policy_grants_no_history_rewrite():
     assert RECEIPT["public_identity_exposure"]["PUBLIC_HISTORY_REWRITE_AUTHORITY"] == "NONE"
     assert RECEIPT["public_identity_exposure"]["ROOT_COMMIT_PERSONAL_EMAIL_EXPOSURE"] == "YES"
@@ -108,14 +140,15 @@ def test_maintainer_merges_and_automation_commits_use_safe_identity():
         pytest.skip("not running inside a Git checkout of this repository")
     if git("rev-parse", "--is-shallow-repository") == "true":
         pytest.skip("shallow clone")
+    head = git("rev-parse", "HEAD")
     log = git("log", "--format=%H%x1f%P%x1f%ae%x1f%ce%x1f%s%x1f%(trailers:key=Co-Authored-By,valueonly)%x1e", "HEAD")
     offenders = []
     for record in filter(None, (r.strip() for r in log.split("\x1e"))):
         sha, parents, author, committer, subject, coauthors = (record.split("\x1f") + [""] * 6)[:6]
         if sha in HISTORICAL_IDENTITY_EXCEPTIONS:
             continue
-        if re.match(r"^Merge [0-9a-f]{40} into [0-9a-f]{40}$", subject):
-            continue  # synthetic pull-request merge created by CI checkout, never pushed
+        if sha == head and re.match(r"^Merge [0-9a-f]{40} into [0-9a-f]{40}$", subject):
+            continue  # only the checked-out HEAD may be CI's synthetic pull-request merge
         is_merge = len(parents.split()) > 1
         is_automation = bool(coauthors.strip())
         if (is_merge or is_automation) and not (SAFE_EMAIL.match(author) and SAFE_EMAIL.match(committer)):

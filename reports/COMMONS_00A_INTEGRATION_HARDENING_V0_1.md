@@ -67,12 +67,12 @@ Prevention:
 - The test `test_maintainer_merges_and_automation_commits_use_safe_identity`
   enforces it. It fails on `3d27deba` if that commit's recorded exception is
   removed.
-- The 00B Commons merge is created locally with a noreply identity rather than
-  through the merge API.
+- The 00B Commons merge is to be created locally with a noreply identity
+  rather than through the merge API. Its identity is recorded after the merge.
 
 ## 4. Public-provenance sanity check (WO §20)
 
-The 00A reviewer's 63 probe inputs (`probe.py`, `probe2.py`, `probe3.py`) were
+The 00A reviewer's probe inputs (`probe.py`, `probe2.py`, `probe3.py`) were
 rerun against the 00B candidate tree.
 
 | Constraint | Result |
@@ -84,14 +84,31 @@ rerun against the 00B candidate tree.
 | Unknown release class | Rejected (INVALID-06) |
 | Unresolved clearance state | Rejected (T2, INVALID-09) |
 
-Of the 63 probes, 18 cover the formerly blocking classes, and all 18 are
-rejected. 22 still pass:
+Measured result: 67 probes in total.
 
-- the 2 valid baselines;
-- 20 inputs that were already disclosed as known limits in 00A: plain project
-  names, other organizations' slugs, all-digit hex runs, homoglyphs,
-  role-shaped personal handles, non-US phone formats, policy-level license and
-  strategic-review content, and relative paths.
+- **Rejected:** 44, including every probe in the formerly blocking locator,
+  path and personal-identity classes.
+- **Still passing:** 23.
+  - 3 are valid baselines (P00, P01, Q05).
+  - 20 are inputs whose classes were already disclosed as known limits in 00A:
+    - P08 relative repository path;
+    - P11 and P12 private names inside opaque IDs;
+    - P22 homoglyph claim;
+    - P23 claim hidden in `does_not_establish`;
+    - P25 proprietary license;
+    - P29 receipt timestamp ordering;
+    - P30 patent acknowledgement on a non-Apache license;
+    - P32 strategic-review decision text;
+    - R07, R08 and R09 other organizations' slugs;
+    - R10 all-digit commit run;
+    - R14 hostname without a domain suffix;
+    - R20 and R21 role-shaped personal handles;
+    - R22 obfuscated email;
+    - R24 and R25 non-US or unseparated phone formats;
+    - R27 a personal name in free text.
+
+The lint code is byte-identical to 00A, so this is a re-measurement, not a
+change.
 
 There are no regressions. The new closure receipt is checked by
 `test_nc7_closure_receipt_exposes_no_private_locator_or_personal_data`, which
@@ -103,13 +120,16 @@ These checks do not prove that no sensitive data exists anywhere.
 
 ## 5. Registry pointer review debt (from the 00A pointer review)
 
-| # | Note | Classification |
+The 00A registry pointer review left five non-blocking notes. Their details
+concern private registry content and are recorded in the registry. In summary:
+
+| # | Subject | Classification |
 | --- | --- | --- |
-| 1 | Registry README wording "independent of this scoped Ventures addition" stale after the Commons addition | REPAIRED_00B (registry repair candidate) |
-| 2 | Registry project map: earlier 99-count sentence lacks its observation time | REPAIRED_00B (registry repair candidate) |
-| 3 | Graph `role` string extends the required role text | REPAIRED_00B (role set to exactly "public open-source distribution surface") |
-| 4 | Unrelated live visibility drift recorded in the inventory | OUT_OF_SCOPE (not Commons-related; still disclosed) |
-| 5 | Registry full-suite failure count depends on the environment | OUT_OF_SCOPE (registry test-environment debt) |
+| 1 | Stale Commons-related wording in a registry overview | REPAIRED_00B (registry repair candidate) |
+| 2 | Missing observation time on a superseded registry count | REPAIRED_00B (registry repair candidate) |
+| 3 | Commons graph role text longer than the required role | REPAIRED_00B (role set to exactly "public open-source distribution surface") |
+| 4 | Unrelated registry inventory observation | OUT_OF_SCOPE (not Commons-related) |
+| 5 | Environment sensitivity of the registry test suite | OUT_OF_SCOPE (registry test-environment debt) |
 
 ## 6. Negative controls (Commons side)
 

@@ -11,7 +11,7 @@ and public provenance hardening v0.1.
 | Commercial execution authority | NONE |
 | Private artifact export | None (`PRIVATE_ORIGIN_EXPORT_COUNT = 0`) |
 | Public history rewrite | None. No force push, rebase, graft or filter; root `9e27f1a5` preserved |
-| Ventures | Not modified; no commercial-impact disposition required or produced |
+| Commercial-impact review | None required or produced; a future private-origin export may consume one |
 
 ## Commons deliverables
 
