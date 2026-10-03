@@ -1,0 +1,420 @@
+{
+  "$defs": {
+    "clearance_receipt_id": {
+      "description": "Opaque public identifier. Never a repository name, path or commit.",
+      "pattern": "^ccr-[a-z0-9][a-z0-9-]{3,80}$",
+      "type": "string"
+    },
+    "clearance_status": {
+      "enum": [
+        "NOT_REVIEWED",
+        "REVIEW_IN_PROGRESS",
+        "CLEARED",
+        "REJECTED",
+        "SUPERSEDED"
+      ]
+    },
+    "commercial_impact": {
+      "enum": [
+        "NONE",
+        "COMPLEMENTARY",
+        "LEAD_GENERATING",
+        "UNCERTAIN",
+        "CANNIBALIZATION_RISK",
+        "CORE_DIFFERENTIATOR"
+      ]
+    },
+    "package_id": {
+      "pattern": "^[a-z0-9][a-z0-9-]{1,62}[a-z0-9]$",
+      "type": "string"
+    },
+    "public_release_id": {
+      "pattern": "^cpr-[a-z0-9][a-z0-9-]*-(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "release_class": {
+      "enum": [
+        "P0_INTERNAL_ONLY",
+        "P1_REFERENCE_ONLY",
+        "P2_PUBLIC_UTILITY_CANDIDATE",
+        "P3_PUBLIC_RELEASE_APPROVED",
+        "P4_PUBLIC_STRATEGIC_OPEN_SOURCE"
+      ]
+    },
+    "relpath": {
+      "maxLength": 400,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9._-][A-Za-z0-9._/-]*$",
+      "type": "string"
+    },
+    "role": {
+      "description": "A role token such as commons-maintainers. Never a personal name, email address or other personal identifier.",
+      "pattern": "^[a-z][a-z0-9-]{2,63}$",
+      "type": "string"
+    },
+    "sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "source_disclosure_level": {
+      "enum": [
+        "PUBLIC_SOURCE",
+        "PUBLIC_ATTRIBUTED_PRIVATE_ORIGIN",
+        "PRIVATE_ORIGIN_OPAQUE",
+        "COMMONS_NATIVE"
+      ]
+    },
+    "spdx": {
+      "maxLength": 200,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9.+-]+( (AND|OR|WITH) [A-Za-z0-9.+-]+)*$",
+      "type": "string"
+    },
+    "support_class": {
+      "enum": [
+        "COMMUNITY_BEST_EFFORT",
+        "REFERENCE_NO_MAINTENANCE"
+      ]
+    },
+    "text": {
+      "maxLength": 2000,
+      "minLength": 1,
+      "type": "string"
+    },
+    "timestamp": {
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$",
+      "type": "string"
+    },
+    "version": {
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$",
+      "type": "string"
+    }
+  },
+  "$id": "https://github.com/Miskatonic-System/miskatonic-commons/blob/main/schemas/public-clearance-receipt-v0.1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Public-safe summary of a completed export clearance. The full clearance record, if any, stays with the originating party.",
+  "properties": {
+    "apache_patent_grant_acknowledged": {
+      "type": "boolean"
+    },
+    "bundle_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "clearance_receipt_id": {
+      "$ref": "#/$defs/clearance_receipt_id"
+    },
+    "clearance_status": {
+      "$ref": "#/$defs/clearance_status"
+    },
+    "commercial_impact": {
+      "$ref": "#/$defs/commercial_impact"
+    },
+    "completed_at": {
+      "$ref": "#/$defs/timestamp"
+    },
+    "dimensions": {
+      "additionalProperties": false,
+      "properties": {
+        "commercial_impact": {
+          "additionalProperties": false,
+          "properties": {
+            "basis": {
+              "$ref": "#/$defs/text"
+            },
+            "owner": {
+              "$ref": "#/$defs/role"
+            },
+            "status": {
+              "enum": [
+                "PASS",
+                "FAIL",
+                "PENDING",
+                "NOT_APPLICABLE"
+              ]
+            }
+          },
+          "required": [
+            "status",
+            "owner",
+            "basis"
+          ],
+          "type": "object"
+        },
+        "dependency_license": {
+          "additionalProperties": false,
+          "properties": {
+            "basis": {
+              "$ref": "#/$defs/text"
+            },
+            "owner": {
+              "$ref": "#/$defs/role"
+            },
+            "status": {
+              "enum": [
+                "PASS",
+                "FAIL",
+                "PENDING",
+                "NOT_APPLICABLE"
+              ]
+            }
+          },
+          "required": [
+            "status",
+            "owner",
+            "basis"
+          ],
+          "type": "object"
+        },
+        "originating_technical": {
+          "additionalProperties": false,
+          "properties": {
+            "basis": {
+              "$ref": "#/$defs/text"
+            },
+            "owner": {
+              "$ref": "#/$defs/role"
+            },
+            "status": {
+              "enum": [
+                "PASS",
+                "FAIL",
+                "PENDING",
+                "NOT_APPLICABLE"
+              ]
+            }
+          },
+          "required": [
+            "status",
+            "owner",
+            "basis"
+          ],
+          "type": "object"
+        },
+        "provenance": {
+          "additionalProperties": false,
+          "properties": {
+            "basis": {
+              "$ref": "#/$defs/text"
+            },
+            "owner": {
+              "$ref": "#/$defs/role"
+            },
+            "status": {
+              "enum": [
+                "PASS",
+                "FAIL",
+                "PENDING",
+                "NOT_APPLICABLE"
+              ]
+            }
+          },
+          "required": [
+            "status",
+            "owner",
+            "basis"
+          ],
+          "type": "object"
+        },
+        "public_packaging": {
+          "additionalProperties": false,
+          "properties": {
+            "basis": {
+              "$ref": "#/$defs/text"
+            },
+            "owner": {
+              "$ref": "#/$defs/role"
+            },
+            "status": {
+              "enum": [
+                "PASS",
+                "FAIL",
+                "PENDING",
+                "NOT_APPLICABLE"
+              ]
+            }
+          },
+          "required": [
+            "status",
+            "owner",
+            "basis"
+          ],
+          "type": "object"
+        },
+        "security": {
+          "additionalProperties": false,
+          "properties": {
+            "basis": {
+              "$ref": "#/$defs/text"
+            },
+            "owner": {
+              "$ref": "#/$defs/role"
+            },
+            "status": {
+              "enum": [
+                "PASS",
+                "FAIL",
+                "PENDING",
+                "NOT_APPLICABLE"
+              ]
+            }
+          },
+          "required": [
+            "status",
+            "owner",
+            "basis"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "originating_technical",
+        "provenance",
+        "security",
+        "dependency_license",
+        "commercial_impact",
+        "public_packaging"
+      ],
+      "type": "object"
+    },
+    "human_authorization": {
+      "additionalProperties": false,
+      "properties": {
+        "authority_role": {
+          "$ref": "#/$defs/role"
+        },
+        "authorized": {
+          "type": "boolean"
+        },
+        "authorized_at": {
+          "$ref": "#/$defs/timestamp"
+        }
+      },
+      "required": [
+        "authorized",
+        "authority_role",
+        "authorized_at"
+      ],
+      "type": "object"
+    },
+    "minimum_viable_moat": {
+      "additionalProperties": false,
+      "properties": {
+        "analysis": {
+          "$ref": "#/$defs/text"
+        },
+        "question": {
+          "const": "AFTER THIS ARTIFACT IS AVAILABLE FOR FREE, WHAT ECONOMICALLY VALUABLE FUNCTION REMAINS?"
+        },
+        "retained_surfaces": {
+          "items": {
+            "enum": [
+              "MANAGED_HOSTING",
+              "OPERATION_AT_SCALE",
+              "ENTERPRISE_INTEGRATIONS",
+              "IDENTITY_INTEGRATION",
+              "PRIVATE_DEPLOYMENT",
+              "POLICY_MANAGEMENT",
+              "MANAGED_PROVENANCE",
+              "CONTINUOUSLY_REFRESHED_INTELLIGENCE",
+              "PROPRIETARY_ADAPTERS",
+              "SUPPORT",
+              "RELIABILITY",
+              "SLA",
+              "PROFESSIONAL_IMPLEMENTATION",
+              "ORGANIZATION_WIDE_GOVERNANCE",
+              "ASSURANCE_SERVICES",
+              "HARDWARE",
+              "NETWORK_EFFECTS",
+              "OTHER"
+            ]
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "strategic_review": {
+          "additionalProperties": false,
+          "properties": {
+            "decision": {
+              "$ref": "#/$defs/text"
+            },
+            "recorded_at": {
+              "$ref": "#/$defs/timestamp"
+            }
+          },
+          "required": [
+            "decision",
+            "recorded_at"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "question",
+        "retained_surfaces",
+        "analysis"
+      ],
+      "type": "object"
+    },
+    "package_id": {
+      "$ref": "#/$defs/package_id"
+    },
+    "private_clearance_receipt": {
+      "additionalProperties": false,
+      "properties": {
+        "opaque_reference": {
+          "description": "Opaque token; reveals nothing about the private origin.",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9-]{3,63}$",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "NOT_APPLICABLE_COMMONS_NATIVE",
+            "HELD_PRIVATELY"
+          ]
+        }
+      },
+      "required": [
+        "status"
+      ],
+      "type": "object"
+    },
+    "public_release_id": {
+      "$ref": "#/$defs/public_release_id"
+    },
+    "release_class": {
+      "$ref": "#/$defs/release_class"
+    },
+    "schema_version": {
+      "const": "commons.public-clearance-receipt.v0.1"
+    },
+    "scope_statement": {
+      "$ref": "#/$defs/text"
+    },
+    "source_disclosure_level": {
+      "$ref": "#/$defs/source_disclosure_level"
+    },
+    "version": {
+      "$ref": "#/$defs/version"
+    }
+  },
+  "required": [
+    "schema_version",
+    "clearance_receipt_id",
+    "public_release_id",
+    "package_id",
+    "version",
+    "release_class",
+    "commercial_impact",
+    "source_disclosure_level",
+    "bundle_sha256",
+    "clearance_status",
+    "scope_statement",
+    "dimensions",
+    "private_clearance_receipt",
+    "apache_patent_grant_acknowledged",
+    "completed_at"
+  ],
+  "title": "Miskatonic Commons public clearance receipt v0.1",
+  "type": "object"
+}

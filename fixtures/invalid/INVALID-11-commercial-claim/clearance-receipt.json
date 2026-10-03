@@ -1,0 +1,50 @@
+{
+  "apache_patent_grant_acknowledged": true,
+  "bundle_sha256": "648093adf5e2a21029a2d1154469fb22cb587a759d77bbe0258d93375830396f",
+  "clearance_receipt_id": "ccr-fixture-fixture-invalid-11",
+  "clearance_status": "CLEARED",
+  "commercial_impact": "NONE",
+  "completed_at": "2026-10-03T00:00:00Z",
+  "dimensions": {
+    "commercial_impact": {
+      "basis": "Synthetic fixture.",
+      "owner": "commons-maintainers",
+      "status": "PASS"
+    },
+    "dependency_license": {
+      "basis": "Synthetic fixture.",
+      "owner": "commons-maintainers",
+      "status": "PASS"
+    },
+    "originating_technical": {
+      "basis": "Synthetic fixture.",
+      "owner": "commons-maintainers",
+      "status": "PASS"
+    },
+    "provenance": {
+      "basis": "Synthetic fixture.",
+      "owner": "commons-maintainers",
+      "status": "PASS"
+    },
+    "public_packaging": {
+      "basis": "Synthetic fixture.",
+      "owner": "commons-maintainers",
+      "status": "PASS"
+    },
+    "security": {
+      "basis": "Synthetic fixture.",
+      "owner": "commons-maintainers",
+      "status": "PASS"
+    }
+  },
+  "package_id": "fixture-invalid-11",
+  "private_clearance_receipt": {
+    "status": "NOT_APPLICABLE_COMMONS_NATIVE"
+  },
+  "public_release_id": "cpr-fixture-invalid-11-0.1.0",
+  "release_class": "P3_PUBLIC_RELEASE_APPROVED",
+  "schema_version": "commons.public-clearance-receipt.v0.1",
+  "scope_statement": "Synthetic fixture bundle only.",
+  "source_disclosure_level": "COMMONS_NATIVE",
+  "version": "0.1.0"
+}

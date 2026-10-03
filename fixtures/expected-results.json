@@ -1,0 +1,97 @@
+{
+  "fixture_results": {
+    "invalid/INDEX-INVALID-01-uncleared-candidate-entry": [
+      "CLEARANCE_NOT_CLEARED",
+      "RELEASE_CLASS_NOT_RELEASABLE",
+      "SCHEMA_VIOLATION"
+    ],
+    "invalid/INVALID-01-missing-clearance-receipt": [
+      "MISSING_CLEARANCE_RECEIPT"
+    ],
+    "invalid/INVALID-02-uncertain-commercial-impact": [
+      "COMMERCIAL_IMPACT_UNRESOLVED"
+    ],
+    "invalid/INVALID-03-hash-mismatch": [
+      "HASH_MISMATCH"
+    ],
+    "invalid/INVALID-04-opaque-origin-locator-leak": [
+      "PRIVATE_LOCATOR_LEAK"
+    ],
+    "invalid/INVALID-05-unsupported-scientific-claim": [
+      "PROHIBITED_CLAIM"
+    ],
+    "invalid/INVALID-06-unknown-release-class": [
+      "RELEASE_CLASS_NOT_RELEASABLE",
+      "SCHEMA_VIOLATION"
+    ],
+    "invalid/INVALID-07-incomplete-dependency-license": [
+      "DEPENDENCY_INVENTORY_INCOMPLETE",
+      "DEPENDENCY_LICENSE_MISSING",
+      "SCHEMA_VIOLATION"
+    ],
+    "invalid/INVALID-08-undeclared-bundle-file": [
+      "UNEXPECTED_FILE"
+    ],
+    "invalid/INVALID-09-not-cleared": [
+      "CLEARANCE_NOT_CLEARED"
+    ],
+    "invalid/INVALID-10-reference-only-release": [
+      "RELEASE_CLASS_NOT_RELEASABLE"
+    ],
+    "invalid/INVALID-11-commercial-claim": [
+      "PROHIBITED_CLAIM"
+    ],
+    "invalid/INVALID-12-unknown-manifest-field": [
+      "SCHEMA_VIOLATION"
+    ],
+    "invalid/INVALID-13-opaque-origin-with-attribution": [
+      "DISCLOSURE_INCOMPATIBLE"
+    ],
+    "invalid/INVALID-14-cannibalization-without-authorization": [
+      "HUMAN_AUTHORIZATION_MISSING"
+    ],
+    "invalid/INVALID-15-no-retained-surface-without-strategic-review": [
+      "MOAT_REVIEW_MISSING"
+    ],
+    "invalid/INVALID-16-receipt-bundle-mismatch": [
+      "RECEIPT_MISMATCH"
+    ],
+    "invalid/INVALID-17-security-dimension-pending": [
+      "CLEARANCE_DIMENSION_NOT_PASSED"
+    ],
+    "invalid/INVALID-18-opaque-origin-host-path": [
+      "PRIVATE_LOCATOR_LEAK"
+    ],
+    "invalid/INVALID-19-opaque-origin-short-commit": [
+      "PRIVATE_LOCATOR_LEAK"
+    ],
+    "invalid/INVALID-20-opaque-origin-tmp-path": [
+      "PRIVATE_LOCATOR_LEAK"
+    ],
+    "invalid/INVALID-21-opaque-origin-internal-hostname": [
+      "PRIVATE_LOCATOR_LEAK"
+    ],
+    "invalid/INVALID-22-attributed-origin-path-outside-attribution": [
+      "PRIVATE_LOCATOR_LEAK"
+    ],
+    "invalid/INVALID-23-personal-identity-in-receipt": [
+      "PERSONAL_DATA",
+      "SCHEMA_VIOLATION"
+    ],
+    "invalid/INVALID-24-claim-in-receipt-scope": [
+      "PROHIBITED_CLAIM"
+    ],
+    "invalid/INVALID-25-release-id-not-bound-to-package": [
+      "RELEASE_ID_MISMATCH"
+    ],
+    "invalid/INVALID-26-no-license-text-in-bundle": [
+      "LICENSE_TEXT_MISSING"
+    ],
+    "valid/INDEX-VALID-01-cleared-entry": [],
+    "valid/VALID-01-commons-native-p3-none": [],
+    "valid/VALID-02-public-source-complementary-p4": []
+  },
+  "format": "commons.fixture-replay.v0.1",
+  "tool": "commons-export-lint",
+  "tool_version": "0.1.0"
+}
