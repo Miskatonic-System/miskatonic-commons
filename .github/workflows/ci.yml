@@ -67,7 +67,7 @@ jobs:
           "$RUNNER_TEMP/gitleaks" git --config .gitleaks.toml --redact --verbose --exit-code 1 .
 
   dependency-review:
-    name: dependency review
+    name: dependency review renamed by control
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-24.04
     steps:
