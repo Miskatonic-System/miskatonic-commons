@@ -39,3 +39,4 @@ Third-party GitHub Actions are pinned to full commit SHAs.
 
 Commons maintainers do not maintain private Miskatonic projects through
 Commons, and Commons changes do not flow back into them automatically.
+<!-- CONTROL 00C-B3 commit A: stale-head control; never merge. -->
