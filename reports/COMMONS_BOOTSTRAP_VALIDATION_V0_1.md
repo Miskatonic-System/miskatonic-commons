@@ -31,7 +31,7 @@ environment.
 
 | Command | Result |
 | --- | --- |
-| `python -m pytest` | 191 passed, 0 skipped (after review round 1; 127 at round 0) |
+| `python -m pytest` | 212 passed, 0 skipped (final; 191 at round 1, 127 at round 0) |
 | `python scripts/check_sensitive_data.py` | 0 findings |
 | `commons_export_lint.py check-index --index releases/package-index-v0.1.json --repo-root .` | OK: no findings |
 | `commons_export_lint.py replay-fixtures fixtures --expected fixtures/expected-results.json` | identical |
@@ -173,7 +173,34 @@ made inside this work order:
 | F8 personal email in the GitHub-generated root commit | non-blocking | Recorded plainly in section 1. Not rewritten (work order §32). |
 | F9 license text not required in bundle | non-blocking | Repaired (`LICENSE_TEXT_MISSING`). Fixture bundles now ship a LICENSE file. |
 | F10 trailing newline accepted by patterns | non-blocking | Repaired (`CONTROL_CHARACTER`). |
-| F11 bundle file contents not scanned | non-blocking | Limit. The repository-wide sensitive-data check and gitleaks cover files committed here. |
+| F11 bundle file contents not scanned | non-blocking | Limit. The repository-wide sensitive-data check and gitleaks cover secrets and private endpoints in committed files. They do not scan bundle contents for source locators. |
+
+Repair round 2: the same reviewer verified the round-1 head `6cd9099d` and
+returned **REVISE** on one item, R1-1. The absolute-path rule still depended
+on a list of allowed preceding characters: backtick, `|` and `>` forms
+passed. That list was replaced with a negative lookbehind, so any `/`, `~/` or
+`~user/` path not preceded by a word or path character now fails. The
+reviewer's forms were added to the tests, along with negative controls
+(`and/or`, `N/A`, `3.12/3.13`). The non-blocking items were handled as follows:
+
+- **R1-2:** documented that all-digit runs are not treated as commit IDs.
+- **R1-3:** an email followed by a colon and space, and fullwidth `＠`, are now
+  rejected. Unseparated or non-US phone formats remain a limit. A role token
+  that happens to be a personal handle is indistinguishable by pattern and
+  remains a limit.
+- Locator text is NFKC-folded before scanning, so fullwidth `／` forms fail.
+- **R1-4:** IPv6 private addresses and bare hostnames with no domain suffix
+  remain a limit.
+- **R1-5:** the F11 wording above was corrected.
+
+Disposition (mechanical, within the work order): R1-1 was repaired exactly as
+the reviewer prescribed. The reviewer's own probe inputs (`probe.py`,
+`probe2.py`, `probe3.py`) were rerun against the final head. Every blocking
+input now fails, and the valid baselines still pass. Review of review is held
+to depth 1, so no third review round was opened.
+
+Final mutation status: 21 of 21 rule-disabling mutations killed at round 1.
+The R1-1 change is covered by the backtick, `|`, `>` and fullwidth tests.
 
 ## 8. Known limits
 

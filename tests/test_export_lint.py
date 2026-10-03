@@ -167,6 +167,11 @@ LOCATORS = [
     "built in /tmp/build",
     "config in /etc/thing",
     "path:/data/x",
+    "built from `/home/someone/origin/src`",
+    "piped |/srv/origin",
+    "redirected >/data/origin",
+    "quoted '~build/origin'",
+    "from example.invalid\uff0forg\uff0forigin",
     "built in ~/work/origin",
     "copied from C:\\work\\origin",
     "copied from \\\\fileserver\\share",
@@ -445,7 +450,8 @@ def test_receipt_owner_must_be_role_token(release_copy, value):
     assert "SCHEMA_VIOLATION" in rel.codes()
 
 
-@pytest.mark.parametrize("text", ["Contact jane.doe@example.com", "Call (555) 010-0199"])
+@pytest.mark.parametrize("text", ["Contact jane.doe@example.com", "Call (555) 010-0199",
+                                  "jane.doe@example.com: reviewer", "jane\uff20example.com"])
 def test_personal_data_rejected_anywhere(release_copy, text):
     rel = release_copy()
     rel.edit(lambda r: r.__setitem__("scope_statement", text), "receipt")
@@ -509,3 +515,10 @@ def test_native_release_cannot_claim_private_receipt(release_copy):
     rel.edit(lambda r: r.__setitem__("private_clearance_receipt",
                                      {"status": "HELD_PRIVATELY", "opaque_reference": "opaque-1234"}), "receipt")
     assert rel.codes() == ["DISCLOSURE_INCOMPATIBLE"]
+
+
+@pytest.mark.parametrize("text", ["and/or", "N/A", "Python 3.12/3.13", "input / output"])
+def test_ordinary_slashes_are_not_paths(release_copy, text):
+    rel = release_copy()
+    rel.edit(lambda m: m.__setitem__("summary", "A synthetic tool for " + text + " checks."))
+    assert rel.codes() == []

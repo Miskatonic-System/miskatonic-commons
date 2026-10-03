@@ -120,7 +120,7 @@ LOCATOR_PATTERNS = (
     ("scp_remote", r"\b[A-Za-z0-9._-]+@[A-Za-z0-9.-]+:[A-Za-z0-9._~/-]+"),
     ("organization_repository", r"(?i)\bmiskatonic-system/(?!miskatonic-commons\b)[a-z0-9._-]+"),
     ("commit_id", r"(?<![0-9A-Za-z])(?=[0-9A-Fa-f]*[0-9])(?=[0-9A-Fa-f]*[A-Fa-f])[0-9A-Fa-f]{7,40}(?![0-9A-Za-z])"),
-    ("absolute_path", r"(?:^|[\s\"'(=:,;\[])(?:/|~/|~[a-z_][a-z0-9_-]*/)[A-Za-z0-9._~-]+"),
+    ("absolute_path", r"(?<![A-Za-z0-9._~/-])(?:~[a-z_][a-z0-9_-]*|~)?/[A-Za-z0-9._~-]+"),
     ("windows_path", r"\b[A-Za-z]:[\\/]|\\\\[A-Za-z0-9]"),
     ("private_hostname", r"(?i)\b(?:[a-z0-9-]+\.)+(?:internal|corp|intranet|lan|local|localdomain|home\.arpa)\b|\blocalhost\b"),
     ("private_ipv4", r"(?<![\d.])(?:10\.\d{1,3}\.\d{1,3}\.\d{1,3}|192\.168\.\d{1,3}\.\d{1,3}|172\.(?:1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3}|127\.\d{1,3}\.\d{1,3}\.\d{1,3})(?![\d.])"),
@@ -129,7 +129,7 @@ LOCATOR_PATTERNS = (
 # Personal data has no place in public release metadata at any level.
 # Reviewers and authorities are recorded as role tokens only.
 PERSONAL_DATA_PATTERNS = (
-    ("email", r"[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}(?![A-Za-z0-9.-]*:)"),
+    ("email", r"[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}(?![A-Za-z0-9.-]*:[A-Za-z0-9._~/-])"),
     ("phone", r"(?:\+\d{1,3}[\s.-]?)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}\b"),
 )
 
@@ -431,6 +431,7 @@ def scan_locators(doc, where: str, findings: list, deny_patterns=()) -> None:
             continue
         if PATH_VALUED.match(path):
             continue
+        text = unicodedata.normalize("NFKC", text)
         for kind, pattern in LOCATOR_PATTERNS:
             if re.search(pattern, text):
                 findings.append(Finding("PRIVATE_LOCATOR_LEAK", where, f"{path}: {kind} pattern present"))
@@ -445,8 +446,9 @@ def scan_personal_and_control(doc, where: str, findings: list) -> None:
             findings.append(Finding("CONTROL_CHARACTER", where, f"{path}: control character present"))
         if path.startswith("$.source_attribution.public_origin_url"):
             continue
+        folded = unicodedata.normalize("NFKC", text)
         for kind, pattern in PERSONAL_DATA_PATTERNS:
-            if re.search(pattern, text):
+            if re.search(pattern, folded):
                 findings.append(Finding("PERSONAL_DATA", where, f"{path}: {kind} pattern present"))
 
 

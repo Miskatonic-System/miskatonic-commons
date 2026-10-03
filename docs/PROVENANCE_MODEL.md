@@ -62,7 +62,8 @@ receipt text for locator shapes and rejects:
   (`example.org/group/repo`);
 - `user@host:path` Git remotes and `<organization>/<repository>` references
   to this organization's other repositories;
-- commit IDs of 7 to 40 hexadecimal characters, in either case;
+- commit IDs of 7 to 40 hexadecimal characters in either case that contain
+  at least one digit and one letter (all-digit runs are not treated as commits);
 - absolute paths (`/…`, `~/…`, Windows drive and UNC paths);
 - private hostnames (`*.internal`, `*.corp`, `*.lan`, `*.local`, `localhost`)
   and private IPv4 addresses.
