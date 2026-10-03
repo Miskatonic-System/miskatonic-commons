@@ -25,7 +25,7 @@ STAMP = "2026-10-03T00:00:00Z"
 BUNDLE = {
     "NOTICE": "Synthetic Commons fixture notice. This bundle contains no real software.\n",
     "README.txt": "Synthetic Commons fixture bundle used only to exercise release validation.\n",
-    "data/example.json": '{"example": true}\n',
+    "data/example.json": '{\n  "example": true\n}\n',
 }
 
 DOES_NOT_ESTABLISH = [

@@ -1,7 +1,7 @@
 {
   "approved_at": "2026-10-03T00:00:00Z",
   "bundle_digest_algorithm": "commons.bundle-digest.v0.1",
-  "bundle_sha256": "afd455ddadc230dbbb8056a3dbb96c32ca782b98d228ea44f08410321567f1b0",
+  "bundle_sha256": "15dd35b871baa4bcd580ce90c08c49b9d174431db7d1eed22ca3b089d60a2924",
   "clearance_receipt_id": "ccr-fixture-fixture-invalid-05",
   "clearance_status": "CLEARED",
   "commercial_impact": "NONE",
@@ -23,9 +23,9 @@
       "sha256": "81080761be3271ea89ba8c96d2886b38ec3f12b8abb0ccfc2151e21be6423b4f"
     },
     {
-      "bytes": 18,
+      "bytes": 22,
       "path": "data/example.json",
-      "sha256": "4f41303ae16ebf596b7e0172d337f776e614fc2de3192744e76032b43e0ad59e"
+      "sha256": "99dcf3603015bb92ad223a7d5e8dbb2765acd95c2011aae9d9b76fa289a1ef84"
     }
   ],
   "license": "Apache-2.0",
