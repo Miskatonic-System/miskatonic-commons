@@ -47,6 +47,11 @@
       "pattern": "^[A-Za-z0-9._-][A-Za-z0-9._/-]*$",
       "type": "string"
     },
+    "role": {
+      "description": "A role token such as commons-maintainers. Never a personal name, email address or other personal identifier.",
+      "pattern": "^[a-z][a-z0-9-]{2,63}$",
+      "type": "string"
+    },
     "sha256": {
       "pattern": "^[0-9a-f]{64}$",
       "type": "string"

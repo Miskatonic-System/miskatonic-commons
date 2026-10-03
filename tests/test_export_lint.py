@@ -155,21 +155,38 @@ def test_t6_non_releasable_class_fails(release_copy, cls):
 
 LOCATORS = [
     "see https://example.invalid/origin",
+    "see HTTPS://example.invalid/origin",
     "from git@example.invalid:org/origin.git",
+    "from example.invalid/org/origin",
+    "from www.example.invalid/x",
+    "from Miskatonic-System" + "/some-private-repo",
     "at " + "a1b2c3d4e5" * 4,
+    "at " + "A1B2C3D4E5" * 4,
+    "at revision 3f2a9c1",
     "built in /home/someone/work/origin",
+    "built in /tmp/build",
+    "config in /etc/thing",
+    "path:/data/x",
+    "built in ~/work/origin",
     "copied from C:\\work\\origin",
+    "copied from \\\\fileserver\\share",
+    "mirrored from build-host." + "internal",
+    "served on localhost",
+    "endpoint 10." + "1.2.3",
 ]
 
 
-@pytest.mark.parametrize("level", ["PRIVATE_ORIGIN_OPAQUE", "COMMONS_NATIVE"])
+@pytest.mark.parametrize("level", ["PRIVATE_ORIGIN_OPAQUE", "COMMONS_NATIVE", "PUBLIC_ATTRIBUTED_PRIVATE_ORIGIN"])
 @pytest.mark.parametrize("text", LOCATORS)
 def test_t7_opaque_or_native_metadata_rejects_locators(release_copy, level, text):
     rel = release_copy()
-    if level == "PRIVATE_ORIGIN_OPAQUE":
+    if level != "COMMONS_NATIVE":
         rel.both("source_disclosure_level", level)
         rel.edit(lambda r: r.__setitem__("private_clearance_receipt",
                                          {"status": "HELD_PRIVATELY", "opaque_reference": "opaque-1234"}), "receipt")
+    if level == "PUBLIC_ATTRIBUTED_PRIVATE_ORIGIN":
+        rel.edit(lambda m: m.__setitem__("source_attribution", {
+            "public_origin_name": "Approved origin", "statement": "Name approved for disclosure."}))
     rel.edit(lambda m: m.__setitem__("summary", "Synthetic utility " + text))
     assert rel.codes() == ["PRIVATE_LOCATOR_LEAK"]
 
@@ -404,3 +421,91 @@ def test_describe_bundle_matches_real_manifest():
     manifest = json.loads(REAL_MANIFEST.read_text())
     assert described["files"] == manifest["files"]
     assert described["bundle_sha256"] == manifest["bundle_sha256"]
+
+
+# Review round 1 repairs ---------------------------------------------------------
+
+def test_locators_allowed_inside_approved_attribution_only(release_copy):
+    rel = release_copy("valid/VALID-02-public-source-complementary-p4")
+    assert rel.codes() == []  # its source_attribution carries a public URL
+    rel.edit(lambda m: m.__setitem__("summary", "See https://example.org/fixture-origin"))
+    assert rel.codes() == ["PRIVATE_LOCATOR_LEAK"]
+
+
+def test_locator_in_receipt_basis_rejected(release_copy):
+    rel = release_copy()
+    rel.edit(lambda r: r["dimensions"]["provenance"].__setitem__("basis", "See example.invalid/org/repo"), "receipt")
+    assert rel.codes() == ["PRIVATE_LOCATOR_LEAK"]
+
+
+@pytest.mark.parametrize("value", ["Jane Doe", "jane.doe@example.com", "+1 555 010 0199", "Commons Maintainers"])
+def test_receipt_owner_must_be_role_token(release_copy, value):
+    rel = release_copy()
+    rel.edit(lambda r: r["dimensions"]["security"].__setitem__("owner", value), "receipt")
+    assert "SCHEMA_VIOLATION" in rel.codes()
+
+
+@pytest.mark.parametrize("text", ["Contact jane.doe@example.com", "Call (555) 010-0199"])
+def test_personal_data_rejected_anywhere(release_copy, text):
+    rel = release_copy()
+    rel.edit(lambda r: r.__setitem__("scope_statement", text), "receipt")
+    assert rel.codes() == ["PERSONAL_DATA"]
+
+
+@pytest.mark.parametrize("field,where", [("scope_statement", "receipt"), ("summary", "manifest")])
+def test_claims_scanned_beyond_summary(release_copy, field, where):
+    rel = release_copy()
+    rel.edit(lambda d: d.__setitem__(field, "This proves customer demand."), where)
+    assert rel.codes() == ["PROHIBITED_CLAIM"]
+
+
+def test_claims_in_dependency_purpose_rejected(release_copy):
+    rel = release_copy()
+    rel.edit(lambda m: m["dependencies"]["runtime"].append(
+        {"name": "x", "version": "1.0.0", "license": "MIT", "purpose": "Peer-reviewed parser."}))
+    assert rel.codes() == ["PROHIBITED_CLAIM"]
+
+
+def test_release_id_bound_to_package_and_version(release_copy):
+    rel = release_copy()
+    rel.both("public_release_id", "cpr-other-9.9.9")
+    assert rel.codes() == ["RELEASE_ID_MISMATCH"]
+
+
+def test_control_characters_rejected(release_copy):
+    rel = release_copy()
+    rel.edit(lambda m: m.__setitem__("approved_at", m["approved_at"] + "\n"))
+    assert "CONTROL_CHARACTER" in rel.codes()
+
+
+def test_bundle_must_ship_license_text(release_copy):
+    rel = release_copy()
+    rel.edit(lambda m: m.__setitem__("notices", ["NOTICE"]))
+    assert rel.codes() == ["LICENSE_TEXT_MISSING"]
+
+
+def test_private_deny_pattern_file(release_copy, tmp_path):
+    rel = release_copy()
+    rel.edit(lambda r: r.__setitem__("clearance_receipt_id", "ccr-secret-lab-export"), "receipt")
+    rel.edit(lambda m: m.__setitem__("clearance_receipt_id", "ccr-secret-lab-export"))
+    assert rel.codes() == []
+    deny = tmp_path / "deny.txt"
+    deny.write_text("# private names\nsecret-lab\n")
+    args = ["--deny-pattern-file", str(deny), "check-release", "--manifest", str(rel.manifest_path),
+            "--receipt", str(rel.receipt_path), "--bundle-root", str(rel.bundle), "--json"]
+    assert lint.main(args, out=open(tmp_path / "out.json", "w")) == 1
+    assert "denied pattern #1" in (tmp_path / "out.json").read_text()
+
+
+def test_manifest_clearance_state_checked_independently(release_copy):
+    rel = release_copy()
+    rel.edit(lambda m: m.__setitem__("clearance_status", "REJECTED"))
+    findings = lint.check_release(rel.manifest_path, rel.receipt_path, rel.bundle)
+    assert ("CLEARANCE_NOT_CLEARED", "manifest.clearance_status") in {(f.code, f.where) for f in findings}
+
+
+def test_native_release_cannot_claim_private_receipt(release_copy):
+    rel = release_copy()
+    rel.edit(lambda r: r.__setitem__("private_clearance_receipt",
+                                     {"status": "HELD_PRIVATELY", "opaque_reference": "opaque-1234"}), "receipt")
+    assert rel.codes() == ["DISCLOSURE_INCOMPATIBLE"]

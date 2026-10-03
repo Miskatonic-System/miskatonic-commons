@@ -1,7 +1,7 @@
 {
   "approved_at": "2026-10-03T00:00:00Z",
   "bundle_digest_algorithm": "commons.bundle-digest.v0.1",
-  "bundle_sha256": "15dd35b871baa4bcd580ce90c08c49b9d174431db7d1eed22ca3b089d60a2924",
+  "bundle_sha256": "648093adf5e2a21029a2d1154469fb22cb587a759d77bbe0258d93375830396f",
   "clearance_receipt_id": "ccr-fixture-fixture-invalid-08",
   "clearance_status": "CLEARED",
   "commercial_impact": "NONE",
@@ -12,6 +12,11 @@
   },
   "display_name": "Synthetic fixture package",
   "files": [
+    {
+      "bytes": 74,
+      "path": "LICENSE",
+      "sha256": "7211248b398d70318ee623f38193393b609739967371f124ddaee0de051fc9b7"
+    },
     {
       "bytes": 73,
       "path": "NOTICE",
@@ -28,8 +33,10 @@
       "sha256": "99dcf3603015bb92ad223a7d5e8dbb2765acd95c2011aae9d9b76fa289a1ef84"
     }
   ],
+  "imported_at": "2026-10-03T00:00:00Z",
   "license": "Apache-2.0",
   "notices": [
+    "LICENSE",
     "NOTICE"
   ],
   "package_id": "fixture-invalid-08",

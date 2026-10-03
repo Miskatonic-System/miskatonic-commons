@@ -1,0 +1,59 @@
+{
+  "approved_at": "2026-10-03T00:00:00Z",
+  "bundle_digest_algorithm": "commons.bundle-digest.v0.1",
+  "bundle_sha256": "648093adf5e2a21029a2d1154469fb22cb587a759d77bbe0258d93375830396f",
+  "clearance_receipt_id": "ccr-fixture-fixture-invalid-21",
+  "clearance_status": "CLEARED",
+  "commercial_impact": "NONE",
+  "dependencies": {
+    "development": [],
+    "inventory_complete": true,
+    "runtime": []
+  },
+  "display_name": "Synthetic fixture package",
+  "files": [
+    {
+      "bytes": 74,
+      "path": "LICENSE",
+      "sha256": "7211248b398d70318ee623f38193393b609739967371f124ddaee0de051fc9b7"
+    },
+    {
+      "bytes": 73,
+      "path": "NOTICE",
+      "sha256": "efac12254142067428f88109f5429cd9e7e577318bff87b545d0059b0b1e597c"
+    },
+    {
+      "bytes": 75,
+      "path": "README.txt",
+      "sha256": "81080761be3271ea89ba8c96d2886b38ec3f12b8abb0ccfc2151e21be6423b4f"
+    },
+    {
+      "bytes": 22,
+      "path": "data/example.json",
+      "sha256": "99dcf3603015bb92ad223a7d5e8dbb2765acd95c2011aae9d9b76fa289a1ef84"
+    }
+  ],
+  "imported_at": "2026-10-03T00:00:00Z",
+  "license": "Apache-2.0",
+  "notices": [
+    "LICENSE",
+    "NOTICE"
+  ],
+  "package_id": "fixture-invalid-21",
+  "provenance_format_version": "commons.provenance.v0.1",
+  "public_claim_boundary": {
+    "does_not_establish": [
+      "correctness or fitness for any purpose",
+      "any scientific, safety, security, compliance or performance claim",
+      "commercial demand, profitability or product support"
+    ],
+    "statement": "This synthetic bundle was cleared for distribution under its recorded scope only."
+  },
+  "public_release_id": "cpr-fixture-invalid-21-0.1.0",
+  "release_class": "P3_PUBLIC_RELEASE_APPROVED",
+  "schema_version": "commons.public-release-manifest.v0.1",
+  "source_disclosure_level": "PRIVATE_ORIGIN_OPAQUE",
+  "summary": "Synthetic utility copied from the build-host.localdomain store.",
+  "support_class": "COMMUNITY_BEST_EFFORT",
+  "version": "0.1.0"
+}

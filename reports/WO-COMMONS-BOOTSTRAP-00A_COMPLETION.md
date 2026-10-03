@@ -65,7 +65,7 @@ check), `requirements-dev.txt` (hash-pinned), `.gitleaks.toml`, `pytest.ini`.
 | Dual private/public provenance defined | met (`docs/PROVENANCE_MODEL.md`, receipt schema) |
 | Release and commercial classes independent | met |
 | Commercial uncertainty fails closed | met (T5, INVALID-02) |
-| Commons-native validator demonstrates pipeline | met |
+| Commons-native validator demonstrates pipeline | met (independent review round 1 repairs included) |
 | Public CI needs no private access; fork-safe | met (no secrets, read-only, SHA-pinned) |
 | Telemetry absent | met (T17) |
 | Public contributions cannot silently change private truth | met (policy + T18) |

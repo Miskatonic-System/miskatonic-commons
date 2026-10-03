@@ -13,12 +13,23 @@ It validates:
 - that only `CLEARED` releases of class `P3` or `P4` can be released or indexed;
 - that commercial impact `UNCERTAIN` fails closed, and that the higher-risk
   commercial classes carry a recorded review and authorization;
-- that opaque or Commons-native releases contain no source locators
-  (URLs, remotes, commit IDs, absolute paths);
-- that release text does not claim scientific, safety, security, compliance,
-  clinical, performance or commercial results;
+- that no source locator (URL, host path, Git remote, commit ID, absolute
+  path, private hostname or address) appears anywhere outside an approved
+  `source_attribution` block, at any disclosure level;
+- that no email address, phone number or control character appears, and that
+  reviewers are recorded as role tokens, not people;
+- that manifest and receipt text does not claim scientific, safety, security,
+  compliance, clinical, performance or commercial results (only the explicit
+  `does_not_establish` negations are exempt);
+- that the release ID is bound to the package and version, and the bundle
+  ships its license text;
 - that dependency and license declarations are complete;
 - that JSON files use the one canonical serialization.
+
+The locator, personal-data and claim checks are bounded pattern scans. They
+cannot recognize the plain name of a private project or every possible
+wording. Pass extra private patterns (one regular expression per line) with
+`--deny-pattern-file`; keep that file private.
 
 It is a lint, not an authority. A clean result means the metadata is complete
 and consistent under these rules. It does not mean the software is correct,

@@ -23,6 +23,7 @@ from pathlib import Path
 STAMP = "2026-10-03T00:00:00Z"
 
 BUNDLE = {
+    "LICENSE": "Synthetic fixture file standing in for the license text of a real bundle.\n",
     "NOTICE": "Synthetic Commons fixture notice. This bundle contains no real software.\n",
     "README.txt": "Synthetic Commons fixture bundle used only to exercise release validation.\n",
     "data/example.json": '{\n  "example": true\n}\n',
@@ -68,7 +69,7 @@ def base_release(package_id: str):
             "does_not_establish": list(DOES_NOT_ESTABLISH),
         },
         "license": "Apache-2.0",
-        "notices": ["NOTICE"],
+        "notices": ["LICENSE", "NOTICE"],
         "files": files,
         "bundle_digest_algorithm": "commons.bundle-digest.v0.1",
         "bundle_sha256": digest(files),
@@ -77,6 +78,7 @@ def base_release(package_id: str):
         "clearance_receipt_id": f"ccr-fixture-{package_id}",
         "clearance_status": "CLEARED",
         "approved_at": STAMP,
+        "imported_at": STAMP,
     }
     receipt = {
         "schema_version": "commons.public-clearance-receipt.v0.1",
@@ -98,6 +100,12 @@ def base_release(package_id: str):
         "completed_at": STAMP,
     }
     return manifest, receipt, dict(BUNDLE)
+
+
+def rebind(m, r, bundle):
+    files = file_entries(bundle)
+    m["files"] = files
+    m["bundle_sha256"] = r["bundle_sha256"] = digest(files)
 
 
 def set_both(m, r, field, value):
@@ -214,6 +222,47 @@ def build():
     m, r, b = base_release("fixture-invalid-17")
     r["dimensions"]["security"] = {"status": "PENDING", "owner": "security-review", "basis": "Not yet reviewed."}
     out["invalid/INVALID-17-security-dimension-pending"] = (m, r, b, ["CLEARANCE_DIMENSION_NOT_PASSED"])
+
+    def opaque_summary(n, text):
+        m, r, b = base_release(f"fixture-invalid-{n}")
+        private_origin(m, r, "PRIVATE_ORIGIN_OPAQUE", f"fixture-opaque-00{n}")
+        m["summary"] = text
+        return m, r, b
+
+    out["invalid/INVALID-18-opaque-origin-host-path"] = (
+        *opaque_summary(18, "Synthetic utility mirrored from git.example.invalid/private-group/origin."),
+        ["PRIVATE_LOCATOR_LEAK"])
+    out["invalid/INVALID-19-opaque-origin-short-commit"] = (
+        *opaque_summary(19, "Synthetic utility built from revision 3F2A9C1."), ["PRIVATE_LOCATOR_LEAK"])
+    out["invalid/INVALID-20-opaque-origin-tmp-path"] = (
+        *opaque_summary(20, "Synthetic utility assembled in /tmp/build-area."), ["PRIVATE_LOCATOR_LEAK"])
+    out["invalid/INVALID-21-opaque-origin-internal-hostname"] = (
+        *opaque_summary(21, "Synthetic utility copied from the build-host.localdomain store."), ["PRIVATE_LOCATOR_LEAK"])
+
+    m, r, b = base_release("fixture-invalid-22")
+    private_origin(m, r, "PUBLIC_ATTRIBUTED_PRIVATE_ORIGIN", "fixture-opaque-0022")
+    m["source_attribution"] = {"public_origin_name": "Example attributed origin",
+                               "statement": "The origin's name is approved for disclosure."}
+    m["summary"] = "Synthetic utility built from ~/work/origin."
+    out["invalid/INVALID-22-attributed-origin-path-outside-attribution"] = (m, r, b, ["PRIVATE_LOCATOR_LEAK"])
+
+    m, r, b = base_release("fixture-invalid-23")
+    r["dimensions"]["security"]["owner"] = "Jane Doe <jane.doe@example.com>"
+    out["invalid/INVALID-23-personal-identity-in-receipt"] = (m, r, b, ["PERSONAL_DATA", "SCHEMA_VIOLATION"])
+
+    m, r, b = base_release("fixture-invalid-24")
+    r["scope_statement"] = "Scientifically validated and profitable synthetic bundle."
+    out["invalid/INVALID-24-claim-in-receipt-scope"] = (m, r, b, ["PROHIBITED_CLAIM"])
+
+    m, r, b = base_release("fixture-invalid-25")
+    set_both(m, r, "public_release_id", "cpr-another-package-0.1.0")
+    out["invalid/INVALID-25-release-id-not-bound-to-package"] = (m, r, b, ["RELEASE_ID_MISMATCH"])
+
+    m, r, b = base_release("fixture-invalid-26")
+    del b["LICENSE"]
+    m["notices"] = ["NOTICE"]
+    rebind(m, r, b)
+    out["invalid/INVALID-26-no-license-text-in-bundle"] = (m, r, b, ["LICENSE_TEXT_MISSING"])
     return out
 
 

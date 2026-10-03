@@ -17,9 +17,11 @@ Scope: Commons-native bootstrap only. No private software is exported.
 Receipts: [`provenance/BOOTSTRAP_REPOSITORY_CREATION_RECEIPT_V0_1.json`](../provenance/BOOTSTRAP_REPOSITORY_CREATION_RECEIPT_V0_1.json),
 [`provenance/BOOTSTRAP_CLEAN_HISTORY_RECEIPT_V0_1.json`](../provenance/BOOTSTRAP_CLEAN_HISTORY_RECEIPT_V0_1.json).
 
-Note: GitHub generated the root commit and attributed it to the creating
-account's configured commit identity. Per the work order, the commit was not
-rewritten.
+Note: GitHub generated the root commit and stamped it with the creating
+account's personal email address as author and committer. That address is
+therefore public in this repository's history. It is not designated as a
+contact anywhere in Commons, and per the work order the commit was not
+rewritten. Every later commit uses a GitHub `noreply` address.
 
 ## 2. Local validation
 
@@ -29,7 +31,7 @@ environment.
 
 | Command | Result |
 | --- | --- |
-| `python -m pytest` | 127 passed, 0 skipped |
+| `python -m pytest` | 191 passed, 0 skipped (after review round 1; 127 at round 0) |
 | `python scripts/check_sensitive_data.py` | 0 findings |
 | `commons_export_lint.py check-index --index releases/package-index-v0.1.json --repo-root .` | OK: no findings |
 | `commons_export_lint.py replay-fixtures fixtures --expected fixtures/expected-results.json` | identical |
@@ -41,7 +43,8 @@ Absence of scanner findings is not proof that no secret exists.
 
 ## 3. Hosted CI (GitHub Actions, PR #1)
 
-Run `37139457380` on candidate commit `d1065d5f`:
+Round-0 run `37139457380` on commit `d1065d5f`. The round-1 candidate's run is
+recorded on PR #1 and in the post-merge receipt.
 
 | Job | Result |
 | --- | --- |
@@ -81,6 +84,15 @@ matches them exactly.
 | INVALID-15 no retained surface, no strategic review | (§9) | MOAT_REVIEW_MISSING |
 | INVALID-16 receipt bound to another bundle | (§25) | RECEIPT_MISMATCH |
 | INVALID-17 security dimension pending | (§11) | CLEARANCE_DIMENSION_NOT_PASSED |
+| INVALID-18 opaque origin, host path without scheme | review F1 | PRIVATE_LOCATOR_LEAK |
+| INVALID-19 opaque origin, short uppercase commit ID | review F1 | PRIVATE_LOCATOR_LEAK |
+| INVALID-20 opaque origin, `/tmp` path | review F1 | PRIVATE_LOCATOR_LEAK |
+| INVALID-21 opaque origin, private hostname | review F1 | PRIVATE_LOCATOR_LEAK |
+| INVALID-22 attributed origin, path outside attribution | review F1 | PRIVATE_LOCATOR_LEAK |
+| INVALID-23 personal identity as receipt owner | review F2 | PERSONAL_DATA, SCHEMA_VIOLATION |
+| INVALID-24 claim in receipt scope statement | review F3 | PROHIBITED_CLAIM |
+| INVALID-25 release ID not bound to package | review F5 | RELEASE_ID_MISMATCH |
+| INVALID-26 bundle without license text | review F9 | LICENSE_TEXT_MISSING |
 | INDEX-VALID-01 cleared entry | (T11) | none |
 | INDEX-INVALID-01 uncleared P2 entry | (T11) | CLEARANCE_NOT_CLEARED, RELEASE_CLASS_NOT_RELEASABLE, SCHEMA_VIOLATION |
 
@@ -94,10 +106,10 @@ matches them exactly.
 | T4 unknown file fails | `test_t4_*` (also missing file, symlink, unsafe paths) |
 | T5 UNCERTAIN fails closed | `test_t5_*` (also high-risk authorization and moat review) |
 | T6 P0/P1 release fails | `test_t6_*` (P0, P1, P2) |
-| T7 opaque origin rejects locators | `test_t7_*` (5 locator kinds × opaque/native, receipt, locator fields, attribution) |
+| T7 opaque origin rejects locators | `test_t7_*` (19 locator shapes × opaque/native/attributed, receipt, locator fields, attribution) and the review-round-1 tests |
 | T8 no scientific authority claims | `test_t8_*` |
 | T9 no profitability/PMF claims | `test_t9_*` |
-| T10 unknown fields rejected | `test_t10_*` (all schema objects closed; internal validator agrees with `jsonschema` 4.26.0 on 46 documents (43 fixture + 3 real)) |
+| T10 unknown fields rejected | `test_t10_*` (all schema objects closed; internal validator agrees with `jsonschema` 4.26.0 on 64 documents (61 fixture + 3 real)) |
 | T11 index only CLEARED P3/P4 | `test_t11_*` |
 | T12 no network | `test_bootstrap_contract.py::test_t12_*` (import allowlist, sockets disabled, isolated `-I` run of the bundle alone) |
 | T13 no private repository required | `test_t13_*` (the only organization repository named in tracked files is Commons) |
@@ -131,19 +143,49 @@ lint rule; the release metadata was regenerated so only behavior changed.
 | clearance-dimension check | killed |
 | native private-receipt check | killed |
 
-14 of 14 killed. One real defect was found and fixed during development:
+Round 1 added seven mutations: manifest locator scan, receipt locator scan,
+personal-data check, control-character check, release-ID binding,
+license-text requirement and receipt claim scan. It also added a widened
+`source_attribution` exemption. Two round-0 mutations initially survived the
+round-1 suite: the manifest-side CLEARED check (the outcome still failed
+through the receipt check) and the native private-receipt check. A targeted
+test was added for each.
+
+Round 0: 14 of 14 killed. Round 1: 21 of 21 killed. One real defect was found and fixed during development:
 `PurePosixPath` silently normalized `a/./b.txt`, so the unsafe-path check
 missed it. The check now splits paths literally.
 
-## 7. Known limits
+## 7. Independent review
+
+One fresh-context reviewer looked at the exact round-0 head `dd823070` and
+returned **REVISE**, with 2 blocking and 9 non-blocking findings. Repairs were
+made inside this work order:
+
+| Finding | Severity | Disposition |
+| --- | --- | --- |
+| F1 locator scan bypassable (schemeless/host paths, short or uppercase commits, `/tmp` `/etc` `~` and `path:/` forms, internal hosts, receipt `basis`, no scan for attributed origins); docs overstated it | BLOCKING | Repaired. Every manifest and receipt string is scanned at every level; only `source_attribution` and bundle file paths are exempt. Patterns widened, private `--deny-pattern-file` added, 5 fixtures and 19-shape tests added, docs corrected. All the reviewer's blocking probe inputs now fail. |
+| F2 personal identity accepted as receipt owner | BLOCKING | Repaired. `owner` and `authority_role` are role tokens `^[a-z][a-z0-9-]{2,63}$`; email, phone and control-character checks run on every string. |
+| F3 claim scan covered four fields | non-blocking | Repaired. All manifest and receipt text is scanned except `does_not_establish`; NFKC normalization; "prove(s)" and "demand" wording added. Homoglyphs and adversarial wording remain a limit. |
+| F4 opaque IDs could carry private names | non-blocking | Limit. Covered by `--deny-pattern-file` during private review. |
+| F5 release ID not bound | non-blocking | Repaired (`RELEASE_ID_MISMATCH`). |
+| F6 `imported_at` missing | non-blocking | Repaired. Required manifest field. |
+| F7 timestamps predated the repository | non-blocking | Repaired. The real release now records `2026-10-03T17:23:00Z`. Clearance of a Commons-native package is self-attested by Commons maintainers and completed by acceptance of this review. |
+| F8 personal email in the GitHub-generated root commit | non-blocking | Recorded plainly in section 1. Not rewritten (work order §32). |
+| F9 license text not required in bundle | non-blocking | Repaired (`LICENSE_TEXT_MISSING`). Fixture bundles now ship a LICENSE file. |
+| F10 trailing newline accepted by patterns | non-blocking | Repaired (`CONTROL_CHARACTER`). |
+| F11 bundle file contents not scanned | non-blocking | Limit. The repository-wide sensitive-data check and gitleaks cover files committed here. |
+
+## 8. Known limits
 
 - The lint checks metadata. It cannot verify that any recorded human review
   happened.
 - The claim scan is a fixed phrase list. It catches common upgrades of claims,
-  not every possible wording.
-- The locator scan targets URLs, Git remotes, 40-hex commit IDs and absolute
-  paths. A free-text name of a private project would not be detected by
-  pattern; schema closure and review cover that case.
+  not every possible wording, and it does not map look-alike characters.
+- The locator scan matches locator shapes. It cannot recognize the plain name
+  of a private project or a relative path that names one. Private reviews
+  should use `--deny-pattern-file`.
+- The lint does not judge whether a license is suitable (for example,
+  proprietary), or what a strategic-review decision actually says.
 - `check_sensitive_data.py` and gitleaks are bounded heuristics.
 - Dependency review depends on GitHub's dependency graph, which had to be
   enabled on the new repository.

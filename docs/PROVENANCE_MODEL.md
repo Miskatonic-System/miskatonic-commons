@@ -51,11 +51,30 @@ structure.
 | --- | --- | --- |
 | `PUBLIC_SOURCE` | The origin is already public and may be cited. | Required |
 | `PUBLIC_ATTRIBUTED_PRIVATE_ORIGIN` | The origin is private, but naming it has been approved. | Required |
-| `PRIVATE_ORIGIN_OPAQUE` | The origin stays internal; only the opaque receipt ID and public claim statement appear. | Forbidden; no source locators anywhere |
-| `COMMONS_NATIVE` | Written directly in Commons; no private ancestry. | Forbidden; no source locators anywhere |
+| `PRIVATE_ORIGIN_OPAQUE` | The origin stays internal; only the opaque receipt ID and public claim statement appear. | Forbidden |
+| `COMMONS_NATIVE` | Written directly in Commons; no private ancestry. | Forbidden |
 
-"Source locators" means URLs, Git remotes, commit IDs and absolute file paths.
-`commons-export-lint` rejects them in opaque and Commons-native metadata.
+At **every** level, source locators may appear only inside an approved
+`source_attribution` block. `commons-export-lint` scans all other manifest and
+receipt text for locator shapes and rejects:
+
+- URLs with a scheme, and host-plus-path forms without one
+  (`example.org/group/repo`);
+- `user@host:path` Git remotes and `<organization>/<repository>` references
+  to this organization's other repositories;
+- commit IDs of 7 to 40 hexadecimal characters, in either case;
+- absolute paths (`/…`, `~/…`, Windows drive and UNC paths);
+- private hostnames (`*.internal`, `*.corp`, `*.lan`, `*.local`, `localhost`)
+  and private IPv4 addresses.
+
+It also rejects email addresses, phone numbers and control characters
+anywhere, and requires reviewer and authority fields to be role tokens such as
+`commons-maintainers`.
+
+This is a **bounded pattern scan**. It cannot recognize the plain name of a
+private project. A private export review should pass its own list of private
+names with `--deny-pattern-file` (the list itself stays private) and still
+read the metadata by hand.
 
 ## Clearance states
 

@@ -21,7 +21,8 @@ WORKFLOWS = sorted((ROOT / ".github" / "workflows").glob("*.y*ml"))
 CLEAN_HISTORY = json.loads((ROOT / "provenance/BOOTSTRAP_CLEAN_HISTORY_RECEIPT_V0_1.json").read_text())
 RECORDED_ROOT = CLEAN_HISTORY["root_commit"]["sha"]
 
-ALLOWED_TOOL_IMPORTS = {"__future__", "argparse", "hashlib", "json", "os", "re", "stat", "sys", "pathlib"}
+ALLOWED_TOOL_IMPORTS = {"__future__", "argparse", "hashlib", "json", "os", "re", "stat", "sys", "pathlib",
+                        "unicodedata"}
 
 
 def git(*args, cwd=ROOT):

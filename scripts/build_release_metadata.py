@@ -54,7 +54,7 @@ RELEASES = [
         "notices": ["LICENSE", "NOTICE"],
         "support_class": "COMMUNITY_BEST_EFFORT",
         "clearance_receipt_id": "ccr-commons-native-commons-export-lint-0-1-0",
-        "approved_at": "2026-10-03T00:00:00Z",
+        "approved_at": "2026-10-03T17:23:00Z",
         "scope_statement": ("Release 0.1.0 of commons-export-lint: exactly the files listed in the "
                             "manifest, bound by bundle_sha256. Written in Commons for the Commons "
                             "bootstrap; it has no private ancestry and exports no private technology."),
@@ -102,6 +102,7 @@ def build(rel: dict) -> tuple[dict, dict, dict]:
         "clearance_receipt_id": rel["clearance_receipt_id"],
         "clearance_status": "CLEARED",
         "approved_at": rel["approved_at"],
+        "imported_at": rel["approved_at"],
     }
     dims = {}
     for name, basis in rel["dimensions"].items():

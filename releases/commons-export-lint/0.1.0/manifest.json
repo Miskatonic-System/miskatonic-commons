@@ -1,7 +1,7 @@
 {
-  "approved_at": "2026-10-03T00:00:00Z",
+  "approved_at": "2026-10-03T17:23:00Z",
   "bundle_digest_algorithm": "commons.bundle-digest.v0.1",
-  "bundle_sha256": "b21f433f61ff08546dd02c8e6373d6bcaaa7aed78ef84caa08d47a167a9bacd7",
+  "bundle_sha256": "5b0bfed3e075102c8ee10d723595bf8cc4b9e2ef3d8104afb7941eba61ec1f95",
   "clearance_receipt_id": "ccr-commons-native-commons-export-lint-0-1-0",
   "clearance_status": "CLEARED",
   "commercial_impact": "NONE",
@@ -23,31 +23,32 @@
       "sha256": "d47f34e3abffd46de1f4511347f8da218e40ddabe2399c5376eafb9a590497fe"
     },
     {
-      "bytes": 3114,
+      "bytes": 3780,
       "path": "README.md",
-      "sha256": "547d115d532095fb53017fa0fe2491c5d7e8fa5e3d5cd2bb37c9dacc34597e86"
+      "sha256": "cd9d7f68c341c505ad43ea740aca74f5df15b351e3611c43061937d4c7d96987"
     },
     {
-      "bytes": 37556,
+      "bytes": 41455,
       "path": "commons_export_lint.py",
-      "sha256": "813a4ef83effa6e7bc52ebeeb5a84130dfe506fe975389b0e10dd5969f47841f"
+      "sha256": "52f76176f28b1632e55f36877090f5982e09ee913dce81aaccfe6adb6c2e040a"
     },
     {
-      "bytes": 4539,
+      "bytes": 4759,
       "path": "schemas/commons-package-index-v0.1.schema.json",
-      "sha256": "f61a3d0205034aedf0e816e1507e51f7a75df81c21c90777eab9525a319be2bc"
+      "sha256": "f49bedc4e05dfd5f815d361c0d029a90797a02b4309de7c84573bcf6156c2c63"
     },
     {
-      "bytes": 11074,
+      "bytes": 10520,
       "path": "schemas/public-clearance-receipt-v0.1.schema.json",
-      "sha256": "960ce5c75f6d0f0d066429b04541b88d39a3e111005d4d388e840d52b386d4ac"
+      "sha256": "e9cffbe5861773246b283b015ec64742d2c2ad041c85d6823673913e4e0dbc41"
     },
     {
-      "bytes": 8181,
+      "bytes": 8547,
       "path": "schemas/public-release-manifest-v0.1.schema.json",
-      "sha256": "085c2cc1ff8a2a46dc974ced5cb58eac7736f70d4cd86f478fe23ce123f78493"
+      "sha256": "e5cfe5836d16b8b4a7cc7308171eaa253e026d58cf608a73d7ff307cf017d42d"
     }
   ],
+  "imported_at": "2026-10-03T17:23:00Z",
   "license": "Apache-2.0",
   "notices": [
     "LICENSE",

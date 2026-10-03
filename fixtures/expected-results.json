@@ -59,6 +59,34 @@
     "invalid/INVALID-17-security-dimension-pending": [
       "CLEARANCE_DIMENSION_NOT_PASSED"
     ],
+    "invalid/INVALID-18-opaque-origin-host-path": [
+      "PRIVATE_LOCATOR_LEAK"
+    ],
+    "invalid/INVALID-19-opaque-origin-short-commit": [
+      "PRIVATE_LOCATOR_LEAK"
+    ],
+    "invalid/INVALID-20-opaque-origin-tmp-path": [
+      "PRIVATE_LOCATOR_LEAK"
+    ],
+    "invalid/INVALID-21-opaque-origin-internal-hostname": [
+      "PRIVATE_LOCATOR_LEAK"
+    ],
+    "invalid/INVALID-22-attributed-origin-path-outside-attribution": [
+      "PRIVATE_LOCATOR_LEAK"
+    ],
+    "invalid/INVALID-23-personal-identity-in-receipt": [
+      "PERSONAL_DATA",
+      "SCHEMA_VIOLATION"
+    ],
+    "invalid/INVALID-24-claim-in-receipt-scope": [
+      "PROHIBITED_CLAIM"
+    ],
+    "invalid/INVALID-25-release-id-not-bound-to-package": [
+      "RELEASE_ID_MISMATCH"
+    ],
+    "invalid/INVALID-26-no-license-text-in-bundle": [
+      "LICENSE_TEXT_MISSING"
+    ],
     "valid/INDEX-VALID-01-cleared-entry": [],
     "valid/VALID-01-commons-native-p3-none": [],
     "valid/VALID-02-public-source-complementary-p4": []

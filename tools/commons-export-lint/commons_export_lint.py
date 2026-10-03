@@ -31,7 +31,8 @@ import os
 import re
 import stat
 import sys
-from pathlib import Path
+import unicodedata
+from pathlib import Path, PurePosixPath
 
 TOOL_NAME = "commons-export-lint"
 TOOL_VERSION = "0.1.0"
@@ -76,8 +77,6 @@ DISCLOSURE_LEVELS = (
     "COMMONS_NATIVE",
 )
 ATTRIBUTION_ALLOWED = ("PUBLIC_SOURCE", "PUBLIC_ATTRIBUTED_PRIVATE_ORIGIN")
-# For these levels no source locator of any kind may appear in public metadata.
-LOCATOR_FORBIDDEN = ("PRIVATE_ORIGIN_OPAQUE", "COMMONS_NATIVE")
 
 CLEARANCE_STATES = ("NOT_REVIEWED", "REVIEW_IN_PROGRESS", "CLEARED", "REJECTED", "SUPERSEDED")
 
@@ -98,7 +97,7 @@ BUNDLE_DIGEST_ALGORITHM = "commons.bundle-digest.v0.1"
 PROHIBITED_CLAIM_PATTERNS = (
     ("scientific", r"\bscientific(ally)?\s+(valid|validated|proven|established|authority|authoritative|truth)"),
     ("scientific", r"\bpeer[- ]reviewed\b"),
-    ("scientific", r"\bproven\b"),
+    ("scientific", r"\bprove[sdn]?\b|\bproving\b"),
     ("scientific", r"\bcanonical\s+(scientific|evidence|truth|result)"),
     ("clinical", r"\bclinical(ly)?\b|\bdiagnos(is|tic|e)\b|\bFDA\b"),
     ("safety_security", r"\b(safety|security)[- ](certified|guaranteed|approved|proven)\b"),
@@ -107,16 +106,35 @@ PROHIBITED_CLAIM_PATTERNS = (
     ("performance", r"\bfastest\b|\bbest[- ]in[- ]class\b|\bstate[- ]of[- ]the[- ]art\b"),
     ("commercial", r"\bprofit(s|able|ability)?\b|\bproduct[- ]market[- ]fit\b|\brevenue\b"),
     ("commercial", r"\bwillingness[- ]to[- ]pay\b|\bcommercial(ly)?\s+(viable|viability|validated)\b"),
+    ("commercial", r"\b(customer|market|commercial|proven)\s+demand\b|\bpaying\s+(customers|users)\b"),
 )
 
-# Source locators that must never appear in opaque or Commons-native metadata.
+# Source locators. They may appear only inside an approved source_attribution
+# block (PUBLIC_SOURCE / PUBLIC_ATTRIBUTED_PRIVATE_ORIGIN); everywhere else, at
+# every disclosure level, they are rejected. This is a bounded heuristic: it
+# catches locator *shapes*. Names of private projects that have no locator
+# shape can be supplied privately with --deny-pattern-file.
 LOCATOR_PATTERNS = (
-    ("url", r"\b(https?|ssh|git|file|svn|hg)://"),
+    ("url", r"(?i)\b(https?|ssh|git|file|svn|hg|ftp|s3|gs)://"),
+    ("host_path", r"(?i)\b(?:[a-z0-9-]+\.)+[a-z]{2,}(?::\d+)?/[^\s]"),
     ("scp_remote", r"\b[A-Za-z0-9._-]+@[A-Za-z0-9.-]+:[A-Za-z0-9._~/-]+"),
-    ("commit_id", r"(?<![0-9A-Fa-f])[0-9a-f]{40}(?![0-9A-Fa-f])"),
-    ("absolute_path", r"(^|[\s\"'(=])/(home|Users|root|srv|opt|var|mnt|private|workspace)/"),
-    ("windows_path", r"\b[A-Za-z]:\\"),
+    ("organization_repository", r"(?i)\bmiskatonic-system/(?!miskatonic-commons\b)[a-z0-9._-]+"),
+    ("commit_id", r"(?<![0-9A-Za-z])(?=[0-9A-Fa-f]*[0-9])(?=[0-9A-Fa-f]*[A-Fa-f])[0-9A-Fa-f]{7,40}(?![0-9A-Za-z])"),
+    ("absolute_path", r"(?:^|[\s\"'(=:,;\[])(?:/|~/|~[a-z_][a-z0-9_-]*/)[A-Za-z0-9._~-]+"),
+    ("windows_path", r"\b[A-Za-z]:[\\/]|\\\\[A-Za-z0-9]"),
+    ("private_hostname", r"(?i)\b(?:[a-z0-9-]+\.)+(?:internal|corp|intranet|lan|local|localdomain|home\.arpa)\b|\blocalhost\b"),
+    ("private_ipv4", r"(?<![\d.])(?:10\.\d{1,3}\.\d{1,3}\.\d{1,3}|192\.168\.\d{1,3}\.\d{1,3}|172\.(?:1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3}|127\.\d{1,3}\.\d{1,3}\.\d{1,3})(?![\d.])"),
 )
+
+# Personal data has no place in public release metadata at any level.
+# Reviewers and authorities are recorded as role tokens only.
+PERSONAL_DATA_PATTERNS = (
+    ("email", r"[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}(?![A-Za-z0-9.-]*:)"),
+    ("phone", r"(?:\+\d{1,3}[\s.-]?)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}\b"),
+)
+
+# JSON paths whose values are bundle-relative file paths (public by definition).
+PATH_VALUED = re.compile(r"^\$\.(files\[\d+\]\.path|notices\[\d+\])$")
 
 SEMVER = re.compile(r"^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$")
 
@@ -406,14 +424,34 @@ def iter_strings(obj, path="$"):
         yield path, obj
 
 
-def scan_locators(doc, where: str, findings: list) -> None:
+def scan_locators(doc, where: str, findings: list, deny_patterns=()) -> None:
+    """Reject source locators and denied names everywhere except source_attribution."""
     for path, text in iter_strings(doc):
+        if path.startswith("$.source_attribution"):
+            continue
+        if PATH_VALUED.match(path):
+            continue
         for kind, pattern in LOCATOR_PATTERNS:
             if re.search(pattern, text):
                 findings.append(Finding("PRIVATE_LOCATOR_LEAK", where, f"{path}: {kind} pattern present"))
+        for i, pattern in enumerate(deny_patterns):
+            if re.search(pattern, text):
+                findings.append(Finding("PRIVATE_LOCATOR_LEAK", where, f"{path}: denied pattern #{i + 1} present"))
+
+
+def scan_personal_and_control(doc, where: str, findings: list) -> None:
+    for path, text in iter_strings(doc):
+        if re.search(r"[\x00-\x1f\x7f]", text):
+            findings.append(Finding("CONTROL_CHARACTER", where, f"{path}: control character present"))
+        if path.startswith("$.source_attribution.public_origin_url"):
+            continue
+        for kind, pattern in PERSONAL_DATA_PATTERNS:
+            if re.search(pattern, text):
+                findings.append(Finding("PERSONAL_DATA", where, f"{path}: {kind} pattern present"))
 
 
 def scan_claims(text: str, where: str, findings: list) -> None:
+    text = unicodedata.normalize("NFKC", text)
     for kind, pattern in PROHIBITED_CLAIM_PATTERNS:
         match = re.search(pattern, text, flags=re.IGNORECASE)
         if match:
@@ -426,7 +464,7 @@ def scan_claims(text: str, where: str, findings: list) -> None:
 # --------------------------------------------------------------------------
 
 def check_release(manifest_path: Path, receipt_path: Path | None, bundle_root: Path | None,
-                  schema_dir: Path | None = None) -> list:
+                  schema_dir: Path | None = None, deny_patterns=()) -> list:
     """Lint one release. Every rule fails closed; returns a sorted findings list."""
     findings: list = []
     manifest, _ = load_json(manifest_path, "manifest", findings)
@@ -464,8 +502,12 @@ def check_release(manifest_path: Path, receipt_path: Path | None, bundle_root: P
     if sdl not in ATTRIBUTION_ALLOWED and has_attr:
         findings.append(Finding("DISCLOSURE_INCOMPATIBLE", "manifest.source_attribution",
                                 f"source_attribution is not permitted for {sdl!r}"))
-    if sdl in LOCATOR_FORBIDDEN or sdl not in DISCLOSURE_LEVELS:
-        scan_locators(m, "manifest", findings)
+    scan_locators(m, "manifest", findings, deny_patterns)
+    scan_personal_and_control(m, "manifest", findings)
+    expected_id = f"cpr-{m.get('package_id')}-{m.get('version')}"
+    if m.get("public_release_id") != expected_id:
+        findings.append(Finding("RELEASE_ID_MISMATCH", "manifest.public_release_id",
+                                f"must be {expected_id!r}"))
 
     # Claim boundary and affirmative text.
     boundary = m.get("public_claim_boundary")
@@ -473,14 +515,12 @@ def check_release(manifest_path: Path, receipt_path: Path | None, bundle_root: P
             or not boundary.get("does_not_establish"):
         findings.append(Finding("CLAIM_BOUNDARY_MISSING", "manifest.public_claim_boundary",
                                 "a statement and a non-empty does_not_establish list are required"))
-    for field in ("display_name", "summary"):
-        if isinstance(m.get(field), str):
-            scan_claims(m[field], f"manifest.{field}", findings)
-    if isinstance(boundary, dict) and isinstance(boundary.get("statement"), str):
-        scan_claims(boundary["statement"], "manifest.public_claim_boundary.statement", findings)
-    attr = m.get("source_attribution")
-    if isinstance(attr, dict) and isinstance(attr.get("statement"), str):
-        scan_claims(attr["statement"], "manifest.source_attribution.statement", findings)
+    # Every free-text string except the explicit negations is affirmative text.
+    for path, text in iter_strings(m):
+        if path.startswith("$.public_claim_boundary.does_not_establish") or path.endswith(".<key>") \
+                or PATH_VALUED.match(path):
+            continue
+        scan_claims(text, f"manifest{path[1:]}", findings)
 
     # License, notices, dependencies.
     lic = m.get("license")
@@ -526,6 +566,10 @@ def check_release(manifest_path: Path, receipt_path: Path | None, bundle_root: P
     for n in notices:
         if n not in declared:
             findings.append(Finding("NOTICE_NOT_IN_BUNDLE", "manifest.notices", f"{n!r}"))
+    if not any(isinstance(n, str) and re.match(r"(?i)^(LICEN[CS]E|COPYING)", PurePosixPath(n).name)
+               for n in notices):
+        findings.append(Finding("LICENSE_TEXT_MISSING", "manifest.notices",
+                                "the bundle must ship the license text (a LICENSE or COPYING file)"))
     hashable = [f for f in declared.values()
                 if isinstance(f.get("sha256"), str) and re.fullmatch(r"[0-9a-f]{64}", f["sha256"])]
     if len(hashable) == len(declared) and declared:
@@ -554,11 +598,11 @@ def check_release(manifest_path: Path, receipt_path: Path | None, bundle_root: P
                 findings.append(Finding("HASH_MISMATCH", "bundle", f"{rel!r}"))
 
     # Clearance receipt.
-    _check_receipt(m, receipt_path, schema_dir, findings)
+    _check_receipt(m, receipt_path, schema_dir, findings, deny_patterns)
     return _sorted(findings)
 
 
-def _check_receipt(m: dict, receipt_path: Path | None, schema_dir, findings: list) -> None:
+def _check_receipt(m: dict, receipt_path: Path | None, schema_dir, findings: list, deny_patterns=()) -> None:
     if receipt_path is None or not receipt_path.exists():
         findings.append(Finding("MISSING_CLEARANCE_RECEIPT", "receipt",
                                 f"no public clearance receipt for {m.get('clearance_receipt_id')!r}"))
@@ -620,8 +664,11 @@ def _check_receipt(m: dict, receipt_path: Path | None, schema_dir, findings: lis
         findings.append(Finding("PATENT_GRANT_NOT_ACKNOWLEDGED", "receipt.apache_patent_grant_acknowledged",
                                 "Apache-2.0 releases must acknowledge the patent grant during clearance"))
 
-    if m.get("source_disclosure_level") in LOCATOR_FORBIDDEN:
-        scan_locators(r, "receipt", findings)
+    scan_locators(r, "receipt", findings, deny_patterns)
+    scan_personal_and_control(r, "receipt", findings)
+    for path, text in iter_strings(r):
+        if not path.endswith(".<key>"):
+            scan_claims(text, f"receipt{path[1:]}", findings)
 
 
 def _sorted(findings: list) -> list:
@@ -640,7 +687,7 @@ INDEX_MIRRORED_FIELDS = ("package_id", "display_name", "version", "release_class
                          "support_class", "clearance_status")
 
 
-def check_index(index_path: Path, repo_root: Path, schema_dir: Path | None = None) -> list:
+def check_index(index_path: Path, repo_root: Path, schema_dir: Path | None = None, deny_patterns=()) -> list:
     findings: list = []
     index, _ = load_json(index_path, "index", findings)
     if index is None:
@@ -648,6 +695,7 @@ def check_index(index_path: Path, repo_root: Path, schema_dir: Path | None = Non
             findings.append(Finding("MISSING_INDEX", "index", index_path.name))
         return _sorted(findings)
     check_schema(index, "index", "index", schema_dir, findings)
+    scan_personal_and_control(index, "index", findings)
     entries = index.get("packages") if isinstance(index, dict) else None
     if not isinstance(entries, list):
         return _sorted(findings)
@@ -681,7 +729,7 @@ def check_index(index_path: Path, repo_root: Path, schema_dir: Path | None = Non
         if len(paths) != 3:
             continue
         for f in check_release(paths["manifest_path"], paths["clearance_receipt_path"],
-                               paths["bundle_root"], schema_dir):
+                               paths["bundle_root"], schema_dir, deny_patterns):
             findings.append(Finding(f.code, f"{where} -> {f.where}", f.detail))
         manifest = _quiet_load(paths["manifest_path"])
         if isinstance(manifest, dict):
@@ -730,6 +778,21 @@ def replay_fixtures(fixtures_root: Path, schema_dir: Path | None = None) -> dict
 # CLI
 # --------------------------------------------------------------------------
 
+def load_deny_patterns(path: Path | None) -> tuple:
+    if path is None:
+        return ()
+    patterns = []
+    for line in path.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if line and not line.startswith("#"):
+            try:
+                re.compile(line)
+            except re.error as exc:
+                raise LintError(f"invalid deny pattern {line!r}: {exc}") from exc
+            patterns.append(line)
+    return tuple(patterns)
+
+
 def _report(findings: list, as_json: bool, out) -> int:
     if as_json:
         out.write(canonical_json_bytes({"findings": [f.as_dict() for f in findings],
@@ -747,6 +810,9 @@ def main(argv=None, out=None) -> int:
     parser.add_argument("--version", action="version", version=f"{TOOL_NAME} {TOOL_VERSION}")
     parser.add_argument("--schema-dir", type=Path, default=None,
                         help="directory holding the v0.1 schemas (default: bundled copies)")
+    parser.add_argument("--deny-pattern-file", type=Path, default=None,
+                        help="file of extra regular expressions (one per line, # comments) that must not "
+                             "appear in release metadata, e.g. private project names; keep it private")
     sub = parser.add_subparsers(dest="command", required=True)
 
     p = sub.add_parser("check-release", help="lint one release manifest, receipt and bundle")
@@ -774,11 +840,12 @@ def main(argv=None, out=None) -> int:
 
     args = parser.parse_args(argv)
     try:
+        deny = load_deny_patterns(args.deny_pattern_file)
         if args.command == "check-release":
-            return _report(check_release(args.manifest, args.receipt, args.bundle_root, args.schema_dir),
+            return _report(check_release(args.manifest, args.receipt, args.bundle_root, args.schema_dir, deny),
                            args.json, out)
         if args.command == "check-index":
-            return _report(check_index(args.index, args.repo_root, args.schema_dir), args.json, out)
+            return _report(check_index(args.index, args.repo_root, args.schema_dir, deny), args.json, out)
         if args.command == "describe-bundle":
             out.write(canonical_json_bytes(describe_bundle(args.bundle_root)).decode("utf-8"))
             return 0
