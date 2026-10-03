@@ -30,3 +30,4 @@ response, a warranty, or production certification. The software is provided
 A package being listed in the index means only that it was cleared for public
 distribution under its recorded scope. It is not a product endorsement or a
 promise of maintenance.
+<!-- CONTROL 00C-B2: harmless pending-check control; never merge. -->
