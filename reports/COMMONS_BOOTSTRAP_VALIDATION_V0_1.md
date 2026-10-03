@@ -216,3 +216,25 @@ The R1-1 change is covered by the backtick, `|`, `>` and fullwidth tests.
 - `check_sensitive_data.py` and gitleaks are bounded heuristics.
 - Dependency review depends on GitHub's dependency graph, which had to be
   enabled on the new repository.
+
+## Erratum (added post-merge by WO-COMMONS-INTEGRATION-HARDENING-00B, 2026-10-03)
+
+This erratum was added after the 00A merge. The original text above is
+unchanged.
+
+Section 1 states: "Every later commit uses a GitHub `noreply` address." **That
+is incorrect.** The bootstrap merge commit
+`3d27deba20427ef10bdf46bbb3b95d087dd38db3` was created through GitHub's merge
+API. GitHub stamped it with the merging account's personal email address as
+author, the same address as the root commit. Every non-merge commit after the
+root does use a `noreply` address.
+
+Section 1 also says the root commit carries the address "as author and
+committer". That is imprecise: only the root commit's **author** field carries
+the personal address. Its committer is GitHub's own noreply identity.
+
+Both exposures are recorded, without repeating the address, in
+[`provenance/COMMONS_00A_CROSS_REPO_CLOSURE_V0_1.json`](../provenance/COMMONS_00A_CROSS_REPO_CLOSURE_V0_1.json).
+History is not rewritten. Recurrence is prevented by
+[`docs/PUBLIC_COMMIT_IDENTITY_POLICY.md`](../docs/PUBLIC_COMMIT_IDENTITY_POLICY.md)
+and a repository test.

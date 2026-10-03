@@ -1,0 +1,95 @@
+{
+  "PRIVATE_ORIGIN_EXPORT_COUNT": 0,
+  "authority_delta": "NONE",
+  "claim_boundary": "Truthful closure of the 00A cross-repository integration. It does not claim that the historical registry gates passed, that the email exposure was removed, or that any private artifact is cleared or authorized for export.",
+  "commercial_execution_authority": "NONE",
+  "commons": {
+    "final_head": "bf787ccfbfb49304299f179b24c5c372ed5b7869",
+    "hosted_ci_final_head": {
+      "conclusion": "success",
+      "run_id": 37140844189
+    },
+    "hosted_ci_main_after_merge": {
+      "conclusion": "success",
+      "run_id": 37140917792
+    },
+    "independent_review_state": "COMPLETED: round 0 REVISE (2 blocking, repaired); round 1 REVISE (1 blocking, repaired as prescribed, verified against reviewer probes)",
+    "merge_commit": "3d27deba20427ef10bdf46bbb3b95d087dd38db3",
+    "repository": "Miskatonic-System/miskatonic-commons",
+    "reviewed_heads": [
+      "dd823070d2474e25118260ba3f26e4b2fa034654",
+      "6cd9099dee7fa4ed8a4724c93e09d819fb5ccc72"
+    ],
+    "root_commit": "9e27f1a5e8076d7985d95e9c7e5bcca2f551b9de"
+  },
+  "organization_registry": {
+    "closure": {
+      "head": "2456841d8c39acff05ba09220ec65b371fa4f7e1",
+      "merge_commit": "6dc5c1034c4fd1d14e937eb3f3d3ce0830eccfdd",
+      "merged_at": "2026-10-03T17:43:08Z",
+      "pull_request": 318
+    },
+    "identity_disclosure": "The registry repository is not named here; only opaque commit identities and pull-request numbers are recorded.",
+    "pointer": {
+      "head": "af085b1d7cef4db73134a6e459df99c0a9d61954",
+      "merge_commit": "01f10752e03985d7d92428dc793bafaa139fc5c6",
+      "merged_at": "2026-10-03T17:42:39Z",
+      "pull_request": 317
+    },
+    "visibility": "PRIVATE"
+  },
+  "public_identity_exposure": {
+    "BOOTSTRAP_MERGE_COMMIT_PERSONAL_EMAIL_EXPOSURE": "YES",
+    "PUBLIC_HISTORY_REWRITE_AUTHORITY": "NONE",
+    "ROOT_COMMIT_PERSONAL_EMAIL_EXPOSURE": "YES",
+    "address_reproduced_here": false,
+    "affected_commits": [
+      "9e27f1a5e8076d7985d95e9c7e5bcca2f551b9de",
+      "3d27deba20427ef10bdf46bbb3b95d087dd38db3"
+    ],
+    "prevention": "docs/PUBLIC_COMMIT_IDENTITY_POLICY.md"
+  },
+  "publication_path_conformance": {
+    "classification": "COMMONS_SYSTEMS_PUBLICATION_PATH_NONCONFORMITY",
+    "closure_pr_318": {
+      "anomaly": "AUTHORITATIVE_BLOCK_MISSING",
+      "note": "The merge happened one second before the PR-context gate run started; that run later failed.",
+      "pr_context_run_conclusion": "failure",
+      "pr_context_run_id": 37141541394,
+      "pre_merge_gate": "NOT_EVALUATED_BEFORE_MERGE",
+      "severity": "MERGE_BLOCKING"
+    },
+    "historical_status_rewritten": false,
+    "pointer_pr_317": {
+      "anomaly": "AUTHORITATIVE_BLOCK_MISSING",
+      "note": "The PR-context gate run failed before the merge; the merge proceeded anyway.",
+      "pr_context_run_conclusion": "failure",
+      "pr_context_run_id": 37141162018,
+      "pre_merge_gate": "FAILED",
+      "severity": "MERGE_BLOCKING"
+    },
+    "repair_work_order": "WO-COMMONS-INTEGRATION-HARDENING-00B"
+  },
+  "recorded_at": "2026-10-03T18:21:14Z",
+  "recorded_by_work_order": "WO-COMMONS-INTEGRATION-HARDENING-00B",
+  "released_packages": [
+    {
+      "clearance_status": "CLEARED",
+      "commercial_impact": "NONE",
+      "package_id": "commons-export-lint",
+      "release_class": "P3_PUBLIC_RELEASE_APPROVED",
+      "source_disclosure_level": "COMMONS_NATIVE",
+      "version": "0.1.0"
+    }
+  ],
+  "schema_version": "commons.cross-repository-closure-receipt.v0.1",
+  "scientific_authority_delta": "NONE",
+  "technical_result": {
+    "disposition": "MISKATONIC_COMMONS_PUBLIC_EXPORT_SURFACE_V0_1_BOOTSTRAPPED",
+    "independent_of_publication_path_conformance": true,
+    "preserved": true,
+    "statement": "The publication-path nonconformity concerns the organization registry's merge ceremony. It does not affect Commons history, review, schemas, commons-export-lint, public CI or provenance."
+  },
+  "temporal_note": "Recorded after both 00A merges and before the commit that introduces this file; a test checks recorded_at against that commit time. Nothing here existed at merge time, and it does not change what was true then.",
+  "work_order": "WO-COMMONS-BOOTSTRAP-00A"
+}

@@ -50,6 +50,10 @@ your pull request; say in the description that a bundle changed.
 - **No secrets, no private material.** Never commit credentials, keys,
   environment files, private endpoints, or content copied from private
   repositories.
+- **Commit identity.** Maintainer merges and automated commits use a GitHub
+  `noreply` or organization-safe identity; see
+  [docs/PUBLIC_COMMIT_IDENTITY_POLICY.md](docs/PUBLIC_COMMIT_IDENTITY_POLICY.md).
+  Contributors may publish whatever identity they choose.
 - **No telemetry.** Tools here must work without collecting usage data and
   must not phone home.
 - **Bounded claims.** Documentation and metadata must not claim scientific,
