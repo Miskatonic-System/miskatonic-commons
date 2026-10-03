@@ -1,0 +1,20 @@
+{
+  "packages": [
+    {
+      "bundle_root": "release/bundle",
+      "clearance_receipt_path": "release/clearance-receipt.json",
+      "clearance_status": "CLEARED",
+      "commercial_impact": "NONE",
+      "display_name": "Synthetic fixture package",
+      "license": "Apache-2.0",
+      "manifest_path": "release/manifest.json",
+      "package_id": "fixture-index-valid-01",
+      "release_class": "P3_PUBLIC_RELEASE_APPROVED",
+      "source_disclosure_level": "COMMONS_NATIVE",
+      "status": "ACTIVE",
+      "support_class": "COMMUNITY_BEST_EFFORT",
+      "version": "0.1.0"
+    }
+  ],
+  "schema_version": "commons.package-index.v0.1"
+}

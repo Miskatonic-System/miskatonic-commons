@@ -1,0 +1,47 @@
+{
+  "claim_boundary": "Shows that this repository's history starts from one clean public root. It does not show that any future content is cleared.",
+  "invariants": [
+    "Every commit in this repository descends from the single root commit above.",
+    "No private repository history was mirrored, transplanted, grafted, filtered or subtree-imported.",
+    "No submodule points at any repository.",
+    "No private repository was made public to create this repository."
+  ],
+  "observed_at_bootstrap": {
+    "branches": [
+      "main"
+    ],
+    "grafts": "none",
+    "replace_refs": "none",
+    "root_commits_reachable": [
+      "9e27f1a5e8076d7985d95e9c7e5bcca2f551b9de"
+    ],
+    "shallow": false,
+    "submodules": "none (.gitmodules absent)",
+    "tags": []
+  },
+  "repository": "Miskatonic-System/miskatonic-commons",
+  "root_commit": {
+    "committed_at": "2026-10-03T09:56:07-07:00",
+    "created_by": "GitHub repository initialization (license template)",
+    "files": [
+      {
+        "blob": "261eeb9e9f8b2b4b0d119366dda99c6fd7d35c64",
+        "mode": "100644",
+        "path": "LICENSE"
+      }
+    ],
+    "parent_count": 0,
+    "sha": "9e27f1a5e8076d7985d95e9c7e5bcca2f551b9de",
+    "tree": "8f57a99980891ccc68701b94b94342f7ae0e02d6"
+  },
+  "schema_version": "commons.clean-history-receipt.v0.1",
+  "verification": {
+    "automated_test": "tests/test_bootstrap_contract.py::test_t19_no_private_git_ancestry",
+    "commands": [
+      "git rev-list --max-parents=0 --all",
+      "git replace -l",
+      "test ! -e .gitmodules",
+      "test ! -e \"$(git rev-parse --git-path info/grafts)\""
+    ]
+  }
+}

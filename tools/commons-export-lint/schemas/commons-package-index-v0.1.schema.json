@@ -1,0 +1,175 @@
+{
+  "$defs": {
+    "clearance_receipt_id": {
+      "description": "Opaque public identifier. Never a repository name, path or commit.",
+      "pattern": "^ccr-[a-z0-9][a-z0-9-]{3,80}$",
+      "type": "string"
+    },
+    "clearance_status": {
+      "enum": [
+        "NOT_REVIEWED",
+        "REVIEW_IN_PROGRESS",
+        "CLEARED",
+        "REJECTED",
+        "SUPERSEDED"
+      ]
+    },
+    "commercial_impact": {
+      "enum": [
+        "NONE",
+        "COMPLEMENTARY",
+        "LEAD_GENERATING",
+        "UNCERTAIN",
+        "CANNIBALIZATION_RISK",
+        "CORE_DIFFERENTIATOR"
+      ]
+    },
+    "package_id": {
+      "pattern": "^[a-z0-9][a-z0-9-]{1,62}[a-z0-9]$",
+      "type": "string"
+    },
+    "public_release_id": {
+      "pattern": "^cpr-[a-z0-9][a-z0-9-]*-(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "release_class": {
+      "enum": [
+        "P0_INTERNAL_ONLY",
+        "P1_REFERENCE_ONLY",
+        "P2_PUBLIC_UTILITY_CANDIDATE",
+        "P3_PUBLIC_RELEASE_APPROVED",
+        "P4_PUBLIC_STRATEGIC_OPEN_SOURCE"
+      ]
+    },
+    "relpath": {
+      "maxLength": 400,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9._-][A-Za-z0-9._/-]*$",
+      "type": "string"
+    },
+    "sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "source_disclosure_level": {
+      "enum": [
+        "PUBLIC_SOURCE",
+        "PUBLIC_ATTRIBUTED_PRIVATE_ORIGIN",
+        "PRIVATE_ORIGIN_OPAQUE",
+        "COMMONS_NATIVE"
+      ]
+    },
+    "spdx": {
+      "maxLength": 200,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9.+-]+( (AND|OR|WITH) [A-Za-z0-9.+-]+)*$",
+      "type": "string"
+    },
+    "support_class": {
+      "enum": [
+        "COMMUNITY_BEST_EFFORT",
+        "REFERENCE_NO_MAINTENANCE"
+      ]
+    },
+    "text": {
+      "maxLength": 2000,
+      "minLength": 1,
+      "type": "string"
+    },
+    "timestamp": {
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$",
+      "type": "string"
+    },
+    "version": {
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$",
+      "type": "string"
+    }
+  },
+  "$id": "https://github.com/Miskatonic-System/miskatonic-commons/blob/main/schemas/commons-package-index-v0.1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Index of releases that hold a CLEARED P3/P4 clearance. Listing is not a support or quality commitment.",
+  "properties": {
+    "packages": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "bundle_root": {
+            "$ref": "#/$defs/relpath"
+          },
+          "clearance_receipt_path": {
+            "$ref": "#/$defs/relpath"
+          },
+          "clearance_status": {
+            "const": "CLEARED"
+          },
+          "commercial_impact": {
+            "$ref": "#/$defs/commercial_impact"
+          },
+          "display_name": {
+            "maxLength": 80,
+            "minLength": 1,
+            "type": "string"
+          },
+          "license": {
+            "$ref": "#/$defs/spdx"
+          },
+          "manifest_path": {
+            "$ref": "#/$defs/relpath"
+          },
+          "package_id": {
+            "$ref": "#/$defs/package_id"
+          },
+          "release_class": {
+            "enum": [
+              "P3_PUBLIC_RELEASE_APPROVED",
+              "P4_PUBLIC_STRATEGIC_OPEN_SOURCE"
+            ]
+          },
+          "source_disclosure_level": {
+            "$ref": "#/$defs/source_disclosure_level"
+          },
+          "status": {
+            "enum": [
+              "ACTIVE",
+              "DEPRECATED",
+              "WITHDRAWN"
+            ]
+          },
+          "support_class": {
+            "$ref": "#/$defs/support_class"
+          },
+          "version": {
+            "$ref": "#/$defs/version"
+          }
+        },
+        "required": [
+          "package_id",
+          "display_name",
+          "version",
+          "release_class",
+          "commercial_impact",
+          "source_disclosure_level",
+          "license",
+          "manifest_path",
+          "clearance_receipt_path",
+          "bundle_root",
+          "support_class",
+          "status",
+          "clearance_status"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "commons.package-index.v0.1"
+    }
+  },
+  "required": [
+    "schema_version",
+    "packages"
+  ],
+  "title": "Miskatonic Commons public package index v0.1",
+  "type": "object"
+}

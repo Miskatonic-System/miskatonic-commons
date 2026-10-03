@@ -1,0 +1,6 @@
+# gitleaks configuration for miskatonic-commons.
+# Uses the gitleaks built-in default rule set unchanged. No allowlist entries.
+title = "miskatonic-commons gitleaks config"
+
+[extend]
+useDefault = true

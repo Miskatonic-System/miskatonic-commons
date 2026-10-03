@@ -1,0 +1,33 @@
+name: Bug report
+description: Something in Commons does not work as documented.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please do not include secrets, credentials or private data. Security problems go to private vulnerability reporting instead.
+  - type: input
+    id: component
+    attributes:
+      label: Component
+      description: Tool, schema or document affected (for example tools/commons-export-lint).
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened, and what did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Commands, inputs and output. Remove anything private.
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Python version and operating system.

@@ -1,0 +1,329 @@
+{
+  "$defs": {
+    "clearance_receipt_id": {
+      "description": "Opaque public identifier. Never a repository name, path or commit.",
+      "pattern": "^ccr-[a-z0-9][a-z0-9-]{3,80}$",
+      "type": "string"
+    },
+    "clearance_status": {
+      "enum": [
+        "NOT_REVIEWED",
+        "REVIEW_IN_PROGRESS",
+        "CLEARED",
+        "REJECTED",
+        "SUPERSEDED"
+      ]
+    },
+    "commercial_impact": {
+      "enum": [
+        "NONE",
+        "COMPLEMENTARY",
+        "LEAD_GENERATING",
+        "UNCERTAIN",
+        "CANNIBALIZATION_RISK",
+        "CORE_DIFFERENTIATOR"
+      ]
+    },
+    "package_id": {
+      "pattern": "^[a-z0-9][a-z0-9-]{1,62}[a-z0-9]$",
+      "type": "string"
+    },
+    "public_release_id": {
+      "pattern": "^cpr-[a-z0-9][a-z0-9-]*-(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "release_class": {
+      "enum": [
+        "P0_INTERNAL_ONLY",
+        "P1_REFERENCE_ONLY",
+        "P2_PUBLIC_UTILITY_CANDIDATE",
+        "P3_PUBLIC_RELEASE_APPROVED",
+        "P4_PUBLIC_STRATEGIC_OPEN_SOURCE"
+      ]
+    },
+    "relpath": {
+      "maxLength": 400,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9._-][A-Za-z0-9._/-]*$",
+      "type": "string"
+    },
+    "sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "source_disclosure_level": {
+      "enum": [
+        "PUBLIC_SOURCE",
+        "PUBLIC_ATTRIBUTED_PRIVATE_ORIGIN",
+        "PRIVATE_ORIGIN_OPAQUE",
+        "COMMONS_NATIVE"
+      ]
+    },
+    "spdx": {
+      "maxLength": 200,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9.+-]+( (AND|OR|WITH) [A-Za-z0-9.+-]+)*$",
+      "type": "string"
+    },
+    "support_class": {
+      "enum": [
+        "COMMUNITY_BEST_EFFORT",
+        "REFERENCE_NO_MAINTENANCE"
+      ]
+    },
+    "text": {
+      "maxLength": 2000,
+      "minLength": 1,
+      "type": "string"
+    },
+    "timestamp": {
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$",
+      "type": "string"
+    },
+    "version": {
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$",
+      "type": "string"
+    }
+  },
+  "$id": "https://github.com/Miskatonic-System/miskatonic-commons/blob/main/schemas/public-release-manifest-v0.1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Public-safe description of one specifically cleared release bundle. Contains no private source locators.",
+  "properties": {
+    "approved_at": {
+      "$ref": "#/$defs/timestamp"
+    },
+    "bundle_digest_algorithm": {
+      "const": "commons.bundle-digest.v0.1"
+    },
+    "bundle_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "clearance_receipt_id": {
+      "$ref": "#/$defs/clearance_receipt_id"
+    },
+    "clearance_status": {
+      "$ref": "#/$defs/clearance_status"
+    },
+    "commercial_impact": {
+      "$ref": "#/$defs/commercial_impact"
+    },
+    "dependencies": {
+      "additionalProperties": false,
+      "properties": {
+        "development": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "license": {
+                "$ref": "#/$defs/spdx"
+              },
+              "name": {
+                "maxLength": 200,
+                "minLength": 1,
+                "type": "string"
+              },
+              "purpose": {
+                "$ref": "#/$defs/text"
+              },
+              "version": {
+                "description": "Exact pinned version; ranges are not accepted.",
+                "maxLength": 100,
+                "minLength": 1,
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9.+!_-]*$",
+                "type": "string"
+              }
+            },
+            "required": [
+              "name",
+              "version",
+              "license",
+              "purpose"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "inventory_complete": {
+          "type": "boolean"
+        },
+        "runtime": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "license": {
+                "$ref": "#/$defs/spdx"
+              },
+              "name": {
+                "maxLength": 200,
+                "minLength": 1,
+                "type": "string"
+              },
+              "purpose": {
+                "$ref": "#/$defs/text"
+              },
+              "version": {
+                "description": "Exact pinned version; ranges are not accepted.",
+                "maxLength": 100,
+                "minLength": 1,
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9.+!_-]*$",
+                "type": "string"
+              }
+            },
+            "required": [
+              "name",
+              "version",
+              "license",
+              "purpose"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "inventory_complete",
+        "runtime",
+        "development"
+      ],
+      "type": "object"
+    },
+    "display_name": {
+      "maxLength": 80,
+      "minLength": 1,
+      "type": "string"
+    },
+    "files": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "bytes": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "path": {
+            "$ref": "#/$defs/relpath"
+          },
+          "sha256": {
+            "$ref": "#/$defs/sha256"
+          }
+        },
+        "required": [
+          "path",
+          "sha256",
+          "bytes"
+        ],
+        "type": "object"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "license": {
+      "$ref": "#/$defs/spdx"
+    },
+    "notices": {
+      "items": {
+        "$ref": "#/$defs/relpath"
+      },
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "package_id": {
+      "$ref": "#/$defs/package_id"
+    },
+    "provenance_format_version": {
+      "const": "commons.provenance.v0.1"
+    },
+    "public_claim_boundary": {
+      "additionalProperties": false,
+      "properties": {
+        "does_not_establish": {
+          "items": {
+            "$ref": "#/$defs/text"
+          },
+          "minItems": 1,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "statement": {
+          "$ref": "#/$defs/text"
+        }
+      },
+      "required": [
+        "statement",
+        "does_not_establish"
+      ],
+      "type": "object"
+    },
+    "public_release_id": {
+      "$ref": "#/$defs/public_release_id"
+    },
+    "release_class": {
+      "$ref": "#/$defs/release_class"
+    },
+    "schema_version": {
+      "const": "commons.public-release-manifest.v0.1"
+    },
+    "source_attribution": {
+      "additionalProperties": false,
+      "description": "Allowed only for PUBLIC_SOURCE and PUBLIC_ATTRIBUTED_PRIVATE_ORIGIN.",
+      "properties": {
+        "public_origin_name": {
+          "maxLength": 200,
+          "minLength": 1,
+          "type": "string"
+        },
+        "public_origin_url": {
+          "pattern": "^https://[^\\s]+$",
+          "type": "string"
+        },
+        "statement": {
+          "$ref": "#/$defs/text"
+        }
+      },
+      "required": [
+        "public_origin_name",
+        "statement"
+      ],
+      "type": "object"
+    },
+    "source_disclosure_level": {
+      "$ref": "#/$defs/source_disclosure_level"
+    },
+    "summary": {
+      "$ref": "#/$defs/text"
+    },
+    "support_class": {
+      "$ref": "#/$defs/support_class"
+    },
+    "version": {
+      "$ref": "#/$defs/version"
+    }
+  },
+  "required": [
+    "schema_version",
+    "provenance_format_version",
+    "public_release_id",
+    "package_id",
+    "display_name",
+    "version",
+    "summary",
+    "release_class",
+    "commercial_impact",
+    "source_disclosure_level",
+    "public_claim_boundary",
+    "license",
+    "notices",
+    "files",
+    "bundle_digest_algorithm",
+    "bundle_sha256",
+    "dependencies",
+    "support_class",
+    "clearance_receipt_id",
+    "clearance_status",
+    "approved_at"
+  ],
+  "title": "Miskatonic Commons public release manifest v0.1",
+  "type": "object"
+}

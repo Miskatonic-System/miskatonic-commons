@@ -1,0 +1,46 @@
+{
+  "claim_boundary": "Records how and when this public repository was created. Establishes nothing about any released artifact.",
+  "creation_method": {
+    "arguments": [
+      "--public",
+      "--license apache-2.0",
+      "--description <as recorded>"
+    ],
+    "initialization": "GitHub created one initial commit containing only the Apache-2.0 LICENSE template.",
+    "personal_namespace_fallback_used": false,
+    "tool": "GitHub CLI (gh repo create)"
+  },
+  "initial_state": {
+    "branches": [
+      "main"
+    ],
+    "root_commit": "9e27f1a5e8076d7985d95e9c7e5bcca2f551b9de",
+    "tags": []
+  },
+  "repository": {
+    "created_at": "2026-10-03T16:56:06Z",
+    "default_branch": "main",
+    "description": "Public standalone tools, schemas and reference implementations cleared for free external use from Miskatonic Systems.",
+    "fork": false,
+    "full_name": "Miskatonic-System/miskatonic-commons",
+    "graphql_node_id": "R_kgDOU6a1dw",
+    "has_issues": true,
+    "html_url": "https://github.com/Miskatonic-System/miskatonic-commons",
+    "license_spdx": "Apache-2.0",
+    "numeric_id": 1403434359,
+    "parent": null,
+    "private": false,
+    "template_repository": null,
+    "visibility": "public"
+  },
+  "schema_version": "commons.repository-creation-receipt.v0.1",
+  "settings_applied_after_creation": {
+    "actions_can_approve_pull_request_reviews": false,
+    "actions_default_workflow_permissions": "read",
+    "has_projects": false,
+    "has_wiki": false,
+    "private_vulnerability_reporting": "enabled",
+    "pull_requests": "enabled (GitHub default; cannot be disabled)",
+    "repository_secrets": "none created"
+  }
+}

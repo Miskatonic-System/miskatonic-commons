@@ -1,0 +1,76 @@
+{
+  "approved_at": "2026-10-03T00:00:00Z",
+  "bundle_digest_algorithm": "commons.bundle-digest.v0.1",
+  "bundle_sha256": "b21f433f61ff08546dd02c8e6373d6bcaaa7aed78ef84caa08d47a167a9bacd7",
+  "clearance_receipt_id": "ccr-commons-native-commons-export-lint-0-1-0",
+  "clearance_status": "CLEARED",
+  "commercial_impact": "NONE",
+  "dependencies": {
+    "development": [],
+    "inventory_complete": true,
+    "runtime": []
+  },
+  "display_name": "commons-export-lint",
+  "files": [
+    {
+      "bytes": 11357,
+      "path": "LICENSE",
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+    },
+    {
+      "bytes": 899,
+      "path": "NOTICE",
+      "sha256": "d47f34e3abffd46de1f4511347f8da218e40ddabe2399c5376eafb9a590497fe"
+    },
+    {
+      "bytes": 3114,
+      "path": "README.md",
+      "sha256": "547d115d532095fb53017fa0fe2491c5d7e8fa5e3d5cd2bb37c9dacc34597e86"
+    },
+    {
+      "bytes": 37556,
+      "path": "commons_export_lint.py",
+      "sha256": "813a4ef83effa6e7bc52ebeeb5a84130dfe506fe975389b0e10dd5969f47841f"
+    },
+    {
+      "bytes": 4539,
+      "path": "schemas/commons-package-index-v0.1.schema.json",
+      "sha256": "f61a3d0205034aedf0e816e1507e51f7a75df81c21c90777eab9525a319be2bc"
+    },
+    {
+      "bytes": 11074,
+      "path": "schemas/public-clearance-receipt-v0.1.schema.json",
+      "sha256": "960ce5c75f6d0f0d066429b04541b88d39a3e111005d4d388e840d52b386d4ac"
+    },
+    {
+      "bytes": 8181,
+      "path": "schemas/public-release-manifest-v0.1.schema.json",
+      "sha256": "085c2cc1ff8a2a46dc974ced5cb58eac7736f70d4cd86f478fe23ce123f78493"
+    }
+  ],
+  "license": "Apache-2.0",
+  "notices": [
+    "LICENSE",
+    "NOTICE"
+  ],
+  "package_id": "commons-export-lint",
+  "provenance_format_version": "commons.provenance.v0.1",
+  "public_claim_boundary": {
+    "does_not_establish": [
+      "that any artifact checked by this tool is correct, safe, secure or fit for any purpose",
+      "that any review recorded in a clearance receipt actually took place",
+      "any scientific, safety, security, compliance, clinical or performance result",
+      "that any private Miskatonic software has been cleared or released",
+      "commercial demand, profitability, product status or paid support",
+      "that absence of findings means absence of secrets or private information"
+    ],
+    "statement": "Cleared for public distribution under its recorded scope: a metadata consistency lint for Commons release records, written directly in Commons."
+  },
+  "public_release_id": "cpr-commons-export-lint-0.1.0",
+  "release_class": "P3_PUBLIC_RELEASE_APPROVED",
+  "schema_version": "commons.public-release-manifest.v0.1",
+  "source_disclosure_level": "COMMONS_NATIVE",
+  "summary": "A standard-library Python command-line tool that checks Commons release manifests, clearance receipts, release bundles and the package index for completeness and consistency.",
+  "support_class": "COMMUNITY_BEST_EFFORT",
+  "version": "0.1.0"
+}

@@ -1,0 +1,58 @@
+{
+  "apache_patent_grant_acknowledged": true,
+  "bundle_sha256": "afd455ddadc230dbbb8056a3dbb96c32ca782b98d228ea44f08410321567f1b0",
+  "clearance_receipt_id": "ccr-fixture-fixture-invalid-14",
+  "clearance_status": "CLEARED",
+  "commercial_impact": "CANNIBALIZATION_RISK",
+  "completed_at": "2026-10-03T00:00:00Z",
+  "dimensions": {
+    "commercial_impact": {
+      "basis": "Synthetic fixture.",
+      "owner": "commons-maintainers",
+      "status": "PASS"
+    },
+    "dependency_license": {
+      "basis": "Synthetic fixture.",
+      "owner": "commons-maintainers",
+      "status": "PASS"
+    },
+    "originating_technical": {
+      "basis": "Synthetic fixture.",
+      "owner": "commons-maintainers",
+      "status": "PASS"
+    },
+    "provenance": {
+      "basis": "Synthetic fixture.",
+      "owner": "commons-maintainers",
+      "status": "PASS"
+    },
+    "public_packaging": {
+      "basis": "Synthetic fixture.",
+      "owner": "commons-maintainers",
+      "status": "PASS"
+    },
+    "security": {
+      "basis": "Synthetic fixture.",
+      "owner": "commons-maintainers",
+      "status": "PASS"
+    }
+  },
+  "minimum_viable_moat": {
+    "analysis": "Fixture analysis of what remains valuable once the artifact is free.",
+    "question": "AFTER THIS ARTIFACT IS AVAILABLE FOR FREE, WHAT ECONOMICALLY VALUABLE FUNCTION REMAINS?",
+    "retained_surfaces": [
+      "MANAGED_HOSTING"
+    ]
+  },
+  "package_id": "fixture-invalid-14",
+  "private_clearance_receipt": {
+    "opaque_reference": "fixture-opaque-0014",
+    "status": "HELD_PRIVATELY"
+  },
+  "public_release_id": "cpr-fixture-invalid-14-0.1.0",
+  "release_class": "P3_PUBLIC_RELEASE_APPROVED",
+  "schema_version": "commons.public-clearance-receipt.v0.1",
+  "scope_statement": "Synthetic fixture bundle only.",
+  "source_disclosure_level": "PRIVATE_ORIGIN_OPAQUE",
+  "version": "0.1.0"
+}

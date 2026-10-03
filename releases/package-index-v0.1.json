@@ -1,0 +1,20 @@
+{
+  "packages": [
+    {
+      "bundle_root": "tools/commons-export-lint",
+      "clearance_receipt_path": "releases/commons-export-lint/0.1.0/clearance-receipt.json",
+      "clearance_status": "CLEARED",
+      "commercial_impact": "NONE",
+      "display_name": "commons-export-lint",
+      "license": "Apache-2.0",
+      "manifest_path": "releases/commons-export-lint/0.1.0/manifest.json",
+      "package_id": "commons-export-lint",
+      "release_class": "P3_PUBLIC_RELEASE_APPROVED",
+      "source_disclosure_level": "COMMONS_NATIVE",
+      "status": "ACTIVE",
+      "support_class": "COMMUNITY_BEST_EFFORT",
+      "version": "0.1.0"
+    }
+  ],
+  "schema_version": "commons.package-index.v0.1"
+}
