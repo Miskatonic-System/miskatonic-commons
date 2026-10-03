@@ -1,0 +1,271 @@
+{
+  "adversarial_controls": {
+    "class": "PROVIDER_OBSERVED",
+    "cleanup": "All control PRs (#3, #4, #5, #6, #8, #9) were closed without merge and their branches deleted. main stayed at 3cbda3b376f8bc3ce6f18971b405d41f1719c461 throughout.",
+    "controls": [
+      {
+        "expected": "MERGE_BLOCKED_REQUIRED_CHECK_FAILED",
+        "head": "c1e421a47c5a14419285e88385b1c1bbe5ba22fa",
+        "id": "B1",
+        "merge_attempt_classification": "GH_CHECKS_NOT_SATISFIED",
+        "merge_method_at_attempt": "rebase (ruleset at that time)",
+        "mergeable_state": "blocked",
+        "merged": false,
+        "observed_checks": {
+          "dependency review": "success",
+          "secret scan (gitleaks, full history)": "success",
+          "tests (python 3.12)": "failure",
+          "tests (python 3.13)": "failure",
+          "tests (python 3.14)": "failure"
+        },
+        "pull_request": 3,
+        "result": "PASS"
+      },
+      {
+        "attempt_at": "2026-10-03T21:40:09Z",
+        "earlier_attempt": {
+          "head": "e9b5d733af0c1f6a86d3527a37a8a3c9248535c5",
+          "note": "0 check-runs existed at that attempt, so it showed an absent check rather than a pending one. It is retained as an absent-check observation.",
+          "pull_request": 4
+        },
+        "expected": "MERGE_BLOCKED_REQUIRED_CHECK_PENDING",
+        "head": "4d9e5a3e89abe09f2dba5e8055475550aef7c497",
+        "id": "B2",
+        "merge_attempt_classification": "GH_CHECKS_NOT_SATISFIED",
+        "merge_method_at_attempt": "merge (current ruleset)",
+        "mergeable_state": "blocked",
+        "merged": false,
+        "observed_check_status_at_attempt": {
+          "dependency review": "queued",
+          "secret scan (gitleaks, full history)": "queued",
+          "tests (python 3.12)": "queued",
+          "tests (python 3.13)": "queued",
+          "tests (python 3.14)": "queued"
+        },
+        "pull_request": 8,
+        "result": "PASS"
+      },
+      {
+        "attempt_at": "2026-10-03T21:41:09Z",
+        "earlier_attempt": {
+          "head_a": "83170fa8fb5c4ba69537b04c45799e3cb9bac987",
+          "head_b": "9fe394a4467e2f7e667cd86f02983aaa750d5519",
+          "note": "0 check-runs existed on head B at that attempt. A merge naming stale head A was refused by msk-gh's expected-head guard, not by the provider.",
+          "pull_request": 6
+        },
+        "expected": "STALE_HEAD_SUCCESS_NOT_ACCEPTED",
+        "head_a": "7ae43029bd1a992898dcb865715cb49c364f439a",
+        "head_a_checks": "all 5 required checks success; PR mergeable_state clean",
+        "head_b": "2327fe1efc45c5a3583e1bcb3f8a4bf05c99ac74",
+        "head_b_check_status_at_attempt": {
+          "dependency review": "queued",
+          "secret scan (gitleaks, full history)": "queued",
+          "tests (python 3.12)": "queued",
+          "tests (python 3.13)": "in_progress",
+          "tests (python 3.14)": "in_progress"
+        },
+        "id": "B3",
+        "merge_attempt_head_b_classification": "GH_CHECKS_NOT_SATISFIED (provider)",
+        "merge_method_at_attempt": "merge (current ruleset)",
+        "mergeable_state_after_push": "blocked while head A's checks remained success",
+        "merged": false,
+        "pull_request": 9,
+        "result": "PASS"
+      },
+      {
+        "expected": "MERGE_BLOCKED_REQUIRED_CHECK_MISSING",
+        "head": "0de6016c400c87ba4727d0a819b7cae081f40ae7",
+        "id": "B4",
+        "merge_attempt_classification": "GH_CHECKS_NOT_SATISFIED",
+        "merge_method_at_attempt": "rebase (ruleset at that time)",
+        "mergeable_state": "blocked",
+        "merged": false,
+        "missing_required_context": "dependency review",
+        "observed_checks": {
+          "dependency review renamed by control": "success",
+          "secret scan (gitleaks, full history)": "success",
+          "tests (python 3.12)": "success",
+          "tests (python 3.13)": "success",
+          "tests (python 3.14)": "success"
+        },
+        "pull_request": 5,
+        "result": "PASS"
+      },
+      {
+        "evidence": "ruleset.readback and effective_rules_for_main above; branch main reports protected = true",
+        "expected": "PROVIDER_RULE_READBACK",
+        "id": "B5",
+        "result": "PASS"
+      }
+    ],
+    "merge_surface": "msk-gh (msk-org-automation 2811768) pr merge --expected-head",
+    "not_performed": "No direct push to main was attempted (WO §6).",
+    "provider_message_text": "Not retained: msk-gh records only its classification of the provider refusal. The refusal itself came from the provider merge endpoint."
+  },
+  "branch": "main",
+  "bypass_classification": {
+    "basis": "bypass_actors is empty and the provider reports current_user_can_bypass = never for the repository-admin account used by the executor. The effective rules for main come only from this ruleset. No deploy keys and no teams are attached; the only collaborator is that admin account.",
+    "org_rulesets": "Not listable with the executor token (admin:org scope absent); the effective-rules endpoint for main returns only repository ruleset 24431688.",
+    "residual": "An administrator can edit, disable or delete the ruleset. Disabling it, pushing to main and enabling it again is possible. That is a configuration change, not a merge through the fence. No audit-log entries were observed by the executor (the token lacks admin:org). 00C does not claim privileged ownership can be made incapable of changing provider configuration.",
+    "value": "PROVIDER_PUBLICATION_FENCE_ENFORCED"
+  },
+  "disclosed_limits": {
+    "class": "POLICY_ASSERTION",
+    "items": [
+      "Required checks are produced by the workflow in the pull request's own head. A pull request that edits .github/workflows/ci.yml can change what the required checks execute; the fence proves only that GitHub Actions reported success under the required names. Workflow changes therefore need independent review before merge.",
+      "The administrator disable-push-re-enable sequence described under bypass_classification.residual."
+    ]
+  },
+  "effective_rules_for_main": {
+    "class": "PROVIDER_OBSERVED",
+    "rules": [
+      {
+        "ruleset_id": 24431688,
+        "ruleset_source_type": "Repository",
+        "type": "deletion"
+      },
+      {
+        "ruleset_id": 24431688,
+        "ruleset_source_type": "Repository",
+        "type": "non_fast_forward"
+      },
+      {
+        "ruleset_id": 24431688,
+        "ruleset_source_type": "Repository",
+        "type": "pull_request"
+      },
+      {
+        "ruleset_id": 24431688,
+        "ruleset_source_type": "Repository",
+        "type": "required_status_checks"
+      }
+    ]
+  },
+  "merge_identity": {
+    "ACCOUNT_EMAIL_PRIVACY_STATE": "HUMAN_ATTESTED_AND_PROVIDER_VERIFIED_BY_PRIVATE_PROBE",
+    "attestation": "On 2026-10-03 the account holder attested that 'Keep my email addresses private' is enabled. The executor token lacks the user scope, so the setting cannot be read directly.",
+    "correction": "The first 00C candidate (ce7827b9) claimed that rebase merges use GitHub's noreply identity as committer. That was false: provider merges stamp the merging account's commit email. Identity safety rests on the verified account privacy setting, checked on every canonical commit by tests/test_integration_hardening.py.",
+    "merge_method": "merge (ruleset allowed_merge_methods = [merge])",
+    "probe": {
+      "class": "PROVIDER_OBSERVED",
+      "observations": {
+        "api_commit_author_and_committer": "account noreply address",
+        "provider_rebase_merge_committer": "account noreply address",
+        "web_init_commit_author": "account noreply address"
+      },
+      "repository": "private throwaway repository in the maintainer's personal namespace (not part of this organization)"
+    }
+  },
+  "observation_classes": {
+    "LOCAL_TEST": "Results of this repository's test suite.",
+    "POLICY_ASSERTION": "Statements of intended policy that are not machine-verified.",
+    "PROVIDER_OBSERVED": "Values read back from the GitHub REST API by the executor."
+  },
+  "private_origin_export_count": 0,
+  "repository": "Miskatonic-System/miskatonic-commons",
+  "required_check_identities": {
+    "app": {
+      "integration_id": 15368,
+      "slug": "github-actions"
+    },
+    "class": "PROVIDER_OBSERVED",
+    "contexts": [
+      "dependency review",
+      "secret scan (gitleaks, full history)",
+      "tests (python 3.12)",
+      "tests (python 3.13)",
+      "tests (python 3.14)"
+    ],
+    "source": "check-runs on Commons commit fe2282cb951fe5a8e479f6f21480db21a3f78ef7"
+  },
+  "ruleset": {
+    "class": "PROVIDER_OBSERVED",
+    "created_at": "2026-10-03T21:19:32Z",
+    "readback": {
+      "bypass_actors": [],
+      "conditions": {
+        "ref_name": {
+          "exclude": [],
+          "include": [
+            "refs/heads/main"
+          ]
+        }
+      },
+      "current_user_can_bypass": "never",
+      "enforcement": "active",
+      "id": 24431688,
+      "name": "commons-main-publication-fence-v0.1",
+      "node_id": "RRS_lACqUmVwb3NpdG9yec5TprV3zgF0zEg",
+      "rules": [
+        {
+          "type": "deletion"
+        },
+        {
+          "type": "non_fast_forward"
+        },
+        {
+          "parameters": {
+            "allowed_merge_methods": [
+              "merge"
+            ],
+            "dismiss_stale_reviews_on_push": true,
+            "dismissal_restriction": {
+              "allowed_actors": [],
+              "enabled": false
+            },
+            "require_code_owner_review": false,
+            "require_extra_approval_for_unattributed_changes": true,
+            "require_last_push_approval": false,
+            "required_approving_review_count": 0,
+            "required_review_thread_resolution": false,
+            "required_reviewers": []
+          },
+          "type": "pull_request"
+        },
+        {
+          "parameters": {
+            "do_not_enforce_on_create": false,
+            "required_status_checks": [
+              {
+                "context": "tests (python 3.12)",
+                "integration_id": 15368
+              },
+              {
+                "context": "tests (python 3.13)",
+                "integration_id": 15368
+              },
+              {
+                "context": "tests (python 3.14)",
+                "integration_id": 15368
+              },
+              {
+                "context": "secret scan (gitleaks, full history)",
+                "integration_id": 15368
+              },
+              {
+                "context": "dependency review",
+                "integration_id": 15368
+              }
+            ],
+            "strict_required_status_checks_policy": true
+          },
+          "type": "required_status_checks"
+        }
+      ],
+      "source_type": "Repository",
+      "target": "branch"
+    },
+    "update_note": "allowed_merge_methods changed from [rebase] to [merge] after 00C review round 0 showed that rebase merges stamp the merging account as committer. The merge-commit method keeps the reviewed head as a parent and the existing topology.",
+    "updated_at": "2026-10-03T21:39:43Z"
+  },
+  "schema_version": "commons.publication-fence-receipt.v0.1",
+  "starting_state": {
+    "class": "PROVIDER_OBSERVED",
+    "effective_branch_rules": [],
+    "main_sha": "3cbda3b376f8bc3ce6f18971b405d41f1719c461",
+    "observed_at": "2026-10-03T21:18:00Z",
+    "protected": false,
+    "repository_rulesets": []
+  },
+  "work_order": "WO-COMMONS-PUBLICATION-FENCE-00C"
+}

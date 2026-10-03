@@ -37,6 +37,6 @@ confidentially and on a best-effort basis.
 
 ## Enforcement
 
-Maintainers may remove, edit or reject comments, commits, issues and other
+Maintainers may remove, edit or reject comments, issues and other
 contributions that break this code, and may temporarily or permanently block
 participants who do so.
