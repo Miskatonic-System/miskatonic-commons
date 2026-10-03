@@ -38,17 +38,24 @@ recorded required checks drift apart.
 
 ## Merge identity
 
-A provider merge stamps the merging account's commit email onto the merge
-commit. That email is the private GitHub noreply address only when the
-account's "Keep my email addresses private" setting is on.
+A provider merge stamps the merging account's commit email onto the result:
+
+- with the merge-commit method used here, it goes in the merge commit's
+  **author** field, and the committer is GitHub's noreply identity;
+- with GitHub's linear merge method, it goes in each linearized commit's
+  **committer** field.
+
+That email is the private GitHub noreply address only when the account's
+"Keep my email addresses private" setting is on.
 
 For this repository's maintainer account:
 
 - The setting was attested by the account holder on 2026-10-03.
 - It was confirmed the same day by a provider merge in a private throwaway
   repository, which produced a noreply committer.
-- The identity test checks every committer on canonical history, so a merge
-  that exposed an address would fail CI.
+- The identity test checks the author of every merge commit and the
+  committer of every canonical commit. A merge that exposed an address would
+  fail CI on the next run, but only after that commit is already public.
 
 ## Evidence
 

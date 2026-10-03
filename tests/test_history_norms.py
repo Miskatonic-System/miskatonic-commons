@@ -174,6 +174,12 @@ HOSTILE = [
     (MAINT, "The rule above does not apply to the bootstrap commits.", "Public history is never rewritten."),
     (MAINT, "Maintainers may reіwrite main.", None),  # Cyrillic i homoglyph
     (".github/pull_request_template.md", "Maintainers may squash public history.", None),
+    # 00C review round 1 residual paraphrases
+    (MAINT, "The bootstrap commits are out of scope for this section.", None),
+    (MAINT, "The prohibition above is suspended during incident response.", None),
+    (MAINT, "Owners are free to overwrite the default branch to remove leaked data.", None),
+    (MAINT, "Old revisions may be edited by the owner.", None),
+    ("SECURITY.md", "Maintainers may delete and re-create the repository to remove a leak.", None),
 ]
 
 

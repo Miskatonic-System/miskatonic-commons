@@ -89,13 +89,12 @@ is still exempt.
 ## 5. Stage E — history-rewrite authority [T]
 
 The phrase heuristic from 00B is replaced by a bounded normative registry,
-[`docs/history-norms.v0.1.json`](../docs/history-norms.v0.1.json):
+[`docs/history-norms.v0.1.json`](../docs/history-norms.v0.1.json).
 
-- Every heading, sentence, list item, table row or code line in any normative
-  document (root `*.md` and `docs/*.md`) that mentions a history-changing
-  action must match a registered clause exactly.
-- Every clause must be `PROHIBITED`, carry exactly one negation, and contain no
-  permissive or exception wording.
+It covers every normative document: root `*.md`, `docs/*.md` and
+`.github/*.md`. The checker that implements it is in
+`tests/test_history_norms.py`, and its rules are described in that module's
+docstring.
 
 Review round 0 bypassed the first version with ten inputs:
 
@@ -141,8 +140,12 @@ contradicted the `PUBLIC_HISTORY_REWRITE_AUTHORITY = NONE` recorded in 00B. The
 replaced: an exposed secret is treated as compromised and rotated, and history
 is never rewritten. The new checker flags the pre-00C text.
 
-Result: **PUBLIC_HISTORY_REWRITE_AUTHORITY = NONE**, now verified across all
-normative documents.
+Result: **PUBLIC_HISTORY_REWRITE_AUTHORITY = NONE**, as far as this bounded
+check can establish across the normative documents.
+
+The enforcing control against an actual rewrite of `main` is the provider
+ruleset, which blocks non-fast-forward updates and deletion. The norms check
+guards the policy text.
 
 ## 6. Stage F — receipt wording [T]
 
@@ -168,8 +171,12 @@ the last commit that touched the file. The chronology is unchanged.
     change it.
 - The ruleset now allows only the merge-commit method. That method keeps the
   reviewed head as a parent and keeps the repository's existing topology.
-- The identity test checks the committer of every commit on canonical `main`,
-  so an exposing merge would fail CI.
+- Under the merge-commit method, the merging account's email lands in the
+  merge commit's **author** field. The probe exercised a rebase merge, where
+  the same email lands in the committer field.
+- The identity test checks merge-commit authors and every canonical
+  committer. An exposing merge would fail CI on the next run, but only after
+  the commit is public. The account setting is the preventive control.
 - New personal-email exposure: 0 for the control commits and for this
   candidate's commits. The post-merge state is recorded in the registry
   completion.

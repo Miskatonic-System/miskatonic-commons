@@ -19,7 +19,10 @@
     "\\beras\\w*",
     "\\brecreat\\w*",
     "\\b(replac|drop)\\w*\\b[^.]*\\b(commits?|history|main)\\b",
-    "\\b(commits?|history|main)\\b[^.]*\\b(replac|drop)\\w*"
+    "\\b(commits?|history|main)\\b[^.]*\\b(replac|drop)\\w*",
+    "\\boverwrit\\w*",
+    "\\bre-?creat\\w*",
+    "\\bdelete and re-?creat\\w*"
   ],
   "clauses": [
     {
@@ -117,7 +120,13 @@
     "\\breserved\\b",
     "\\bdiscretion\\w*",
     "\\bif needed\\b",
-    "\\bwhen needed\\b"
+    "\\bwhen needed\\b",
+    "\\bfree to\\b",
+    "\\bsuspend\\w*",
+    "\\bout of scope\\b",
+    "\\bnot in scope\\b",
+    "\\bdisregard\\w*",
+    "\\bset aside\\b"
   ],
   "property": "PUBLIC_HISTORY_REWRITE_AUTHORITY = NONE",
   "rule": "See tests/test_history_norms.py module docstring.",
@@ -138,6 +147,11 @@
     "\\broot\\b",
     "\\bmetadata\\b",
     "\\bpreceding\\b",
-    "\\babove\\b"
+    "\\babove\\b",
+    "\\brevisions?\\b",
+    "\\bdefault branch\\b",
+    "\\brepository\\b",
+    "\\bprohibition\\b",
+    "\\bsection\\b"
   ]
 }
