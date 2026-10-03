@@ -1,0 +1,57 @@
+{
+  "action_terms": [
+    "rewrit\\w*",
+    "force[- ]?push\\w*",
+    "filter\\w*",
+    "rebas\\w*",
+    "scrub\\w*",
+    "graft\\w*",
+    "amend\\w*",
+    "reset\\w*",
+    "squash\\w*",
+    "delete and recreate"
+  ],
+  "clauses": [
+    {
+      "document": "docs/PUBLIC_COMMIT_IDENTITY_POLICY.md",
+      "id": "H1",
+      "modality": "PROHIBITED",
+      "text": "## History is not rewritten"
+    },
+    {
+      "document": "docs/PUBLIC_COMMIT_IDENTITY_POLICY.md",
+      "id": "H2",
+      "modality": "PROHIBITED",
+      "text": "It grants **no** authority to rewrite, filter, rebase or force-push public history."
+    },
+    {
+      "document": "docs/MAINTENANCE_POLICY.md",
+      "id": "H3",
+      "modality": "PROHIBITED",
+      "text": "Public history is never rewritten."
+    },
+    {
+      "document": "docs/MAINTENANCE_POLICY.md",
+      "id": "H4",
+      "modality": "PROHIBITED",
+      "text": "This policy grants **no** authority to rewrite public history for any reason, including to remove an exposed secret."
+    },
+    {
+      "document": "docs/EXPORT_POLICY.md",
+      "id": "H5",
+      "list_lead_in": "The following are prohibited:",
+      "modality": "PROHIBITED",
+      "text": "- mirroring, transplanting, grafting or filtering private Git history into Commons;"
+    },
+    {
+      "document": "docs/PUBLICATION_FENCE.md",
+      "id": "H6",
+      "modality": "PROHIBITED",
+      "text": "| Non-fast-forward blocked | Force pushes to `main` are not accepted. |"
+    }
+  ],
+  "property": "PUBLIC_HISTORY_REWRITE_AUTHORITY = NONE",
+  "rule": "Every sentence, heading or list item in scope that mentions an action term must exactly match a registered clause. Every clause must be PROHIBITED, must carry exactly one negation (its own, or for list items its lead-in's) and must contain no permissive or exception wording.",
+  "schema_version": "commons.history-norms.v0.1",
+  "scope": "Every normative document: root *.md files and docs/*.md. Reports under reports/ are historical evidence and are not normative."
+}

@@ -5,6 +5,7 @@
 import json
 import re
 import subprocess
+from pathlib import Path
 
 import pytest
 
@@ -102,25 +103,18 @@ def test_receipt_identity_exceptions_match_hard_coded_set():
     assert set(RECEIPT["public_identity_exposure"]["affected_commits"]) == HISTORICAL_IDENTITY_EXCEPTIONS
 
 
-def test_nc8_policy_sentences_about_history_are_all_negative():
-    """Every policy sentence that mentions rewriting history must be a prohibition."""
-    text = re.sub(r"\s+", " ", POLICY)
-    risky = re.compile(r"(?i)\b(rewrit\w*|force[- ]push\w*|filter\w*|rebas\w*|scrub\w*|graft\w*)\b")
-    negation = re.compile(r"(?i)\b(no|not|never|without|unchanged)\b|\*\*no\*\*")
-    for sentence in re.split(r"(?<=[.!?])\s+", text):
-        if risky.search(sentence):
-            assert negation.search(sentence), sentence
-
-
 def test_nc2_recorded_at_does_not_postdate_its_commit():
     if not in_git_checkout():
         pytest.skip("not running inside a Git checkout of this repository")
     rel = RECEIPT_PATH.relative_to(ROOT).as_posix()
     if git("status", "--porcelain", "--", rel):
         pytest.skip("receipt has uncommitted changes")
-    committed = git("log", "-1", "--format=%cI", "--", rel)
-    if not committed:
-        pytest.skip("receipt not yet committed")
+    # The commit that introduced the recorded value (pickaxe), not merely the last commit touching the file.
+    value = f'"recorded_at": "{RECEIPT["recorded_at"]}"'
+    introducing = git("log", "--reverse", "--format=%cI", "-S", value, "--", rel).splitlines()
+    if not introducing:
+        pytest.skip("recorded value not found in this checkout's history")
+    committed = introducing[0]
     import datetime
     when = datetime.datetime.fromisoformat(committed).astimezone(datetime.timezone.utc)
     assert RECEIPT["recorded_at"] <= when.strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -135,25 +129,96 @@ def test_nc8_identity_policy_grants_no_history_rewrite():
     assert RECEIPT["commons"]["root_commit"] == RECORDED_ROOT
 
 
+def synthetic_merge_context() -> dict:
+    """Structural evidence of CI's synthetic pull-request merge, taken from the provider event payload.
+
+    Returns {} unless running in a GitHub Actions pull_request event, in which case it returns the
+    synthetic merge SHA (GITHUB_SHA) and the pull request's head SHA.
+    """
+    import os
+    if os.environ.get("GITHUB_EVENT_NAME") not in ("pull_request", "pull_request_target"):
+        return {}
+    try:
+        payload = json.loads(Path(os.environ["GITHUB_EVENT_PATH"]).read_text())
+        return {"merge_sha": os.environ["GITHUB_SHA"].lower(),
+                "pr_head_sha": payload["pull_request"]["head"]["sha"].lower()}
+    except (KeyError, OSError, ValueError):
+        return {}
+
+
+def identity_offenders(records, context: dict) -> list:
+    """records: iterable of (sha, parents, author_email, committer_email, subject, coauthors).
+
+    A commit is exempt as CI's synthetic merge only if it is the provider-declared merge SHA and its
+    second parent is the provider-declared PR head. Commit subjects are never consulted.
+    """
+    offenders = []
+    for sha, parents, author, committer, subject, coauthors in records:
+        parent_list = parents.split()
+        if sha in HISTORICAL_IDENTITY_EXCEPTIONS:
+            continue
+        if (context and sha.lower() == context.get("merge_sha") and len(parent_list) == 2
+                and parent_list[1].lower() == context.get("pr_head_sha")):
+            continue
+        is_merge = len(parent_list) > 1
+        is_automation = bool(coauthors.strip())
+        if (is_merge or is_automation) and not (SAFE_EMAIL.match(author) and SAFE_EMAIL.match(committer)):
+            offenders.append(f"{sha[:12]} {subject}")
+    return offenders
+
+
+def git_records(cwd=ROOT, rev="HEAD"):
+    log = subprocess.run(
+        ["git", "log", "--format=%H%x1f%P%x1f%ae%x1f%ce%x1f%s%x1f%(trailers:key=Co-Authored-By,valueonly)%x1e", rev],
+        cwd=cwd, capture_output=True, text=True, check=True).stdout
+    for record in filter(None, (r.strip() for r in log.split("\x1e"))):
+        yield tuple((record.split("\x1f") + [""] * 6)[:6])
+
+
 def test_maintainer_merges_and_automation_commits_use_safe_identity():
     if not in_git_checkout():
         pytest.skip("not running inside a Git checkout of this repository")
     if git("rev-parse", "--is-shallow-repository") == "true":
         pytest.skip("shallow clone")
-    head = git("rev-parse", "HEAD")
-    log = git("log", "--format=%H%x1f%P%x1f%ae%x1f%ce%x1f%s%x1f%(trailers:key=Co-Authored-By,valueonly)%x1e", "HEAD")
-    offenders = []
-    for record in filter(None, (r.strip() for r in log.split("\x1e"))):
-        sha, parents, author, committer, subject, coauthors = (record.split("\x1f") + [""] * 6)[:6]
-        if sha in HISTORICAL_IDENTITY_EXCEPTIONS:
-            continue
-        if sha == head and re.match(r"^Merge [0-9a-f]{40} into [0-9a-f]{40}$", subject):
-            continue  # only the checked-out HEAD may be CI's synthetic pull-request merge
-        is_merge = len(parents.split()) > 1
-        is_automation = bool(coauthors.strip())
-        if (is_merge or is_automation) and not (SAFE_EMAIL.match(author) and SAFE_EMAIL.match(committer)):
-            offenders.append(f"{sha[:12]} {subject}")
-    assert offenders == []
+    assert identity_offenders(git_records(), synthetic_merge_context()) == []
+
+
+def _spoof_repo(tmp_path):
+    """A repository whose HEAD is a real merge by a personal identity whose subject mimics CI's synthetic merge."""
+    def g(*args, env=None):
+        import os
+        e = dict(os.environ, GIT_CONFIG_GLOBAL="/dev/null", GIT_CONFIG_NOSYSTEM="1", **(env or {}))
+        return subprocess.run(["git", *args], cwd=tmp_path, capture_output=True, text=True, check=True, env=e).stdout.strip()
+    safe = {"GIT_AUTHOR_NAME": "a", "GIT_AUTHOR_EMAIL": "1+a@users.noreply.github.com",
+            "GIT_COMMITTER_NAME": "a", "GIT_COMMITTER_EMAIL": "1+a@users.noreply.github.com"}
+    personal = {"GIT_AUTHOR_NAME": "p", "GIT_AUTHOR_EMAIL": "someone@personal.invalid",
+                "GIT_COMMITTER_NAME": "p", "GIT_COMMITTER_EMAIL": "someone@personal.invalid"}
+    g("init", "-q", "-b", "main")
+    g("commit", "-q", "--allow-empty", "-m", "base", env=safe)
+    base = g("rev-parse", "HEAD")
+    g("checkout", "-q", "-b", "topic")
+    g("commit", "-q", "--allow-empty", "-m", "topic", env=safe)
+    topic = g("rev-parse", "HEAD")
+    g("checkout", "-q", "main")
+    g("merge", "-q", "--no-ff", "topic", "-m", f"Merge {topic} into {base}", env=personal)
+    return g("rev-parse", "HEAD"), base, topic
+
+
+def test_synthetic_merge_subject_spoof_rejected(tmp_path):
+    """SYNTHETIC_MERGE_SUBJECT_SPOOF_REJECTED: a mimicking subject earns no exemption."""
+    head, base, topic = _spoof_repo(tmp_path)
+    records = list(git_records(tmp_path))
+    # push context, or no provider context at all
+    assert identity_offenders(records, {}) == [f"{head[:12]} Merge {topic} into {base}"]
+    # pull_request context, but the spoof is not the provider-declared merge SHA
+    assert identity_offenders(records, {"merge_sha": "0" * 40, "pr_head_sha": topic}) != []
+    # provider-declared merge SHA, but the declared PR head is not its second parent
+    assert identity_offenders(records, {"merge_sha": head, "pr_head_sha": "1" * 40}) != []
+
+
+def test_true_synthetic_merge_structure_is_exempt(tmp_path):
+    head, base, topic = _spoof_repo(tmp_path)
+    assert identity_offenders(list(git_records(tmp_path)), {"merge_sha": head, "pr_head_sha": topic}) == []
 
 
 # NC1 / NC2 / NC10 (Commons-side record) -----------------------------------------
@@ -179,3 +244,12 @@ def test_nc10_technical_result_distinct_from_publication_conformance():
 
 def test_receipt_is_canonical_json():
     assert lint.canonical_json_bytes(RECEIPT) == RECEIPT_PATH.read_bytes()
+
+
+def test_erratum_00c_binds_unmodified_receipt():
+    import hashlib
+    erratum = json.loads((ROOT / "provenance/COMMONS_00A_CROSS_REPO_CLOSURE_V0_1.ERRATUM_00C.json").read_text())
+    assert erratum["affected_file"] == RECEIPT_PATH.relative_to(ROOT).as_posix()
+    assert hashlib.sha256(RECEIPT_PATH.read_bytes()).hexdigest() == erratum["affected_file_sha256"]
+    assert erratum["affected_statement"] in RECEIPT["temporal_note"]
+    assert erratum["affected_file_modified"] is False and erratum["chronology_changed"] is False

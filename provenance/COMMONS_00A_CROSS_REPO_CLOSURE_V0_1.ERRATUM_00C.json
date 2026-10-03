@@ -1,0 +1,13 @@
+{
+  "affected_file": "provenance/COMMONS_00A_CROSS_REPO_CLOSURE_V0_1.json",
+  "affected_file_modified": false,
+  "affected_file_sha256": "2f57e332e00e57ff25ddbdb7d78caf52eb7771181b3d68305066d0d7ebe7a3a5",
+  "affected_json_pointer": "/temporal_note",
+  "affected_statement": "Recorded after both 00A merges and before the commit that introduces this file; a test checks recorded_at against that commit time.",
+  "chronology_changed": false,
+  "correction": "recorded_at (2026-10-03T18:21:14Z) precedes the commit that set that recorded_at value (fe2282cb951fe5a8e479f6f21480db21a3f78ef7, 2026-10-03T18:21:41Z). It does not precede the commit that first introduced the file (0d65c6fc04a59ccb26c863bd1bf6216e279f52c4, 2026-10-03T18:15:02Z), which carried an earlier, incorrect recorded_at that 00B review round 0 rejected. The 00B test checked the last commit touching the file; since 00C it checks the commit that introduced the recorded value.",
+  "erratum_id": "ERRATUM-00C-01",
+  "recorded_by_work_order": "WO-COMMONS-PUBLICATION-FENCE-00C",
+  "schema_version": "commons.provenance-erratum.v0.1",
+  "verification": "tests/test_integration_hardening.py::test_nc2_recorded_at_does_not_postdate_its_commit and test_erratum_00c_binds_unmodified_receipt"
+}

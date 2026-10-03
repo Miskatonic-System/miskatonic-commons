@@ -25,9 +25,11 @@ new work.
 
 ## Public history
 
-Public history is not rewritten for appearance. Rewriting is reserved for
-removing material that must not be public (for example an exposed secret), and
-even then the secret must be treated as compromised and rotated.
+Public history is never rewritten.
+This policy grants **no** authority to rewrite public history for any reason, including to remove an exposed secret.
+An exposed secret is treated as compromised and rotated; it is never treated as
+hidden. The machine-readable form of this rule is
+[`docs/history-norms.v0.1.json`](history-norms.v0.1.json).
 
 ## Dependencies
 
