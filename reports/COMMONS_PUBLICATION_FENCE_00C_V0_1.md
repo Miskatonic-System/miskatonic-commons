@@ -25,7 +25,8 @@ targets `refs/heads/main`. It has no bypass actors, and the provider reports
 
 - deletion is blocked;
 - non-fast-forward updates are blocked;
-- a pull request is required, with the rebase merge method only;
+- a pull request is required, with the merge-commit method only (the first
+  configuration allowed only rebase; see §7);
 - five required status checks, in strict mode, all bound to the GitHub Actions
   app (`integration_id` 15368):
   - `tests (python 3.12)`
@@ -37,27 +38,35 @@ targets `refs/heads/main`. It has no bypass actors, and the provider reports
 The effective rules reported for `main` come only from this ruleset, and the
 branch now reports `protected = true`.
 
-Bypass classification: **PROVIDER_PUBLICATION_FENCE_ENFORCED**. Administrators
-can still edit or delete the ruleset itself (see §8).
+Bypass classification: **PROVIDER_PUBLICATION_FENCE_ENFORCED**. No actor can
+merge into `main` around the required checks.
+
+An administrator can still edit, disable or delete the ruleset. In particular,
+an administrator can disable it, push to `main`, and enable it again. That is a
+configuration change, not a merge through the fence. Audit-log entries for it
+were not observed by the executor. See §8.
 
 The full readback is in
 [`provenance/COMMONS_PUBLICATION_FENCE_RECEIPT_V0_1.json`](../provenance/COMMONS_PUBLICATION_FENCE_RECEIPT_V0_1.json).
 
 ## 3. Stage B — adversarial controls [P]
 
-All merge attempts used
-`msk-gh pr merge --expected-head <sha> --method rebase`.
+All merge attempts used `msk-gh pr merge --expected-head <sha>`, with the
+merge method allowed at the time. B2 and B3 were re-run after review round 0
+showed that the first attempts happened before any check-run existed. Those
+first attempts showed absent checks rather than pending ones. They are kept in
+the receipt as absent-check observations.
 
 | Control | PR | Observation | Result |
 | --- | --- | --- | --- |
 | B1 failed check | #3 | Three test checks failed. The provider refused the merge (`GH_CHECKS_NOT_SATISFIED`) and the PR is `blocked`. | MERGE_BLOCKED_REQUIRED_CHECK_FAILED |
-| B2 pending check | #4 | Merge attempted while 0 check-runs had reported. The provider refused it (`GH_CHECKS_NOT_SATISFIED`) and the PR is `blocked`. | MERGE_BLOCKED_REQUIRED_CHECK_PENDING |
-| B3 head mutation | #6 | Head A went fully green, then head B was pushed. The provider refused the merge of B (`GH_CHECKS_NOT_SATISFIED`), and the PR stayed `blocked` while A's checks were still `success`. An attempt naming A was refused by msk-gh's expected-head guard. | STALE_HEAD_SUCCESS_NOT_ACCEPTED |
+| B2 pending check | #8 | At 21:40:09Z all 5 required check-runs existed with status `queued`. The provider refused the merge (`GH_CHECKS_NOT_SATISFIED`) and the PR is `blocked`. | MERGE_BLOCKED_REQUIRED_CHECK_PENDING |
+| B3 head mutation | #9 | Head A had all 5 checks `success` and the PR was `clean`. Head B was then pushed. At 21:41:09Z, with B's checks `queued` or `in_progress`, the provider refused the merge of B (`GH_CHECKS_NOT_SATISFIED`). The PR stayed `blocked` while A's checks were still `success`. | STALE_HEAD_SUCCESS_NOT_ACCEPTED |
 | B4 missing check | #5 | The required check was renamed, so `dependency review` was absent while the other five reported checks were green. The provider refused the merge (`GH_CHECKS_NOT_SATISFIED`) and the PR is `blocked`. | MERGE_BLOCKED_REQUIRED_CHECK_MISSING |
 | B5 readback | — | The ruleset and the effective rules for `main` read back as configured. | PASS |
 
-All four control PRs were closed without merge, and their branches were
-deleted. `main` did not move. No direct push to `main` was attempted.
+All six control PRs (#3, #4, #5, #6, #8 and #9) were closed without merge, and
+their branches were deleted. `main` did not move. No direct push to `main` was attempted.
 
 ## 4. Stage D — commit identity spoofing [T]
 
@@ -88,17 +97,41 @@ The phrase heuristic from 00B is replaced by a bounded normative registry,
 - Every clause must be `PROHIBITED`, carry exactly one negation, and contain no
   permissive or exception wording.
 
-Hostile controls that are rejected:
+Review round 0 bypassed the first version with ten inputs:
+
+- `git push --force` and `--force-with-lease`;
+- "re-writing" and "re-base";
+- purging commits with BFG;
+- replacing or dropping commits;
+- "exempt from the history rule";
+- "waive the preceding rule";
+- "does not apply to the bootstrap commits";
+- a Cyrillic homoglyph.
+
+Version 2 adds:
+
+- expanded action terms;
+- a second tier: any unit that combines a history-scope word with permissive
+  or exception wording must be registered, either as a `PROHIBITED` clause or
+  as a reviewed `ACKNOWLEDGED_NON_HISTORY` statement, and acknowledged
+  statements may never name a history-changing action;
+- NFKC folding;
+- a ban on non-ASCII letters in normative documents;
+- `.github/*.md` in scope.
+
+All the reviewer's inputs are now test cases and are rejected, together with:
 
 - explicit force-push permission;
 - double negation;
-- rewrite permission in another section;
-- in a different document;
-- in a list item, table row or code block;
-- an exception for the bootstrap history;
-- registering a permissive, double-negated or contradictory clause;
-- deleting a registered prohibition;
-- detaching a list item from its prohibiting lead-in.
+- permission in another section, another document, a list item, a table row
+  or a code block;
+- a bootstrap exception;
+- contradictory or permissive registered clauses;
+- deleted prohibitions;
+- detached list items.
+
+The check remains bounded and pattern-based. It does not prove the absence of
+every possible permissive phrasing.
 
 **Defect found in 00B's claim.** `docs/MAINTENANCE_POLICY.md` contained an
 exception granting rewrite authority: "Rewriting is reserved for removing
@@ -121,17 +154,38 @@ the last commit that touched the file. The chronology is unchanged.
 
 ## 7. Identity and exports [P]/[A]
 
-- `ACCOUNT_EMAIL_PRIVACY_STATE = HUMAN_ATTESTATION_REQUIRED`. The token cannot
-  read the setting, and no attempt was made to change it.
-- Merges use the rebase method, which keeps commit authors (noreply) and uses
-  GitHub's noreply identity as committer. The merge topology becomes linear,
-  as justified by WO §4.
+- **Correction.** The first candidate claimed that rebase merges use GitHub's
+  noreply identity as committer. Review round 0 showed this to be false with
+  public evidence, and the executor confirmed it independently: provider
+  merges stamp the merging account's commit email.
+- `ACCOUNT_EMAIL_PRIVACY_STATE = HUMAN_ATTESTED_AND_PROVIDER_VERIFIED_BY_PRIVATE_PROBE`.
+  - The account holder attested that "Keep my email addresses private" is
+    enabled.
+  - A private throwaway repository in the maintainer's personal namespace then
+    showed the account noreply address for an API commit, for the web
+    initialization commit, and as committer of a provider rebase merge.
+  - The token cannot read the setting directly, and no attempt was made to
+    change it.
+- The ruleset now allows only the merge-commit method. That method keeps the
+  reviewed head as a parent and keeps the repository's existing topology.
+- The identity test checks the committer of every commit on canonical `main`,
+  so an exposing merge would fail CI.
 - New personal-email exposure: 0 for the control commits and for this
   candidate's commits. The post-merge state is recorded in the registry
   completion.
 - Private-origin export count: 0.
 
-## 8. What 00C does not establish
+## 8. Disclosed limits
+
+- **Workflow tampering.** Required checks are produced by the workflow in the
+  pull request's own head. A pull request that edits
+  `.github/workflows/ci.yml` can change what the checks execute. The fence
+  proves only that GitHub Actions reported success under the required names.
+  Workflow changes need independent review before merge.
+- **Administrator override.** The administrator disable-push-re-enable path
+  described in §2.
+
+## 9. What 00C does not establish
 
 00C does not establish:
 

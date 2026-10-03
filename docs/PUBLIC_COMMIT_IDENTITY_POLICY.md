@@ -13,15 +13,17 @@ operating merge tooling on canonical `main` **should** use one of:
 - an organization-safe public identity that is intentionally published.
 
 This applies to the author **and** the committer, and includes merge commits.
-GitHub's web and API merge buttons stamp a merge commit with the merging
-account's commit email. Since WO-COMMONS-PUBLICATION-FENCE-00C, `main` is
-behind a provider ruleset that only accepts pull requests merged with the
-provider's linear merge method. That method keeps each commit's own author and
-uses GitHub's noreply identity as committer, so it cannot add the merging
-account's address. See [docs/PUBLICATION_FENCE.md](PUBLICATION_FENCE.md).
+GitHub's web and API merges stamp the merging account's commit email onto
+the merge commit, so the maintainer account must have GitHub's "Keep my email
+addresses private" setting enabled. Since WO-COMMONS-PUBLICATION-FENCE-00C,
+`main` only accepts merges made through the provider, behind a ruleset. The
+account setting is therefore the identity control for merges, and the test
+below verifies its effect on every commit. See
+[docs/PUBLICATION_FENCE.md](PUBLICATION_FENCE.md).
 
 The repository test `test_maintainer_merges_and_automation_commits_use_safe_identity`
-checks merge commits and commits that carry an automation trailer. CI's
+checks the committer of every commit on canonical `main`, and the author of
+merge commits and of commits that carry an automation trailer. CI's
 synthetic pull-request merge is recognized from the GitHub event payload, not
 from its commit subject.
 

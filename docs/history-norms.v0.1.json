@@ -1,57 +1,143 @@
 {
   "action_terms": [
-    "rewrit\\w*",
-    "force[- ]?push\\w*",
-    "filter\\w*",
-    "rebas\\w*",
-    "scrub\\w*",
-    "graft\\w*",
-    "amend\\w*",
-    "reset\\w*",
-    "squash\\w*",
-    "delete and recreate"
+    "\\bre-?writ\\w*",
+    "\\bforce[- ]?push\\w*",
+    "--force\\w*(-with-lease)?",
+    "\\bforce[- ]with[- ]lease\\b",
+    "\\bpush\\s+-f\\b",
+    "\\bre-?bas\\w*",
+    "\\bfilter\\w*",
+    "\\bscrub\\w*",
+    "\\bgraft\\w*",
+    "\\bamend\\w*",
+    "\\breset\\w*",
+    "\\bsquash\\w*",
+    "\\bpurg\\w*",
+    "\\bbfg\\b",
+    "\\bprun\\w*",
+    "\\btruncat\\w*",
+    "\\beras\\w*",
+    "\\brecreat\\w*",
+    "\\b(replac|drop)\\w*\\b[^.]*\\b(commits?|history|main)\\b",
+    "\\b(commits?|history|main)\\b[^.]*\\b(replac|drop)\\w*"
   ],
   "clauses": [
     {
+      "document": "CONTRIBUTING.md",
+      "id": "A1",
+      "kind": "ACKNOWLEDGED_NON_HISTORY",
+      "list_lead_in": "say in the description that a bundle changed.",
+      "text": "- **Commit identity.** Maintainer merges and automated commits use a GitHub `noreply` or organization-safe identity; see [docs/PUBLIC_COMMIT_IDENTITY_POLICY.md](docs/PUBLIC_COMMIT_IDENTITY_POLICY.md). Contributors may publish whatever identity they choose."
+    },
+    {
+      "document": "docs/EXPORT_POLICY.md",
+      "id": "A2",
+      "kind": "ACKNOWLEDGED_NON_HISTORY",
+      "text": "It can only check the metadata;"
+    },
+    {
+      "document": "docs/PROVENANCE_MODEL.md",
+      "id": "A3",
+      "kind": "ACKNOWLEDGED_NON_HISTORY",
+      "text": "Held by the originating project, never published unless separately cleared."
+    },
+    {
+      "document": "docs/PUBLICATION_FENCE.md",
+      "id": "A4",
+      "kind": "ACKNOWLEDGED_NON_HISTORY",
+      "list_lead_in": "[`provenance/COMMONS_PUBLICATION_FENCE_RECEIPT_V0_1.json`](../provenance/COMMONS_PUBLICATION_FENCE_RECEIPT_V0_1.json) holds the following:",
+      "text": "- An administrator can still edit, disable or delete the ruleset. Disabling it, pushing to `main` and enabling it again is possible. That is a configuration change, not a merge through the fence. Nothing here makes privileged ownership incapable of changing provider configuration."
+    },
+    {
+      "document": "docs/PUBLIC_COMMIT_IDENTITY_POLICY.md",
+      "id": "A5",
+      "kind": "ACKNOWLEDGED_NON_HISTORY",
+      "text": "External contributors may sign their own commits with any address they are comfortable making public."
+    },
+    {
       "document": "docs/PUBLIC_COMMIT_IDENTITY_POLICY.md",
       "id": "H1",
-      "modality": "PROHIBITED",
+      "kind": "PROHIBITED",
       "text": "## History is not rewritten"
     },
     {
       "document": "docs/PUBLIC_COMMIT_IDENTITY_POLICY.md",
       "id": "H2",
-      "modality": "PROHIBITED",
+      "kind": "PROHIBITED",
       "text": "It grants **no** authority to rewrite, filter, rebase or force-push public history."
     },
     {
       "document": "docs/MAINTENANCE_POLICY.md",
       "id": "H3",
-      "modality": "PROHIBITED",
+      "kind": "PROHIBITED",
       "text": "Public history is never rewritten."
     },
     {
       "document": "docs/MAINTENANCE_POLICY.md",
       "id": "H4",
-      "modality": "PROHIBITED",
+      "kind": "PROHIBITED",
       "text": "This policy grants **no** authority to rewrite public history for any reason, including to remove an exposed secret."
     },
     {
       "document": "docs/EXPORT_POLICY.md",
       "id": "H5",
+      "kind": "PROHIBITED",
       "list_lead_in": "The following are prohibited:",
-      "modality": "PROHIBITED",
       "text": "- mirroring, transplanting, grafting or filtering private Git history into Commons;"
     },
     {
       "document": "docs/PUBLICATION_FENCE.md",
       "id": "H6",
-      "modality": "PROHIBITED",
+      "kind": "PROHIBITED",
       "text": "| Non-fast-forward blocked | Force pushes to `main` are not accepted. |"
+    },
+    {
+      "document": "docs/MAINTENANCE_POLICY.md",
+      "id": "H7",
+      "kind": "PROHIBITED",
+      "text": "Withdrawal is recorded, not erased."
     }
   ],
+  "grant_terms": [
+    "\\bmay\\b",
+    "\\bcan\\b",
+    "\\bcould\\b",
+    "\\bmight\\b",
+    "\\ballow\\w*",
+    "\\bpermit\\w*",
+    "\\bauthori[sz]\\w*",
+    "\\bexcept\\w*",
+    "\\bexempt\\w*",
+    "\\bwaiv\\w*",
+    "\\bunless\\b",
+    "\\boverrid\\w*",
+    "\\bbypass\\w*",
+    "\\bnot apply\\b",
+    "\\boptional\\w*",
+    "\\breserved\\b",
+    "\\bdiscretion\\w*",
+    "\\bif needed\\b",
+    "\\bwhen needed\\b"
+  ],
   "property": "PUBLIC_HISTORY_REWRITE_AUTHORITY = NONE",
-  "rule": "Every sentence, heading or list item in scope that mentions an action term must exactly match a registered clause. Every clause must be PROHIBITED, must carry exactly one negation (its own, or for list items its lead-in's) and must contain no permissive or exception wording.",
+  "rule": "See tests/test_history_norms.py module docstring.",
   "schema_version": "commons.history-norms.v0.1",
-  "scope": "Every normative document: root *.md files and docs/*.md. Reports under reports/ are historical evidence and are not normative."
+  "scope": "Every normative document: root *.md, docs/*.md and .github/*.md. Reports under reports/ are historical evidence and are not normative.",
+  "scope_terms": [
+    "\\bhistor\\w*",
+    "\\bcommits?\\b",
+    "\\bmain\\b",
+    "\\bbranch\\w*",
+    "\\bpush\\w*",
+    "\\bgit\\b",
+    "\\bpublished\\b",
+    "\\bbootstrap\\b",
+    "\\brules?\\b",
+    "\\bpolic\\w*",
+    "\\bancestry\\b",
+    "\\broot\\b",
+    "\\bmetadata\\b",
+    "\\bpreceding\\b",
+    "\\babove\\b"
+  ]
 }

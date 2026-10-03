@@ -175,12 +175,39 @@ def git_records(cwd=ROOT, rev="HEAD"):
         yield tuple((record.split("\x1f") + [""] * 6)[:6])
 
 
+def canonical_committer_offenders(records) -> list:
+    """Every committer on canonical history must be a safe identity.
+
+    Provider merges stamp the merging account as committer (author on merge commits), so this is
+    what catches a maintainer account whose email privacy is off. Contributors' own pull-request
+    commits are not canonical until merged, and are not checked here.
+    """
+    return [f"{sha[:12]} committer" for sha, parents, author, committer, subject, coauthors in records
+            if sha not in HISTORICAL_IDENTITY_EXCEPTIONS and not SAFE_EMAIL.match(committer)]
+
+
+def canonical_rev():
+    for rev in ("origin/main", "refs/remotes/origin/main"):
+        if subprocess.run(["git", "rev-parse", "--verify", "--quiet", rev], cwd=ROOT, capture_output=True).returncode == 0:
+            return rev
+    return "HEAD" if git("rev-parse", "--abbrev-ref", "HEAD") == "main" else None
+
+
 def test_maintainer_merges_and_automation_commits_use_safe_identity():
     if not in_git_checkout():
         pytest.skip("not running inside a Git checkout of this repository")
     if git("rev-parse", "--is-shallow-repository") == "true":
         pytest.skip("shallow clone")
     assert identity_offenders(git_records(), synthetic_merge_context()) == []
+    rev = canonical_rev()
+    if rev is None:
+        pytest.skip("canonical main not available in this checkout")
+    assert canonical_committer_offenders(git_records(rev=rev)) == []
+
+
+def test_canonical_committer_check_catches_personal_committer():
+    records = [("a" * 40, "b" * 40, "1+x@users.noreply.github.com", "someone@personal.invalid", "rebased", "")]
+    assert canonical_committer_offenders(records) == [f"{'a' * 12} committer"]
 
 
 def _spoof_repo(tmp_path):

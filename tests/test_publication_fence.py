@@ -45,7 +45,7 @@ def test_fence_targets_main_without_bypass():
     assert RULESET["bypass_actors"] == []
     assert RULESET["current_user_can_bypass"] == "never"
     assert {"deletion", "non_fast_forward", "pull_request", "required_status_checks"} <= set(RULES)
-    assert RULES["pull_request"]["allowed_merge_methods"] == ["rebase"]
+    assert RULES["pull_request"]["allowed_merge_methods"] == ["merge"]
     effective = {(r["type"], r["ruleset_id"]) for r in RECEIPT["effective_rules_for_main"]["rules"]}
     assert effective == {(t, RULESET["id"]) for t in ("deletion", "non_fast_forward", "pull_request", "required_status_checks")}
     assert RECEIPT["bypass_classification"]["value"] == "PROVIDER_PUBLICATION_FENCE_ENFORCED"
@@ -66,4 +66,21 @@ def test_adversarial_controls_all_blocked():
 
 def test_no_private_export_and_identity_mechanism_recorded():
     assert RECEIPT["private_origin_export_count"] == 0
-    assert RECEIPT["merge_identity"]["ACCOUNT_EMAIL_PRIVACY_STATE"] == "HUMAN_ATTESTATION_REQUIRED"
+    assert RECEIPT["merge_identity"]["ACCOUNT_EMAIL_PRIVACY_STATE"] == "HUMAN_ATTESTED_AND_PROVIDER_VERIFIED_BY_PRIVATE_PROBE"
+    assert all(v == "account noreply address" for v in RECEIPT["merge_identity"]["probe"]["observations"].values())
+
+
+def test_pending_controls_observed_genuinely_pending_checks():
+    controls = {c["id"]: c for c in RECEIPT["adversarial_controls"]["controls"]}
+    b2 = controls["B2"]["observed_check_status_at_attempt"]
+    b3 = controls["B3"]["head_b_check_status_at_attempt"]
+    required = set(RECEIPT["required_check_identities"]["contexts"])
+    for observed in (b2, b3):
+        assert set(observed) == required
+        assert all(status in ("queued", "in_progress") for status in observed.values())
+
+
+def test_limits_disclosed():
+    limits = " ".join(RECEIPT["disclosed_limits"]["items"])
+    assert "own head" in limits and "independent review" in limits
+    assert "disable" in RECEIPT["bypass_classification"]["residual"]

@@ -2,16 +2,25 @@
 # SPDX-License-Identifier: Apache-2.0
 """PUBLIC_HISTORY_REWRITE_AUTHORITY = NONE, checked structurally (WO-COMMONS-PUBLICATION-FENCE-00C §9).
 
-Normative documents are split into units (headings, list items with their
-lead-in, table rows, code lines, sentences). Every unit that mentions a
-history-changing action must exactly match a clause registered in
-docs/history-norms.v0.1.json. Every registered clause must be a prohibition
-with exactly one negation and no permissive or exception wording.
+Normative documents (root *.md, docs/*.md, .github/*.md) are split into units:
+headings, list items together with their lead-in, table rows, code lines and
+sentences. Each unit is NFKC-folded. Then:
+
+1. Any unit naming a history-changing action must match a registered
+   PROHIBITED clause exactly.
+2. Any unit combining a history-scope word with permissive or exception
+   wording must match a registered clause exactly: a PROHIBITED clause or a
+   reviewed ACKNOWLEDGED_NON_HISTORY statement.
+3. Registered PROHIBITED clauses carry exactly one negation and no permissive
+   or exception wording. ACKNOWLEDGED_NON_HISTORY statements may never name a
+   history-changing action.
+4. Normative documents contain no non-ASCII letters (homoglyph defence).
 """
 
 import copy
 import json
 import re
+import unicodedata
 from pathlib import Path
 
 import pytest
@@ -20,25 +29,28 @@ from conftest import ROOT
 
 REGISTRY = json.loads((ROOT / "docs/history-norms.v0.1.json").read_text())
 NEGATION = re.compile(r"(?i)\b(no|not|never|nor|none|without|cannot|prohibited|forbidden)\b")
-PERMISSIVE = re.compile(
-    r"(?i)\b(may|can|could|might|allowed|allow|allows|permit\w*|authori[sz]\w*|except\w*|unless|however|but|"
-    r"reserved|optional\w*|only if|provided that)\b")
+
+
+def rx(key, registry=None):
+    return re.compile(r"(?i)(" + "|".join((registry or REGISTRY)[key]) + r")")
 
 
 def normative_documents(root: Path = ROOT) -> dict:
-    return {p.relative_to(root).as_posix(): p.read_text(encoding="utf-8")
-            for p in sorted(list(root.glob("*.md")) + list((root / "docs").glob("*.md")))}
+    paths = list(root.glob("*.md")) + list((root / "docs").glob("*.md")) + list((root / ".github").glob("*.md"))
+    return {p.relative_to(root).as_posix(): p.read_text(encoding="utf-8") for p in sorted(paths)}
 
 
 def units(text: str) -> list:
     """Return [(unit, lead_in)] where lead_in is set for list items."""
     out, para, item, last_sentence, in_code = [], [], None, None, False
 
+    def norm(s):
+        return " ".join(unicodedata.normalize("NFKC", s).split())
+
     def flush_para():
         nonlocal para, last_sentence
         if para:
-            joined = " ".join(" ".join(para).split())
-            for sentence in re.split(r"(?<=[.!?:])\s+", joined):
+            for sentence in re.split(r"(?<=[.!?:;])\s+", norm(" ".join(para))):
                 if sentence:
                     out.append((sentence, None))
                     last_sentence = sentence
@@ -47,7 +59,7 @@ def units(text: str) -> list:
     def flush_item():
         nonlocal item
         if item is not None:
-            out.append((" ".join(item[0].split()), item[1]))
+            out.append((norm(item[0]), item[1]))
             item = None
 
     for raw in text.splitlines():
@@ -55,17 +67,17 @@ def units(text: str) -> list:
         if line.lstrip().startswith("```"):
             flush_para(); flush_item(); in_code = not in_code
             continue
-        if in_code:
-            if line.strip():
-                out.append((line.strip(), None))
-            continue
         stripped = line.strip()
+        if in_code:
+            if stripped:
+                out.append((norm(stripped), None))
+            continue
         if not stripped:
             flush_para(); flush_item()
             continue
-        if stripped.startswith("#") or stripped.startswith("|") or stripped.startswith(">"):
+        if stripped.startswith(("#", "|", ">")):
             flush_para(); flush_item()
-            out.append((" ".join(stripped.split()), None))
+            out.append((norm(stripped), None))
             continue
         if re.match(r"^([-*+]|\d+[.)])\s+", stripped):
             flush_para(); flush_item()
@@ -81,37 +93,44 @@ def units(text: str) -> list:
 
 
 def violations(documents: dict, registry: dict) -> list:
-    terms = re.compile(r"(?i)\b(" + "|".join(registry["action_terms"]) + r")\b")
+    action, scope, grant = (rx(k, registry) for k in ("action_terms", "scope_terms", "grant_terms"))
     problems = []
-    clauses = registry["clauses"]
-    for clause in clauses:
+    for clause in registry["clauses"]:
         text = clause["text"].replace("**", "")
-        if clause.get("modality") != "PROHIBITED":
-            problems.append(f"{clause['id']}: modality {clause.get('modality')!r} is not PROHIBITED")
-        if PERMISSIVE.search(text):
-            problems.append(f"{clause['id']}: permissive or exception wording")
-        own = len(NEGATION.findall(text))
-        lead = clause.get("list_lead_in")
-        lead_neg = len(NEGATION.findall(lead)) if lead else 0
-        if lead and PERMISSIVE.search(lead):
-            problems.append(f"{clause['id']}: permissive lead-in")
-        if own + lead_neg != 1:
-            problems.append(f"{clause['id']}: needs exactly one negation, found {own + lead_neg}")
-    registered = {(c["document"], c["text"], c.get("list_lead_in")) for c in clauses}
+        kind = clause.get("kind")
+        if kind == "PROHIBITED":
+            lead = clause.get("list_lead_in")
+            if grant.search(text) or (lead and grant.search(lead)):
+                problems.append(f"{clause['id']}: permissive or exception wording in a prohibition")
+            negs = len(NEGATION.findall(text)) + (len(NEGATION.findall(lead)) if lead else 0)
+            if negs != 1:
+                problems.append(f"{clause['id']}: needs exactly one negation, found {negs}")
+        elif kind == "ACKNOWLEDGED_NON_HISTORY":
+            if action.search(text):
+                problems.append(f"{clause['id']}: an acknowledged statement may not name a history-changing action")
+        else:
+            problems.append(f"{clause['id']}: unknown clause kind {kind!r}")
+    registered = {(c["document"], c["text"], c.get("list_lead_in")): c for c in registry["clauses"]}
     seen = set()
     for doc, text in documents.items():
+        for ch in text:
+            if ord(ch) > 127 and unicodedata.category(ch).startswith("L"):
+                problems.append(f"{doc}: non-ASCII letter {ch!r} (U+{ord(ch):04X}) in a normative document")
+                break
         for unit, lead_in in units(text):
-            if not terms.search(unit):
+            names_action = bool(action.search(unit))
+            scoped_grant = bool(scope.search(unit) and grant.search(unit))
+            if not (names_action or scoped_grant):
                 continue
-            key = (doc, unit, lead_in if (doc, unit, lead_in) in registered else None)
-            if (doc, unit, lead_in) in registered:
-                seen.add((doc, unit, lead_in))
-            elif (doc, unit, None) in registered and lead_in is None:
-                seen.add(key)
-            else:
-                problems.append(f"{doc}: unregistered history-action wording: {unit[:120]!r}")
-    for clause in registered - seen:
-        problems.append(f"registered clause not found verbatim in {clause[0]}: {clause[1][:80]!r}")
+            key = next((k for k in ((doc, unit, lead_in), (doc, unit, None)) if k in registered), None)
+            if key is None:
+                problems.append(f"{doc}: unregistered history-relevant wording: {unit[:140]!r}")
+                continue
+            if names_action and registered[key]["kind"] != "PROHIBITED":
+                problems.append(f"{doc}: history-changing action outside a prohibition: {unit[:140]!r}")
+            seen.add(key)
+    for key in set(registered) - seen:
+        problems.append(f"registered clause not found verbatim in {key[0]}: {key[1][:80]!r}")
     return problems
 
 
@@ -120,46 +139,61 @@ def test_public_history_rewrite_authority_is_none():
     assert violations(normative_documents(), REGISTRY) == []
 
 
-# Hostile controls (WO §9) -------------------------------------------------------
+# Hostile controls (WO §9 and 00C review round 0) ---------------------------------
 
 POLICY = "docs/PUBLIC_COMMIT_IDENTITY_POLICY.md"
 MAINT = "docs/MAINTENANCE_POLICY.md"
 
 
-def _with(doc, addition):
+def _with(doc, addition, after=None):
     docs = normative_documents()
-    docs[doc] = docs[doc] + "\n" + addition + "\n"
+    if after:
+        assert after in docs[doc]
+        docs[doc] = docs[doc].replace(after, after + " " + addition, 1)
+    else:
+        docs[doc] = docs[doc] + "\n" + addition + "\n"
     return docs
 
 
-@pytest.mark.parametrize("doc,addition", [
-    (POLICY, "Maintainers may force-push to main to remove old metadata."),            # explicit permission
-    (POLICY, "It is not prohibited to rewrite public history."),                        # double negation
-    (MAINT, "## Exceptions\n\nThe bootstrap history can be rewritten once to remove author metadata."),  # other section + exception
-    ("docs/SUPPORT.md", "- Maintainers rewrite history when asked."),                     # different document, list item
-    ("CONTRIBUTING.md", "| Rewrite | allowed for maintainers |"),                          # table row
-    (POLICY, "```\ngit push --force origin main  # rewrite allowed\n```"),               # code block
-])
-def test_unregistered_rewrite_wording_is_rejected(doc, addition):
-    assert violations(_with(doc, addition), REGISTRY)
+HOSTILE = [
+    (POLICY, "Maintainers may force-push to main to remove old metadata.", None),
+    (POLICY, "It is not prohibited to rewrite public history.", None),
+    (MAINT, "## Exceptions\n\nThe bootstrap history can be rewritten once to remove author metadata.", None),
+    ("docs/SUPPORT.md", "- Maintainers rewrite history when asked.", None),
+    ("CONTRIBUTING.md", "| Rewrite | allowed for maintainers |", None),
+    (POLICY, "```\ngit push --force origin main  # rewrite allowed\n```", None),
+    # 00C review round 0 bypass inputs
+    (MAINT, "Maintainers may run `git push --force` on main when needed.", None),
+    (MAINT, "Maintainers may push --force-with-lease to main.", None),
+    (MAINT, "Re-writing public history is permitted for maintainers.", None),
+    (MAINT, "Maintainers may re-base main.", None),
+    (MAINT, "Maintainers may purge leaked commits from public history with BFG.", None),
+    (MAINT, "Published commits may be replaced or dropped by the owner.", None),
+    (MAINT, "The bootstrap commits are exempt from the history rule above.", None),
+    (MAINT, "The owner may waive the preceding rule.", None),
+    (MAINT, "The rule above does not apply to the bootstrap commits.", "Public history is never rewritten."),
+    (MAINT, "Maintainers may reіwrite main.", None),  # Cyrillic i homoglyph
+    (".github/pull_request_template.md", "Maintainers may squash public history.", None),
+]
 
 
-@pytest.mark.parametrize("mutate", [
-    lambda r: r["clauses"][0].__setitem__("modality", "PERMITTED"),
-    lambda r: r["clauses"].append({"id": "X1", "document": POLICY, "modality": "PROHIBITED",
-                                   "text": "It is not prohibited to rewrite public history."}),
-    lambda r: r["clauses"].append({"id": "X2", "document": POLICY, "modality": "PROHIBITED",
-                                   "text": "History may be rewritten except for the bootstrap commits."}),
-    lambda r: r["clauses"].append({"id": "X3", "document": POLICY, "modality": "PERMITTED",
-                                   "text": "Maintainers may rewrite public history."}),
+@pytest.mark.parametrize("doc,addition,after", HOSTILE)
+def test_hostile_rewrite_wording_is_rejected(doc, addition, after):
+    assert violations(_with(doc, addition, after), REGISTRY)
+
+
+@pytest.mark.parametrize("clause", [
+    {"id": "X1", "document": POLICY, "kind": "PROHIBITED", "text": "It is not prohibited to rewrite public history."},
+    {"id": "X2", "document": POLICY, "kind": "PROHIBITED", "text": "History may be rewritten except for the bootstrap commits."},
+    {"id": "X3", "document": POLICY, "kind": "PERMITTED", "text": "Maintainers may rewrite public history."},
+    {"id": "X4", "document": POLICY, "kind": "ACKNOWLEDGED_NON_HISTORY", "text": "Maintainers may force-push to main."},
+    {"id": "X5", "document": MAINT, "kind": "ACKNOWLEDGED_NON_HISTORY", "text": "Maintainers may purge commits from main."},
 ])
-def test_registering_permissive_or_contradictory_clauses_is_rejected(mutate):
+def test_registering_permissive_or_contradictory_clauses_is_rejected(clause):
     registry = copy.deepcopy(REGISTRY)
-    mutate(registry)
+    registry["clauses"].append(clause)
     docs = normative_documents()
-    extra = registry["clauses"][-1]
-    if extra["id"].startswith("X"):
-        docs[extra["document"]] += "\n" + extra["text"] + "\n"
+    docs[clause["document"]] += "\n" + clause["text"] + "\n"
     assert violations(docs, registry)
 
 
