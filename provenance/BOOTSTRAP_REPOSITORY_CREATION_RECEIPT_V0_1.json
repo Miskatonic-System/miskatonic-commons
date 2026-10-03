@@ -37,6 +37,9 @@
   "settings_applied_after_creation": {
     "actions_can_approve_pull_request_reviews": false,
     "actions_default_workflow_permissions": "read",
+    "dependabot_vulnerability_alerts": "enabled (also enables the dependency graph, required by dependency review)",
+    "github_secret_scanning": "enabled",
+    "github_secret_scanning_push_protection": "enabled",
     "has_projects": false,
     "has_wiki": false,
     "private_vulnerability_reporting": "enabled",
