@@ -96,8 +96,10 @@ Over both the source allowlist and the public bundle:
 - a targeted scan for usernames, local paths, machine names, internal hosts,
   hidden files and PR or issue links found 0 findings.
 
-The bundle's own tests enforce a URL and protocol-namespace allowlist, so no
-withheld identifier can appear in it.
+The bundle's own tests check that every URL in the package and README is a
+Commons schema URL or a public standard, and that protocol identifiers in the
+package use only the public namespace. These are bounded checks, not a proof
+that no other identifier is present.
 
 ## Commercial [C]
 
