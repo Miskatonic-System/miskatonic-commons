@@ -12,6 +12,7 @@ import pytest
 
 from algorithm_trace_core import framing, profiles
 from cases import hostile_cases, record_workload, sealed
+from core_cases import core_hostile_cases, core_positive_cases, probe_doc, probe_trace
 
 LIB = Path(__file__).resolve().parents[1]
 PKG = LIB / "src" / "algorithm_trace_core"
@@ -103,6 +104,110 @@ def test_hostile_trace_rejected_with_stable_code(impl, tmp_path, name):
     with pytest.raises(impl.error_cls) as exc:
         thunk()
     assert exc.value.code == code
+
+
+# Core-isolating controls (0.1.1) ---------------------------------------------------------
+
+CORE_NAMES = [
+    "framing_non_bytes_input", "framing_final_lf_replaced", "framing_interior_empty_line",
+    "framing_integer_outside_rfc8785_domain", "framing_malformed_json_line", "event_schema_extra_field",
+    "run_begin_missing", "run_begin_duplicate", "algorithm_id_differs", "implementation_id_differs",
+    "run_id_differs_in_one_event", "config_not_empty", "problem_schema_violation",
+    "precondition_schema_violation", "storage_set_not_admissible", "event_after_run_end", "run_end_missing",
+    "run_end_with_open_frame", "op_not_permitted", "op_not_permitted_non_mutating",
+    "core_operand_kind_not_permitted", "execution_after_precondition_violation", "swap_endpoints_equal",
+    "swap_wrong_constituent", "swap_writes_not_exchanged", "compare_operand_not_at_location",
+    "compare_parameter_misreported", "frame_id_not_sequential", "frame_scope_outside_storage",
+    "frame_scope_exceeds_parent", "run_record_schema_invalid", "run_record_digest_differs",
+    "run_record_field_differs", "probe_compare_empty_operand", "probe_compare_type_mismatch",
+    "probe_write_immutable", "probe_swap_immutable", "probe_duplicate_storage_name",
+    "probe_initial_length_differs", "probe_initial_values_outside_types",
+]
+
+
+def test_core_case_list_is_complete(impl, tmp_path):
+    assert [name for name, _, _ in core_hostile_cases(impl, tmp_path)] == CORE_NAMES
+
+
+@pytest.mark.parametrize("name", CORE_NAMES)
+def test_core_hostile_trace_rejected_with_stable_code(impl, tmp_path, name):
+    code, thunk = {n: (c, f) for n, c, f in core_hostile_cases(impl, tmp_path)}[name]
+    with pytest.raises(impl.error_cls) as exc:
+        thunk()
+    assert exc.value.code == code
+
+
+@pytest.mark.parametrize("name", CORE_NAMES)
+def test_core_positive_twin_accepted(impl, tmp_path, name):
+    """The same construction without its one defect replays cleanly, so each control has power."""
+    thunk = {n: f for n, _, f in core_positive_cases(impl, tmp_path)}[name]
+    thunk()
+
+
+def test_frame_scope_is_declarative_not_an_access_restriction(impl):
+    """Documented boundary: a frame scope is checked against storage and its parent scope only."""
+    import copy
+    from cases import _first, reserialize
+    _, _, _, events = sealed(impl)
+    ev = copy.deepcopy(events)
+    ev[_first(ev, "FRAME_ENTER")]["payload"]["scope"].update(lo=2, hi=2)
+    impl.replay(reserialize(impl, ev), impl.profile_dir)
+
+
+# Profile module discovery (0.1.1) ---------------------------------------------------------
+
+def _discovery_case(impl, tmp_path, package, init_body, module_body):
+    import sys
+    pkg = tmp_path / "mods" / package
+    pkg.mkdir(parents=True)
+    (pkg / "__init__.py").write_text(init_body)
+    (pkg / "semantics.py").write_text(module_body)
+    doc = probe_doc(semantics_module=f"{package}.semantics",
+                    semantics_module_sha256=hashlib.sha256((pkg / "semantics.py").read_bytes()).hexdigest())
+    d = tmp_path / "profiles"
+    d.mkdir()
+    (d / "p.profile.v0.4.json").write_text(json.dumps(doc))
+    trace = probe_trace(impl, impl.profile_digest(doc), [])
+    sys.path.insert(0, str(tmp_path / "mods"))  # restored by the clean_modules fixture
+    return lambda: impl.replay(trace, d)
+
+
+@pytest.fixture
+def clean_modules():
+    import sys
+    before = (list(sys.path), set(sys.modules))
+    yield
+    sys.path[:] = before[0]
+    for name in set(sys.modules) - before[1]:
+        del sys.modules[name]
+
+
+def test_parent_package_raising_is_a_stable_resolution_failure(impl, tmp_path, clean_modules):
+    run = _discovery_case(impl, tmp_path, "raising_parent", "raise RuntimeError('parent failed')\n", "")
+    with pytest.raises(impl.error_cls) as exc:
+        run()
+    assert exc.value.code == "PROFILE_MODULE_RESOLUTION_FAILED"
+
+
+def test_parent_package_import_error_stays_a_semantics_mismatch(impl, tmp_path, clean_modules):
+    run = _discovery_case(impl, tmp_path, "importerror_parent", "raise ImportError('absent')\n", "")
+    with pytest.raises(impl.error_cls) as exc:
+        run()
+    assert exc.value.code == "PROFILE_SEMANTICS_MISMATCH"
+
+
+def test_pinned_module_execution_failure_is_not_masked(impl, tmp_path, clean_modules):
+    """Once the pinned module itself runs, its exceptions are not rewritten into the error envelope."""
+    run = _discovery_case(impl, tmp_path, "raising_module", "", "raise RuntimeError('semantics failed')\n")
+    with pytest.raises(RuntimeError, match="semantics failed"):
+        run()
+
+
+def test_healthy_external_semantics_package_resolves(impl, tmp_path, clean_modules):
+    import inspect
+    from core_probe import semantics
+    run = _discovery_case(impl, tmp_path, "healthy_probe", "", inspect.getsource(semantics))
+    run()
 
 
 def test_strict_loads_rejects_duplicates_and_non_finite(impl):
