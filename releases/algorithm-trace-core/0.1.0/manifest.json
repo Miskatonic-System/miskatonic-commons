@@ -1,0 +1,188 @@
+{
+  "approved_at": "2026-10-04T00:19:55Z",
+  "bundle_digest_algorithm": "commons.bundle-digest.v0.1",
+  "bundle_sha256": "81039bf0a18252f4f57a9a59b553a4318af222e083a6b8b26ba8a66122eb14d5",
+  "clearance_receipt_id": "ccr-algorithm-trace-core-0-1-0",
+  "clearance_status": "CLEARED",
+  "commercial_impact": "COMPLEMENTARY",
+  "dependencies": {
+    "development": [
+      {
+        "license": "MIT",
+        "name": "pytest",
+        "purpose": "Test runner",
+        "version": "9.1.1"
+      }
+    ],
+    "inventory_complete": true,
+    "runtime": [
+      {
+        "license": "Apache-2.0",
+        "name": "rfc8785",
+        "purpose": "RFC 8785 canonical JSON (supported range >=0.1.4,<0.2)",
+        "version": "0.1.4"
+      },
+      {
+        "license": "MIT",
+        "name": "jsonschema",
+        "purpose": "Schema self-checks and run-record validation (supported range >=4.18,<5)",
+        "version": "4.26.0"
+      },
+      {
+        "license": "BSD-3-Clause",
+        "name": "fastjsonschema",
+        "purpose": "Compiled event and profile validation (supported range >=2.19,<3)",
+        "version": "2.22.2"
+      }
+    ]
+  },
+  "display_name": "AlgorithmTrace v0.4 Public Core",
+  "files": [
+    {
+      "bytes": 11357,
+      "path": "LICENSE",
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+    },
+    {
+      "bytes": 899,
+      "path": "NOTICE",
+      "sha256": "d47f34e3abffd46de1f4511347f8da218e40ddabe2399c5376eafb9a590497fe"
+    },
+    {
+      "bytes": 18578,
+      "path": "PROVENANCE.json",
+      "sha256": "ea659a6a9dd040cf1ea97f4d03aac31995f0621449fc2cd80e41acd6ece380b8"
+    },
+    {
+      "bytes": 4288,
+      "path": "README.md",
+      "sha256": "d2be754c8efdcb0a547095c6bec6176bdcb42291e6a4909a7f44bc7ecaf39186"
+    },
+    {
+      "bytes": 693,
+      "path": "pyproject.toml",
+      "sha256": "cbc040365f4ef6bf47ad944e02e0bbaa4716f59f69bd50a29ef1b21d551e1e21"
+    },
+    {
+      "bytes": 2410,
+      "path": "scripts/build_example_profile.py",
+      "sha256": "ceab8bd93437520f48d24272b868bd6a74faef3c7687272c5c80ac949c70d2cb"
+    },
+    {
+      "bytes": 933,
+      "path": "src/algorithm_trace_core/__init__.py",
+      "sha256": "14282499ce2466a4cc8158472176c1381ceedef802f467b4e716b3df8aeb8752"
+    },
+    {
+      "bytes": 1149,
+      "path": "src/algorithm_trace_core/canonical.py",
+      "sha256": "0b8d450b8ba8ca57b0d29b91f27d14915c8482db3e0eb09f86235947c460fd2f"
+    },
+    {
+      "bytes": 181,
+      "path": "src/algorithm_trace_core/examples/__init__.py",
+      "sha256": "207ea7a516a6cb9f0edaedf8417bcc4296ba626239d91056a73627d4f6780326"
+    },
+    {
+      "bytes": 2377,
+      "path": "src/algorithm_trace_core/examples/integer_sequence.py",
+      "sha256": "df3193ab62bb7a03ac5531848f63e90500d2bbdf150452b839a5e383f810a391"
+    },
+    {
+      "bytes": 2633,
+      "path": "src/algorithm_trace_core/examples/running_maximum.py",
+      "sha256": "7073478ccf8690f4167813e5276d01b3b1571f4908a7ff846ffeec5a3619840f"
+    },
+    {
+      "bytes": 3027,
+      "path": "src/algorithm_trace_core/framing.py",
+      "sha256": "7035f8b8635d93a5f7a10b3758c0ab8d60256188594cd04cf2b49e60c6b71405"
+    },
+    {
+      "bytes": 927,
+      "path": "src/algorithm_trace_core/metrics.py",
+      "sha256": "7faca81c65ae5ed6cac221550849257b0387d2341fea2601450f44c1c8b5126a"
+    },
+    {
+      "bytes": 5433,
+      "path": "src/algorithm_trace_core/profiles.py",
+      "sha256": "5e267a1d977765149559933b8ef20048406f2be6994d5f9ff571f0b99e554417"
+    },
+    {
+      "bytes": 2107,
+      "path": "src/algorithm_trace_core/profiles/integer_sequence_example.profile.v0.4.json",
+      "sha256": "c00b7c35979a00825853014adc2a117b994b3cdc8a1ea4e473adb89e6fc2258d"
+    },
+    {
+      "bytes": 7587,
+      "path": "src/algorithm_trace_core/recorder.py",
+      "sha256": "bab77a936d9a95b1b99e22271ee994e86467cd6463a054cbebbaa49642bc04fe"
+    },
+    {
+      "bytes": 15941,
+      "path": "src/algorithm_trace_core/replay.py",
+      "sha256": "e6813b22c63cea89feb9c48dcda63b24fe9212246bd8f520f8b23d451d8cab7b"
+    },
+    {
+      "bytes": 2109,
+      "path": "src/algorithm_trace_core/schemas/algorithm-run.v0.4.schema.json",
+      "sha256": "e7daaff5c10b9ee018ca5e599a0ed7a4c246428d1aee89365149a9587d68f533"
+    },
+    {
+      "bytes": 16392,
+      "path": "src/algorithm_trace_core/schemas/algorithm-trace-core.v0.4.schema.json",
+      "sha256": "c2f218757718c4b1f8a0ddaa2ada1ab59946cf5875123655ac98aef3dc0fbc71"
+    },
+    {
+      "bytes": 3454,
+      "path": "src/algorithm_trace_core/schemas/trace-profile.v0.4.schema.json",
+      "sha256": "1511e58b4e63104604c5abb55cca70830ecdbe0183c280c3ccc6bdd7d5eaa3f0"
+    },
+    {
+      "bytes": 9544,
+      "path": "tests/cases.py",
+      "sha256": "e2aacb2051c82e31fee49d79c2f0e3ee3dd124e7c611f086cabeeb3bb5f9ad80"
+    },
+    {
+      "bytes": 1413,
+      "path": "tests/conftest.py",
+      "sha256": "3496ed70277b66292c3e4a38dabbf12499898cc4223d4f2f41e8e5a79ee0af2a"
+    },
+    {
+      "bytes": 7115,
+      "path": "tests/test_core.py",
+      "sha256": "a12fd89362663156fb64c2c06bd1dd9669028efd6e2d01a607922ca9339cb533"
+    }
+  ],
+  "imported_at": "2026-10-04T00:19:55Z",
+  "license": "Apache-2.0",
+  "notices": [
+    "LICENSE",
+    "NOTICE"
+  ],
+  "package_id": "algorithm-trace-core",
+  "provenance_format_version": "commons.provenance.v0.1",
+  "public_claim_boundary": {
+    "does_not_establish": [
+      "correctness or optimality of any implementation or algorithm",
+      "coverage of arbitrary algorithm domains; each profile is a separate claim",
+      "source provenance or producer identity from digests alone",
+      "any scientific result, or the research authority of the private origin",
+      "reproduction of any private qualification",
+      "production security or suitability for safety-critical use",
+      "commercial value, product status or paid support"
+    ],
+    "statement": "Cleared for public distribution under its recorded scope: a generic trace, recording, profile-binding, replay and logical-metrics substrate with a synthetic example profile."
+  },
+  "public_release_id": "cpr-algorithm-trace-core-0.1.0",
+  "release_class": "P3_PUBLIC_RELEASE_APPROVED",
+  "schema_version": "commons.public-release-manifest.v0.1",
+  "source_attribution": {
+    "public_origin_name": "Miskatonic-System/msk-algorithms",
+    "statement": "Extracted from the generic AlgorithmTrace v0.4 core of the private repository Miskatonic-System/msk-algorithms at commit 449bfdb2e823993c699a033d8a75e3c8171f9176, under a source clearance merged there as 391e5171a4188aeb19fdfdeec37370017649def6. PROVENANCE.json in the bundle maps every public file to its source or marks it Commons-native."
+  },
+  "source_disclosure_level": "PUBLIC_ATTRIBUTED_PRIVATE_ORIGIN",
+  "summary": "A Python library for typed execution traces over declared storage: canonical JSONL, content-addressed trace profiles, a generic recorder, a deterministic replay and reference validator with stable error codes, and logical metrics (protocol 0.4).",
+  "support_class": "COMMUNITY_BEST_EFFORT",
+  "version": "0.1.0"
+}

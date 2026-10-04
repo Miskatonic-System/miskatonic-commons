@@ -346,7 +346,12 @@ def test_t11_index_contains_only_cleared_p3_p4():
     for entry in index["packages"]:
         assert entry["clearance_status"] == "CLEARED"
         assert entry["release_class"] in lint.RELEASABLE_CLASSES
-        assert entry["source_disclosure_level"] == "COMMONS_NATIVE"
+        assert entry["source_disclosure_level"] in ("COMMONS_NATIVE", "PUBLIC_ATTRIBUTED_PRIVATE_ORIGIN")
+        if entry["source_disclosure_level"] != "COMMONS_NATIVE":
+            manifest = json.loads((ROOT / entry["manifest_path"]).read_text())
+            receipt = json.loads((ROOT / entry["clearance_receipt_path"]).read_text())
+            assert manifest["source_attribution"]["public_origin_name"]
+            assert receipt["private_clearance_receipt"]["status"] == "HELD_PRIVATELY"
 
 
 @pytest.mark.parametrize("field,value,code", [

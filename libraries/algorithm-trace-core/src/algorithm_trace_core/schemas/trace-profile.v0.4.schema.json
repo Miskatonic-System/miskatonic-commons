@@ -1,0 +1,143 @@
+{
+  "$id": "https://github.com/Miskatonic-System/miskatonic-commons/tree/main/libraries/algorithm-trace-core/src/algorithm_trace_core/schemas/trace-profile.v0.4.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "A closed, content-addressed profile: profile_schema_digest = SHA256(RFC8785(document)). It pins its semantics module by SHA-256, so a profile's meaning cannot change without changing its digest.",
+  "properties": {
+    "comparison": {
+      "enum": [
+        "NUMERIC_KEY",
+        "TOTAL_KEY_TAG"
+      ]
+    },
+    "contract_policy_schema": {
+      "type": "object"
+    },
+    "operand_kinds": {
+      "items": {
+        "enum": [
+          "VALUE",
+          "PARAMETER",
+          "INTEGER",
+          "ARGUMENT"
+        ]
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "permitted_ops": {
+      "items": {
+        "enum": [
+          "RUN_BEGIN",
+          "RUN_END",
+          "READ",
+          "WRITE",
+          "COMPARE",
+          "SWAP",
+          "FRAME_ENTER",
+          "FRAME_EXIT"
+        ]
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "precondition_schema": {
+      "type": "object"
+    },
+    "problem_schema": {
+      "type": "object"
+    },
+    "profile_document_version": {
+      "const": "algorithm-trace-core.trace-profile.v0.4"
+    },
+    "profile_id": {
+      "pattern": "^[A-Z][A-Z0-9_]*$",
+      "type": "string"
+    },
+    "profile_version": {
+      "type": "string"
+    },
+    "result_schema": {
+      "type": "object"
+    },
+    "semantics_module": {
+      "pattern": "^[a-z_][a-z0-9_]*(\\.[a-z_][a-z0-9_]*)+$",
+      "type": "string"
+    },
+    "semantics_module_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "storage_sets": {
+      "items": {
+        "items": {
+          "additionalProperties": false,
+          "properties": {
+            "element_types": {
+              "items": {
+                "enum": [
+                  "TAGGED_ITEM",
+                  "INTEGER",
+                  "EMPTY"
+                ]
+              },
+              "minItems": 1,
+              "type": "array",
+              "uniqueItems": true
+            },
+            "initial": {
+              "enum": [
+                "FROM_PROBLEM",
+                "IDENTITY",
+                "ONES",
+                "EMPTY",
+                "ZERO"
+              ]
+            },
+            "kind": {
+              "enum": [
+                "ARRAY",
+                "SCALAR"
+              ]
+            },
+            "mutable": {
+              "type": "boolean"
+            },
+            "name": {
+              "pattern": "^[a-z][a-z0-9_]*$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "name",
+            "kind",
+            "element_types",
+            "initial",
+            "mutable"
+          ],
+          "type": "object"
+        },
+        "type": "array"
+      },
+      "minItems": 1,
+      "type": "array"
+    }
+  },
+  "required": [
+    "profile_document_version",
+    "profile_id",
+    "profile_version",
+    "semantics_module",
+    "semantics_module_sha256",
+    "problem_schema",
+    "precondition_schema",
+    "result_schema",
+    "storage_sets",
+    "permitted_ops",
+    "operand_kinds",
+    "comparison",
+    "contract_policy_schema"
+  ],
+  "title": "AlgorithmTrace v0.4 profile document",
+  "type": "object"
+}

@@ -1,0 +1,93 @@
+{
+  "$id": "https://github.com/Miskatonic-System/miskatonic-commons/tree/main/libraries/algorithm-trace-core/src/algorithm_trace_core/schemas/algorithm-run.v0.4.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Binds one v0.4 execution (and its exact profile) to its canonical trace. No wall-clock fields.",
+  "properties": {
+    "algorithm_id": {
+      "type": "string"
+    },
+    "config": {
+      "type": "object"
+    },
+    "event_count": {
+      "minimum": 2,
+      "type": "integer"
+    },
+    "executed_source_path": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "implementation_id": {
+      "type": "string"
+    },
+    "implementation_source_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "input_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "instrumentation_version": {
+      "const": "algorithm-trace-core.instrumented-storage.v0.4"
+    },
+    "precondition": {
+      "type": "object"
+    },
+    "problem_digest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "profile_id": {
+      "type": "string"
+    },
+    "profile_schema_digest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "result": {
+      "type": "object"
+    },
+    "run_id": {
+      "pattern": "^run-[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "algorithm-trace-core.algorithm-run.v0.4"
+    },
+    "seed": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "trace_digest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "run_id",
+    "profile_id",
+    "profile_schema_digest",
+    "algorithm_id",
+    "implementation_id",
+    "implementation_source_sha256",
+    "executed_source_path",
+    "instrumentation_version",
+    "input_id",
+    "problem_digest",
+    "precondition",
+    "result",
+    "config",
+    "seed",
+    "trace_digest",
+    "event_count"
+  ],
+  "title": "AlgorithmRun v0.4",
+  "type": "object"
+}

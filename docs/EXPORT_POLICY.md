@@ -127,6 +127,12 @@ pay, profitability or scientific validity.
 
 ## 8. Current state
 
-As of v0.1 no artifact from any private Miskatonic project has been cleared
-or released. The only released package is the Commons-native
-`commons-export-lint`. Each future export needs its own specific clearance.
+Two packages are released:
+
+- `commons-export-lint`, written directly in Commons;
+- `algorithm-trace-core`, the generic AlgorithmTrace v0.4 core extracted from
+  one private repository under WO-COMMONS-FIRST-EXPORT-01A.
+
+The second release clears only its own bytes. It does not clear anything else
+in its origin, and it gives no other artifact a path to release. Each future
+export needs its own specific clearance.

@@ -37,12 +37,14 @@ The repository currently contains its own bootstrap only:
 | Path | Contents |
 | --- | --- |
 | [`tools/commons-export-lint/`](tools/commons-export-lint/) | A standard-library Python tool that validates release manifests, clearance receipts, bundles and the package index. Written directly in Commons; no private code. |
+| [`libraries/algorithm-trace-core/`](libraries/algorithm-trace-core/) | AlgorithmTrace v0.4 Public Core: typed execution traces, canonical JSONL, content-addressed profiles, a generic recorder, deterministic replay and logical metrics. The first package extracted from private Miskatonic work; see its `PROVENANCE.json`. |
 | [`schemas/`](schemas/) | JSON Schemas for release manifests, clearance receipts and the package index (v0.1). |
 | [`fixtures/`](fixtures/) | Synthetic valid and invalid release examples used by the tests. |
 | [`releases/`](releases/) | The package index and the release metadata for each listed package. |
 | [`docs/`](docs/) | Export, provenance, classification, maintenance and support policies. |
 
-No existing private Miskatonic software has been released here yet.
+One package so far, `algorithm-trace-core`, comes from private Miskatonic work. It
+was cleared and extracted on its own; nothing else from its origin is public.
 
 ## Using a tool
 

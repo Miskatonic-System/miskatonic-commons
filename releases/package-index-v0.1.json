@@ -1,6 +1,21 @@
 {
   "packages": [
     {
+      "bundle_root": "libraries/algorithm-trace-core",
+      "clearance_receipt_path": "releases/algorithm-trace-core/0.1.0/clearance-receipt.json",
+      "clearance_status": "CLEARED",
+      "commercial_impact": "COMPLEMENTARY",
+      "display_name": "AlgorithmTrace v0.4 Public Core",
+      "license": "Apache-2.0",
+      "manifest_path": "releases/algorithm-trace-core/0.1.0/manifest.json",
+      "package_id": "algorithm-trace-core",
+      "release_class": "P3_PUBLIC_RELEASE_APPROVED",
+      "source_disclosure_level": "PUBLIC_ATTRIBUTED_PRIVATE_ORIGIN",
+      "status": "ACTIVE",
+      "support_class": "COMMUNITY_BEST_EFFORT",
+      "version": "0.1.0"
+    },
+    {
       "bundle_root": "tools/commons-export-lint",
       "clearance_receipt_path": "releases/commons-export-lint/0.1.0/clearance-receipt.json",
       "clearance_status": "CLEARED",

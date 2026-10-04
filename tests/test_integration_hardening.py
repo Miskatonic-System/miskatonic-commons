@@ -46,17 +46,21 @@ def receipt_problems(doc) -> list:
 
 # NC6 / WO §12-13 -----------------------------------------------------------------
 
-def test_nc6_private_origin_export_count_is_zero_and_consistent():
+def test_nc6_private_origin_export_count_is_recorded_and_consistent():
+    # The 00A closure receipt records the count at that time; it is historical and unchanged.
     assert RECEIPT["PRIVATE_ORIGIN_EXPORT_COUNT"] == 0
+    # The current count is derived from the index; every private-origin release carries public provenance.
     non_native = [p for p in INDEX["packages"] if p["source_disclosure_level"] != "COMMONS_NATIVE"]
-    assert len(non_native) == RECEIPT["PRIVATE_ORIGIN_EXPORT_COUNT"]
-    for release_dir in (ROOT / "releases").iterdir():
-        for manifest in release_dir.glob("*/manifest.json"):
-            assert json.loads(manifest.read_text())["source_disclosure_level"] == "COMMONS_NATIVE", manifest
+    assert [p["package_id"] for p in non_native] == ["algorithm-trace-core"]
+    for entry in non_native:
+        provenance = json.loads((ROOT / entry["bundle_root"] / "PROVENANCE.json").read_text())
+        assert provenance["package_id"] == entry["package_id"] and provenance["version"] == entry["version"]
+        assert "DIGEST_IDENTITY != PUBLICATION_OF_PRIVATE_HISTORY" in provenance["invariants"]
+        assert "PUBLIC_DERIVATIVE != CANONICAL_RESEARCH_SOURCE" in provenance["invariants"]
 
 
 def test_commons_native_package_preserved():
-    (entry,) = INDEX["packages"]
+    (entry,) = [p for p in INDEX["packages"] if p["package_id"] == "commons-export-lint"]
     manifest = json.loads((ROOT / entry["manifest_path"]).read_text())
     for doc in (entry, manifest, RECEIPT["released_packages"][0]):
         assert doc["package_id"] == "commons-export-lint" and doc["version"] == "0.1.0"
