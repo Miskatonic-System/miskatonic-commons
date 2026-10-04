@@ -20,7 +20,9 @@ It validates:
   reviewers are recorded as role tokens, not people;
 - that manifest and receipt text does not claim scientific, safety, security,
   compliance, clinical, performance or commercial results (only the explicit
-  `does_not_establish` negations are exempt);
+  `does_not_establish` negations are exempt). Since 0.1.1, a sentence that
+  mentions an SLA is a claim unless the whole sentence is one of a few exact
+  non-claim statements, such as "This package does not provide an SLA.";
 - that the release ID is bound to the package and version, and the bundle
   ships its license text;
 - that dependency and license declarations are complete;

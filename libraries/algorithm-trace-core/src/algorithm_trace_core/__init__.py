@@ -16,5 +16,5 @@ INSTRUMENTATION_VERSION = "algorithm-trace-core.instrumented-storage.v0.4"
 CORE_VERSION = "algorithm-trace-core.algorithm-trace-core.v0.4"
 PROFILE_DOCUMENT_VERSION = "algorithm-trace-core.trace-profile.v0.4"
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 PROTOCOL_VERSION = "0.4"

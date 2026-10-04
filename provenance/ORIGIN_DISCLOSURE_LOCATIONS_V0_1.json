@@ -1,0 +1,17 @@
+{
+  "approved_records": [
+    {
+      "basis": "Export report bound to WO-COMMONS-FIRST-EXPORT-01A; it reports the origin of this package.",
+      "package_id": "algorithm-trace-core",
+      "path": "reports/COMMONS_FIRST_EXPORT_01A_V0_1.md"
+    },
+    {
+      "basis": "Release metadata source; it declares source_attribution and the originating owner role for this package.",
+      "package_id": "algorithm-trace-core",
+      "path": "scripts/build_release_metadata.py"
+    }
+  ],
+  "rule": "A repository name disclosed as the origin of a release (source_attribution.public_origin_name) may appear only in that package's PROVENANCE.json, in its release manifests and clearance receipts under releases/<package>/<version>/, and in the exact files listed in approved_records. Approved records are exact paths, never directory prefixes. The name is matched as Miskatonic-System/<name>, as the bare name and as its underscore form. Names of other organization repositories may not appear anywhere.",
+  "schema_version": "commons.origin-disclosure-locations.v0.1",
+  "work_order": "WO-COMMONS-MEMBRANE-EVALUATION-01B"
+}

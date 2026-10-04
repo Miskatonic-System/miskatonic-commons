@@ -71,12 +71,18 @@ def _module_file(module_name: str) -> Path | None:
     """The source file Python would import for ``module_name``.
 
     Locating it imports the parent packages (as ``find_spec`` does) but not the module itself; the
-    module is imported only after its bytes match the pinned SHA-256.
+    module is imported only after its bytes match the pinned SHA-256. The pin covers the module
+    file only, not its parent packages. Any other exception raised while a parent package is being
+    imported is a discovery failure and is reported as PROFILE_MODULE_RESOLUTION_FAILED. An
+    exception raised by the pinned module itself, once imported, is not masked.
     """
     try:
         spec = importlib.util.find_spec(module_name)
     except (ImportError, ValueError):
         return None
+    except Exception as exc:  # a parent package raised while being imported for discovery
+        raise ReplayError("PROFILE_MODULE_RESOLUTION_FAILED",
+                          f"locating {module_name} failed: {type(exc).__name__}") from None
     if spec is None or spec.origin is None or not spec.origin.endswith(".py"):
         return None
     return Path(spec.origin)

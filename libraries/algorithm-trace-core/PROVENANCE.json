@@ -11,9 +11,31 @@
     "AUTOMATIC_BACKPORT_RELATIONSHIP = NONE",
     "AUTHORITY_DELTA_OVER_RESEARCH = NONE"
   ],
+  "maintenance": {
+    "changes": [
+      "profiles.py: a parent package raising during semantics-module discovery is reported as PROFILE_MODULE_RESOLUTION_FAILED instead of escaping replay",
+      "replay.py: run-record fields are compared by RFC 8785 bytes, so true no longer matches 1; 0.1.0 and the frozen source accepted such a run record",
+      "tests: 41 core-isolating hostile controls, each with a positive twin, and 4 profile-discovery controls",
+      "README: error boundaries, run-record comparison, frame-scope semantics and change log"
+    ],
+    "is_second_private_origin_export": false,
+    "new_private_source_files": 0,
+    "parity_rerun": {
+      "class": "PRIVATE_SOURCE_FACT",
+      "identical_to_0_1_0_report": true,
+      "public_package": "this release (0.1.1), compared with the frozen source by the same harness and normalization table",
+      "report_sha256": "6964f46ca11f6e052f044cdf970c765e9a9975697111da384f09a0ed93fdd15b"
+    },
+    "previous_release_merge": "f88678851e3cf6bbafb48e88015aad57d7c2034c",
+    "previous_version": "0.1.0",
+    "source_membrane_expansion": "NONE",
+    "work_order": "WO-COMMONS-MEMBRANE-EVALUATION-01B"
+  },
   "namespace_substitution": {
     "entries": 7,
+    "future_canonical_digest_method": "FUTURE_CANONICAL_DIGEST_METHOD (future exports): SHA-256 of the RFC 8785 canonical bytes of the table.",
     "note": "Private identifiers replaced by the substitution are withheld from this public record; the table is bound by digest.",
+    "table_digest_method": "HISTORICAL_DIGEST_METHOD: SHA-256 of json.dumps(table).encode('utf-8'), where table is the list of [private, public] string pairs in application order, with Python's default separators (', ' and ': ') and ASCII escaping. It is not RFC 8785. Recorded in 0.1.1; the digest value is unchanged.",
     "table_sha256": "d680400d779fc461fcdf9409ad49489b8c42cdaaa288c0cce85862394648b632"
   },
   "not_disclosed": [
@@ -155,7 +177,9 @@
     "class": "PRIVATE_SOURCE_FACT",
     "documented_divergences": {
       "executed_path": "private helper hard-codes the private repository layout; public helper is root-relative (documented divergence)",
-      "profile catalog location and semantics-module lookup": "public catalog is configurable and uses importlib.util.find_spec; equivalence exercised by P5/P6 through both catalogs"
+      "profile catalog location and semantics-module lookup": "public catalog is configurable and uses importlib.util.find_spec; equivalence exercised by P5/P6 through both catalogs",
+      "profile module resolution failure (0.1.1)": "the frozen source catches only ImportError and ValueError from find_spec, so any other exception raised by a parent package propagates out of replay unchanged; the public package reports it as PROFILE_MODULE_RESOLUTION_FAILED. Outside the parity case set",
+      "run-record comparison (0.1.1)": "the frozen source compares run-record fields with Python !=, so a run record with true where the trace has 1 is accepted; the public package compares RFC 8785 bytes and rejects it as RUN_RECORD_MISMATCH. Outside the parity case set; identical records give identical results"
     },
     "harness": "private; runs the frozen source with only the substitution table applied, side by side with this package",
     "hostile_cases": [
@@ -247,14 +271,14 @@
     {
       "class": "COMMONS_NATIVE",
       "path": "README.md",
-      "sha256": "d2be754c8efdcb0a547095c6bec6176bdcb42291e6a4909a7f44bc7ecaf39186",
+      "sha256": "7fda3b2308475fc2cb3b2e1df3cf89a0547174bc071a7a839b0283fab9aecab4",
       "sources": [],
       "transformation": "Written for this package; contains no private-source payload."
     },
     {
       "class": "COMMONS_NATIVE",
       "path": "pyproject.toml",
-      "sha256": "cbc040365f4ef6bf47ad944e02e0bbaa4716f59f69bd50a29ef1b21d551e1e21",
+      "sha256": "e8094618603d87f418a7f9cd8f4236e23c3a4eb80bc9794a73b93299581cf33b",
       "sources": [],
       "transformation": "Written for this package; contains no private-source payload."
     },
@@ -268,7 +292,7 @@
     {
       "class": "PUBLIC_PACKAGING_ADAPTATION",
       "path": "src/algorithm_trace_core/__init__.py",
-      "sha256": "14282499ce2466a4cc8158472176c1381ceedef802f467b4e716b3df8aeb8752",
+      "sha256": "5c77a276a39bb0d78f177adefca4720eaca02b772a6134aced310087d3dbc9a4",
       "sources": [
         {
           "git_blob_sha1": "79746c56a1c485ba064bcc9ce7c3b27413441947",
@@ -346,7 +370,7 @@
     {
       "class": "PUBLIC_PACKAGING_ADAPTATION",
       "path": "src/algorithm_trace_core/profiles.py",
-      "sha256": "956d2a709b9d339732c4b71d9f125f73f3622c45e8002589a76b2cba634282a7",
+      "sha256": "74b8000744cb992df840e154a6f5381a7cd49a3db10e92679ba9431f8fa9b1b8",
       "sources": [
         {
           "git_blob_sha1": "de5c28e1339a4ff7d5b48564e1480c69d409536d",
@@ -354,7 +378,7 @@
           "sha256": "abaaf5cf306d8e2539308f4ee000441f1b2bcb4aca5a0e6978fc171c6260ab27"
         }
       ],
-      "transformation": "Configurable profile directories (default: the package's profiles directory); semantics module located via importlib.util.find_spec and digest-checked before import."
+      "transformation": "Configurable profile directories (default: the package's profiles directory); semantics module located via importlib.util.find_spec and digest-checked before import. 0.1.1: a parent package raising during semantics-module discovery is reported as PROFILE_MODULE_RESOLUTION_FAILED."
     },
     {
       "class": "COMMONS_NATIVE",
@@ -379,7 +403,7 @@
     {
       "class": "PUBLIC_PACKAGING_ADAPTATION",
       "path": "src/algorithm_trace_core/replay.py",
-      "sha256": "e6813b22c63cea89feb9c48dcda63b24fe9212246bd8f520f8b23d451d8cab7b",
+      "sha256": "0f1eaf3a45a2981014ce46aca4948452a31abc9d7a2824c157d8597eee2a56f7",
       "sources": [
         {
           "git_blob_sha1": "cb45350dee20d1a7ec61a2074f4cf9eaca093bdc",
@@ -387,7 +411,7 @@
           "sha256": "112c7015e619804a2b48c1984bb4536b4b8566cd1f49b64bb3cf3fcaef247c0c"
         }
       ],
-      "transformation": "Import paths; optional profile_dirs passed through to profile resolution. Replay logic otherwise unchanged."
+      "transformation": "Import paths; optional profile_dirs passed through to profile resolution. Replay logic otherwise unchanged. 0.1.1: run-record fields compared by RFC 8785 bytes."
     },
     {
       "class": "PUBLIC_PACKAGING_ADAPTATION",
@@ -444,12 +468,33 @@
     },
     {
       "class": "COMMONS_NATIVE",
+      "path": "tests/core_cases.py",
+      "sha256": "0195cb8e96d224afa47d6c7d8e67e2878e22e6f014da82b69f30961fad087e57",
+      "sources": [],
+      "transformation": "Written for this package in 0.1.1 (41 core-isolating hostile controls and positive twins); contains no private-source payload."
+    },
+    {
+      "class": "COMMONS_NATIVE",
+      "path": "tests/core_probe/__init__.py",
+      "sha256": "c00f3b4fa52b7c37dd240d5ea412aef21e6aa88df131494a5d1577126d151f23",
+      "sources": [],
+      "transformation": "Written for this package in 0.1.1 (test-only CORE_PROBE semantics package); contains no private-source payload."
+    },
+    {
+      "class": "COMMONS_NATIVE",
+      "path": "tests/core_probe/semantics.py",
+      "sha256": "b712c29b8eda8d5d7efad12b3bf3e1feb3f548994871a66f98cd088aa07d1396",
+      "sources": [],
+      "transformation": "Written for this package in 0.1.1 (permissive CORE_PROBE hooks); contains no private-source payload."
+    },
+    {
+      "class": "COMMONS_NATIVE",
       "path": "tests/test_core.py",
-      "sha256": "a12fd89362663156fb64c2c06bd1dd9669028efd6e2d01a607922ca9339cb533",
+      "sha256": "d94e9a32c866ebf2d04d77a13276fd4aafefa85d82d0c3334feb55b7427996cb",
       "sources": [],
       "transformation": "Written for this package; contains no private-source payload."
     }
   ],
-  "version": "0.1.0",
+  "version": "0.1.1",
   "work_order": "WO-COMMONS-FIRST-EXPORT-01A"
 }

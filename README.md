@@ -43,8 +43,9 @@ The repository currently contains its own bootstrap only:
 | [`releases/`](releases/) | The package index and the release metadata for each listed package. |
 | [`docs/`](docs/) | Export, provenance, classification, maintenance and support policies. |
 
-One package so far, `algorithm-trace-core`, comes from private Miskatonic work. It
-was cleared and extracted on its own; nothing else from its origin is public.
+One package so far, `algorithm-trace-core` (now 0.1.1), comes from private Miskatonic work. It
+was cleared and extracted on its own; nothing else from its origin is public. Its 0.1.1
+release is maintenance of the same cleared code, not a further export.
 
 ## Using a tool
 

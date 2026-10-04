@@ -9,8 +9,11 @@ import pytest
 from conftest import ROOT, lint
 
 FIXTURES = ROOT / "fixtures"
-REAL_MANIFEST = ROOT / "releases/commons-export-lint/0.1.0/manifest.json"
-REAL_RECEIPT = ROOT / "releases/commons-export-lint/0.1.0/clearance-receipt.json"
+# The current release of the tool, as listed in the package index.
+_LINT_ENTRY = next(p for p in json.loads((ROOT / "releases/package-index-v0.1.json").read_text())["packages"]
+                   if p["package_id"] == "commons-export-lint")
+REAL_MANIFEST = ROOT / _LINT_ENTRY["manifest_path"]
+REAL_RECEIPT = ROOT / _LINT_ENTRY["clearance_receipt_path"]
 REAL_BUNDLE = ROOT / "tools/commons-export-lint"
 INDEX = ROOT / "releases/package-index-v0.1.json"
 
@@ -256,6 +259,80 @@ def test_t9_commercial_claims_rejected(release_copy, text):
     rel = release_copy()
     rel.edit(lambda m: m["public_claim_boundary"].__setitem__("statement", text))
     assert rel.codes() == ["PROHIBITED_CLAIM"]
+
+
+# SLA context handling (commons-export-lint 0.1.1, WO-COMMONS-MEMBRANE-EVALUATION-01B §12) ---------
+
+SLA_AFFIRMATIVE = [
+    "Backed by an SLA.",
+    "Includes a 99.9% uptime SLA.",
+    "SLA-backed support included.",
+    "We offer an SLA to all users.",
+    "Enterprise SLAs available on request.",
+    "A service-level agreement is included.",
+    # Wording built to slip past a negation or context rule:
+    "Not only free but SLA-backed.",
+    "It is not only SLA-backed but hosted.",
+    "No question: it has an SLA.",
+    "There is no doubt SLA coverage applies.",
+    "We do not hesitate to offer an SLA.",
+    "Without delay, an SLA applies.",
+    "No SLA? Not here: every user gets an SLA.",
+    "No SLA violations since launch.",
+    "This release is never shipped without an SLA.",
+    "This release is not SLA-free.",
+    "Support means an SLA of 99.9% uptime.",
+    "Includes an enterprise 'SLA'.",
+    "This package may include an SLA for enterprise users.",
+    "There is no better SLA in the industry.",
+    "Backed by a 99.9% SLA, which stays valid outside business hours.",
+    "Under the term SLA agreed with each customer, uptime is assured.",
+    "This package does not provide an SLA, except for enterprise users.",
+    "No SLA is offered to free users.",
+    "SLAs remain outside this package for now, but are coming.",
+]
+
+SLA_NOT_A_CLAIM = [
+    "This package does not provide an SLA.",
+    "No SLA is offered.",
+    "Provided without any SLA.",
+    "It is not an SLA-backed service.",
+    "Maintainers do not offer an SLA.",
+    "Commercial operationalization may someday include SLA-backed service.",
+    "The term `SLA` refers to a service-level agreement.",
+    "SLAs remain outside this primitive.",
+]
+
+
+@pytest.mark.parametrize("text", SLA_AFFIRMATIVE)
+def test_sla_affirmative_claim_rejected(release_copy, text):
+    rel = release_copy()
+    rel.edit(lambda m: m.__setitem__("summary", text))
+    assert rel.codes() == ["PROHIBITED_CLAIM"]
+
+
+@pytest.mark.parametrize("text", SLA_NOT_A_CLAIM)
+def test_sla_negation_prospect_or_term_is_not_a_claim(release_copy, text):
+    rel = release_copy()
+    rel.edit(lambda m: m.__setitem__("summary", text))
+    assert rel.codes() == []
+
+
+@pytest.mark.parametrize("text", SLA_AFFIRMATIVE)
+def test_sla_affirmative_claim_rejected_in_receipt(release_copy, text):
+    rel = release_copy()
+    rel.edit(lambda r: r.__setitem__("scope_statement", text), "receipt")
+    assert rel.codes() == ["PROHIBITED_CLAIM"]
+
+
+def test_sla_moat_enum_value_is_structural_not_a_claim():
+    """The schema-fixed moat value "SLA" is exempt; the same word in free text is not."""
+    findings = []
+    lint.scan_claims("SLA", "receipt.minimum_viable_moat.retained_surfaces[0]", findings,
+                     "$.minimum_viable_moat.retained_surfaces[0]")
+    assert findings == []
+    lint.scan_claims("SLA", "receipt.minimum_viable_moat.analysis", findings, "$.minimum_viable_moat.analysis")
+    assert [f.code for f in findings] == ["PROHIBITED_CLAIM"]
 
 
 def test_t8_t9_negations_belong_in_does_not_establish(release_copy):

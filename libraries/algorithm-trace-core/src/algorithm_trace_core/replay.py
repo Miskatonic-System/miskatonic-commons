@@ -24,7 +24,7 @@ import fastjsonschema
 import jsonschema
 
 from . import TRACE_SCHEMA_VERSION
-from .canonical import canonical_digest
+from .canonical import canonical_bytes, canonical_digest
 from .framing import ReplayError, _check_sequence, load_schema, parse_jsonl
 from .profiles import Profile, ProfileDirs, resolve, validate_part
 
@@ -69,6 +69,14 @@ class ReplayResultV04:
     trace_digest: str
     event_count: int
     events: list[dict[str, Any]]
+
+
+def _json_same(a: Any, b: Any) -> bool:
+    """JSON equality by RFC 8785 bytes. Unlike Python ``==``, ``true`` is not ``1`` (0.1.1)."""
+    try:
+        return canonical_bytes(a) == canonical_bytes(b)
+    except Exception:  # a value outside the RFC 8785 domain cannot equal a trace value
+        return False
 
 
 def _check_location(ctx: ReplayContext, loc: dict[str, Any], seq: int) -> None:
@@ -282,7 +290,7 @@ def replay_v04(trace_bytes: bytes, *, expected_digest: str | None = None,
                     "result": result, "config": b["config"], "seed": b["seed"], "event_count": len(events),
                     "problem_digest": canonical_digest(b["problem"])}
         for fld, value in expected.items():
-            if run_record[fld] != value:
+            if not _json_same(run_record[fld], value):
                 raise ReplayError("RUN_RECORD_MISMATCH", f"run record {fld} disagrees with the trace")
     return ReplayResultV04(first["run_id"], first["algorithm_id"], first["implementation_id"], b["profile_id"],
                            b["profile_schema_digest"], b["problem"], result, ctx.arrays, ctx.scalars, digest,

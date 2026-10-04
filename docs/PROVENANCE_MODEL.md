@@ -82,6 +82,14 @@ read the metadata by hand.
 `NOT_REVIEWED`, `REVIEW_IN_PROGRESS`, `CLEARED`, `REJECTED`, `SUPERSEDED`.
 Only `CLEARED` releases may be released or appear in the package index.
 
+## Digest methods
+
+New membrane records use one canonical method: SHA-256 of the RFC 8785 bytes of
+the value they bind. One older value is kept as it was recorded. The namespace
+table digest of `algorithm-trace-core` 0.1.0 is SHA-256 of Python's
+`json.dumps(table)` with default separators. Its `PROVENANCE.json` names that
+method next to the value. Recorded values are never recomputed under a new method.
+
 ## Bundle digest
 
 `commons.bundle-digest.v0.1`: SHA-256 over the lines

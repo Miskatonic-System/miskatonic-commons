@@ -79,3 +79,23 @@ holds the following:
   need independent review before merge.
 - The fence protects this public repository only. It says nothing about other
   repositories.
+
+## Configuration custody
+
+[`provenance/COMMONS_FENCE_EXPECTED_STATE_V0_1.json`](../provenance/COMMONS_FENCE_EXPECTED_STATE_V0_1.json)
+records the expected state of the ruleset and the SHA-256 of `.github/workflows/ci.yml`. It binds
+that state by an RFC 8785 digest. The ruleset fields are:
+
+- id, enforcement, target and ref conditions;
+- bypass actors;
+- merge methods;
+- the required checks with their integration ids and strict policy;
+- the deletion and non-fast-forward rules.
+
+`python scripts/audit_commons_fence.py` reads the provider state through the `gh` CLI. It only
+reads. It prints `COMMONS_FENCE_MATCHES_EXPECTED`, `COMMONS_FENCE_DRIFT` (with each difference) or
+`COMMONS_FENCE_UNOBSERVABLE`. This is detection. It does not stop a configuration change.
+
+The test suite fails when the workflow file differs from its recorded digest. A change to the
+workflow therefore has to update the custody record in the same pull request, where review sees
+both.

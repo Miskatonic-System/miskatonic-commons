@@ -1,0 +1,74 @@
+{
+  "audit_command": "python scripts/audit_commons_fence.py",
+  "digest_method": "SHA-256 of the RFC 8785 canonical bytes of expected_state",
+  "expected_state": {
+    "ruleset": {
+      "bypass_actors": [],
+      "current_user_can_bypass": "never",
+      "enforcement": "active",
+      "ref_name_exclude": [],
+      "ref_name_include": [
+        "refs/heads/main"
+      ],
+      "rules": {
+        "deletion": {},
+        "non_fast_forward": {},
+        "pull_request": {
+          "allowed_merge_methods": [
+            "merge"
+          ],
+          "require_code_owner_review": false,
+          "required_approving_review_count": 0,
+          "required_reviewers": []
+        },
+        "required_status_checks": {
+          "do_not_enforce_on_create": false,
+          "required_status_checks": [
+            {
+              "context": "dependency review",
+              "integration_id": 15368
+            },
+            {
+              "context": "secret scan (gitleaks, full history)",
+              "integration_id": 15368
+            },
+            {
+              "context": "tests (python 3.12)",
+              "integration_id": 15368
+            },
+            {
+              "context": "tests (python 3.13)",
+              "integration_id": 15368
+            },
+            {
+              "context": "tests (python 3.14)",
+              "integration_id": 15368
+            }
+          ],
+          "strict_required_status_checks_policy": true
+        }
+      },
+      "ruleset_id": 24431688,
+      "target": "branch"
+    },
+    "workflow": {
+      "path": ".github/workflows/ci.yml",
+      "sha256": "f41c502699b4f8c764719a52c3fa82101928ea1849d05f07b526fdaccd7d250c"
+    }
+  },
+  "expected_state_sha256": "23788d6bdd3e29f7607c4b5ffcf228fb0d6990135acd285bf6bcf19f2a24ae8a",
+  "limits": [
+    "Detection only: an administrator can still change or disable the ruleset, and this record cannot prevent it.",
+    "The workflow digest makes any change to the CI workflow visible as drift until this record is updated in a reviewed pull request; a pull request can change both, so review of such a change remains the control.",
+    "current_user_can_bypass is reported for the account that runs the audit."
+  ],
+  "observed_at": "2026-10-04T15:51:25Z",
+  "repository": "Miskatonic-System/miskatonic-commons",
+  "schema_version": "commons.fence-expected-state.v0.1",
+  "verdicts": [
+    "COMMONS_FENCE_MATCHES_EXPECTED",
+    "COMMONS_FENCE_DRIFT",
+    "COMMONS_FENCE_UNOBSERVABLE"
+  ],
+  "work_order": "WO-COMMONS-MEMBRANE-EVALUATION-01B"
+}

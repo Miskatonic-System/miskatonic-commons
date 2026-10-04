@@ -214,3 +214,19 @@ def test_list_item_needs_its_prohibiting_lead_in():
     docs["docs/EXPORT_POLICY.md"] = docs["docs/EXPORT_POLICY.md"].replace(
         "The following are prohibited:", "The following are recommended:")
     assert violations(docs, REGISTRY)
+
+
+# Machine-readable policy state (WO-COMMONS-MEMBRANE-EVALUATION-01B §18) -------------------------
+
+def test_authoritative_policy_fields_are_false():
+    """The policy is the three boolean fields; prose is explanatory and the lint keeps it consistent."""
+    policy = REGISTRY["authoritative_policy"]
+    for field in ("history_rewrite_authorized", "force_push_authorized", "rebase_public_history_authorized"):
+        assert policy[field] is False, field
+    assert REGISTRY["property"] == "PUBLIC_HISTORY_REWRITE_AUTHORITY = NONE"
+
+
+def test_authoritative_policy_matches_provider_fence_record():
+    fence = json.loads((ROOT / "provenance/COMMONS_FENCE_EXPECTED_STATE_V0_1.json").read_text())
+    rules = fence["expected_state"]["ruleset"]["rules"]
+    assert "non_fast_forward" in rules and "deletion" in rules
