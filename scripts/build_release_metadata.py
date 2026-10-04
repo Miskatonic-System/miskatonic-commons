@@ -32,7 +32,7 @@ RELEASES = [
     {
         "package_id": "commons-export-lint",
         "display_name": "commons-export-lint",
-        "version": "0.1.0",
+        "version": "0.1.1",
         "bundle_root": "tools/commons-export-lint",
         "summary": ("A standard-library Python command-line tool that checks Commons release "
                     "manifests, clearance receipts, release bundles and the package index for "
@@ -53,11 +53,12 @@ RELEASES = [
         "license": "Apache-2.0",
         "notices": ["LICENSE", "NOTICE"],
         "support_class": "COMMUNITY_BEST_EFFORT",
-        "clearance_receipt_id": "ccr-commons-native-commons-export-lint-0-1-0",
-        "approved_at": "2026-10-03T17:23:00Z",
-        "scope_statement": ("Release 0.1.0 of commons-export-lint: exactly the files listed in the "
-                            "manifest, bound by bundle_sha256. Written in Commons for the Commons "
-                            "bootstrap; it has no private ancestry and exports no private technology."),
+        "clearance_receipt_id": "ccr-commons-native-commons-export-lint-0-1-1",
+        "approved_at": "2026-10-04T16:31:59Z",
+        "scope_statement": ("Release 0.1.1 of commons-export-lint: exactly the files listed in the "
+                            "manifest, bound by bundle_sha256. Maintenance of 0.1.0 (context handling in the "
+                            "assurance claim scan). Written in Commons; it has no private ancestry and "
+                            "exports no private technology."),
         "dimensions": {
             "originating_technical": "Commons-native; behavior defined by its README and exercised by the "
                                      "repository test suite and synthetic fixtures.",
@@ -76,7 +77,7 @@ RELEASES = [
     {
         "package_id": "algorithm-trace-core",
         "display_name": "AlgorithmTrace v0.4 Public Core",
-        "version": "0.1.0",
+        "version": "0.1.1",
         "bundle_root": "libraries/algorithm-trace-core",
         "summary": ("A Python library for typed execution traces over declared storage: canonical JSONL, "
                     "content-addressed trace profiles, a generic recorder, a deterministic replay and reference "
@@ -105,16 +106,18 @@ RELEASES = [
         "license": "Apache-2.0",
         "notices": ["LICENSE", "NOTICE"],
         "support_class": "COMMUNITY_BEST_EFFORT",
-        "clearance_receipt_id": "ccr-algorithm-trace-core-0-1-0",
-        "approved_at": "2026-10-04T00:19:55Z",
+        "clearance_receipt_id": "ccr-algorithm-trace-core-0-1-1",
+        "approved_at": "2026-10-04T16:31:59Z",
         "dependencies": {"inventory_complete": True, "runtime": [
             {"name": "rfc8785", "version": "0.1.4", "license": "Apache-2.0", "purpose": "RFC 8785 canonical JSON (supported range >=0.1.4,<0.2)"},
             {"name": "jsonschema", "version": "4.26.0", "license": "MIT", "purpose": "Schema self-checks and run-record validation (supported range >=4.18,<5)"},
             {"name": "fastjsonschema", "version": "2.22.2", "license": "BSD-3-Clause", "purpose": "Compiled event and profile validation (supported range >=2.19,<3)"}],
             "development": [{"name": "pytest", "version": "9.1.1", "license": "MIT", "purpose": "Test runner"}]},
-        "scope_statement": ("Release 0.1.0 of algorithm-trace-core: exactly the files listed in the manifest, bound by "
-                            "bundle_sha256. Generic AlgorithmTrace v0.4 substrate only; no domain profile, algorithm "
-                            "implementation, experiment or research record of the origin is included."),
+        "scope_statement": ("Release 0.1.1 of algorithm-trace-core: exactly the files listed in the manifest, bound by "
+                            "bundle_sha256. Maintenance of the already-cleared 0.1.0 artifact under "
+                            "WO-COMMONS-MEMBRANE-EVALUATION-01B: no new private source, no source membrane expansion, "
+                            "not a second private-origin export. Generic AlgorithmTrace v0.4 substrate only; no domain "
+                            "profile, algorithm implementation, experiment or research record of the origin is included."),
         "dimension_owners": {"originating_technical": "msk-algorithms-maintainers", "provenance": "commons-maintainers",
                              "security": "commons-maintainers", "dependency_license": "commons-maintainers",
                              "commercial_impact": "repository-owner", "public_packaging": "commons-maintainers"},
@@ -131,11 +134,11 @@ RELEASES = [
             "question": "AFTER THIS ARTIFACT IS AVAILABLE FOR FREE, WHAT ECONOMICALLY VALUABLE FUNCTION REMAINS?",
             "retained_surfaces": ["MANAGED_PROVENANCE", "ORGANIZATION_WIDE_GOVERNANCE", "POLICY_MANAGEMENT", "IDENTITY_INTEGRATION",
                                   "ENTERPRISE_INTEGRATIONS", "MANAGED_HOSTING", "PRIVATE_DEPLOYMENT", "ASSURANCE_SERVICES",
-                                  "SUPPORT", "PROPRIETARY_ADAPTERS", "OTHER"],
+                                  "SUPPORT", "SLA", "PROPRIETARY_ADAPTERS", "OTHER"],
             "analysis": ("Domain-specific profiles and their semantics, the research and evaluation infrastructure, "
                          "organization-wide evidence custody and cross-repository provenance, managed verification, "
                          "policy and identity governance, integrations, hosting, private deployment, audit reporting, "
-                         "assurance, support and SLAs all remain outside this primitive. Nothing was withheld to "
+                         "assurance and support all remain outside this primitive. Nothing was withheld to "
                          "create scarcity."),
         },
     },

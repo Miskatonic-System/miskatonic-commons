@@ -1,0 +1,50 @@
+{
+  "apache_patent_grant_acknowledged": true,
+  "bundle_sha256": "f34bf896d1e06ca8c9f76f3b5ab277baa613c3cb3120bdfd9135239c57f6998e",
+  "clearance_receipt_id": "ccr-commons-native-commons-export-lint-0-1-1",
+  "clearance_status": "CLEARED",
+  "commercial_impact": "NONE",
+  "completed_at": "2026-10-04T16:31:59Z",
+  "dimensions": {
+    "commercial_impact": {
+      "basis": "Not applicable: Commons-native with commercial impact NONE; no private technology is exported.",
+      "owner": "commons-maintainers",
+      "status": "NOT_APPLICABLE"
+    },
+    "dependency_license": {
+      "basis": "No runtime dependencies beyond the Python standard library. Apache-2.0 LICENSE and NOTICE included in the bundle; patent grant acknowledged.",
+      "owner": "commons-maintainers",
+      "status": "PASS"
+    },
+    "originating_technical": {
+      "basis": "Commons-native; behavior defined by its README and exercised by the repository test suite and synthetic fixtures.",
+      "owner": "commons-maintainers",
+      "status": "PASS"
+    },
+    "provenance": {
+      "basis": "Authored directly in this repository on a history descending only from the recorded clean root commit; no imported files.",
+      "owner": "commons-maintainers",
+      "status": "PASS"
+    },
+    "public_packaging": {
+      "basis": "Standalone README, bundled schemas, tests, fixtures and best-effort support class reviewed by Commons maintainers.",
+      "owner": "commons-maintainers",
+      "status": "PASS"
+    },
+    "security": {
+      "basis": "Repository sensitive-data check and pinned gitleaks scan in CI; the tool imports only allow-listed standard-library modules and opens no network connections.",
+      "owner": "commons-maintainers",
+      "status": "PASS"
+    }
+  },
+  "package_id": "commons-export-lint",
+  "private_clearance_receipt": {
+    "status": "NOT_APPLICABLE_COMMONS_NATIVE"
+  },
+  "public_release_id": "cpr-commons-export-lint-0.1.1",
+  "release_class": "P3_PUBLIC_RELEASE_APPROVED",
+  "schema_version": "commons.public-clearance-receipt.v0.1",
+  "scope_statement": "Release 0.1.1 of commons-export-lint: exactly the files listed in the manifest, bound by bundle_sha256. Maintenance of 0.1.0 (context handling in the assurance claim scan). Written in Commons; it has no private ancestry and exports no private technology.",
+  "source_disclosure_level": "COMMONS_NATIVE",
+  "version": "0.1.1"
+}

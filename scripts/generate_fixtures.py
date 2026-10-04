@@ -323,7 +323,7 @@ def generate(dest: Path):
         "fixture_results": dict(sorted(expected.items())),
         "format": "commons.fixture-replay.v0.1",
         "tool": "commons-export-lint",
-        "tool_version": "0.1.0",
+        "tool_version": "0.1.1",  # kept in step with the linter by hand: this script does not import it
     }))
 
 

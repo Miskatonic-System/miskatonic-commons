@@ -24,6 +24,13 @@
     "\\bre-?creat\\w*",
     "\\bdelete and re-?creat\\w*"
   ],
+  "authoritative_policy": {
+    "authority": "These three fields are the authoritative statement of the policy. Prose in normative documents explains them and cannot change them; the clause registry and lint below keep the prose consistent with them. Provider enforcement covers main only: ruleset 24431688 blocks non-fast-forward updates and deletion of main. Other branches are not provider-protected, and the policy still applies to them.",
+    "force_push_authorized": false,
+    "history_rewrite_authorized": false,
+    "rebase_public_history_authorized": false,
+    "work_order": "WO-COMMONS-MEMBRANE-EVALUATION-01B"
+  },
   "clauses": [
     {
       "document": "CONTRIBUTING.md",

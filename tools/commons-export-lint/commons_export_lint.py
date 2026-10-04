@@ -35,7 +35,7 @@ import unicodedata
 from pathlib import Path, PurePosixPath
 
 TOOL_NAME = "commons-export-lint"
-TOOL_VERSION = "0.1.0"
+TOOL_VERSION = "0.1.1"
 
 SCHEMA_FILES = {
     "manifest": "public-release-manifest-v0.1.schema.json",
@@ -102,12 +102,34 @@ PROHIBITED_CLAIM_PATTERNS = (
     ("clinical", r"\bclinical(ly)?\b|\bdiagnos(is|tic|e)\b|\bFDA\b"),
     ("safety_security", r"\b(safety|security)[- ](certified|guaranteed|approved|proven)\b"),
     ("compliance", r"\bcertified\b|\bcertification\b|\bcompliant\b|\bcompliance\b"),
-    ("assurance", r"\bguarantee(s|d)?\b|\bwarrant(y|ies|ed)\b|\bSLA\b|\bproduction[- ]ready\b"),
+    ("assurance", r"\bguarantee(s|d)?\b|\bwarrant(y|ies|ed)\b|\bproduction[- ]ready\b"),
     ("performance", r"\bfastest\b|\bbest[- ]in[- ]class\b|\bstate[- ]of[- ]the[- ]art\b"),
     ("commercial", r"\bprofit(s|able|ability)?\b|\bproduct[- ]market[- ]fit\b|\brevenue\b"),
     ("commercial", r"\bwillingness[- ]to[- ]pay\b|\bcommercial(ly)?\s+(viable|viability|validated)\b"),
     ("commercial", r"\b(customer|market|commercial|proven)\s+demand\b|\bpaying\s+(customers|users)\b"),
 )
+
+# SLA (service-level agreement) language (0.1.1). Every sentence that mentions an SLA is a claim
+# unless the whole sentence is one of the exact non-claim statements below: a plain negation of an
+# offer, a statement about possible future commercial service, a reference to the term, or a
+# statement that SLAs are outside the artifact. Matching is on the whole sentence, so added words
+# anywhere make it a claim again. This is deliberately narrow; reword to one of these forms or
+# leave SLAs out.
+SLA_TERM = re.compile(r"\bSLAs?\b|\bservice[- ]level agreements?\b", re.IGNORECASE)
+_SUBJECT = r"(?:this|the) (?:package|release|tool|library|artifact|project|bundle)"
+SLA_NOT_A_CLAIM = tuple(re.compile(rf"(?:{p})", re.IGNORECASE) for p in (
+    rf"{_SUBJECT} does not (?:provide|offer|include|come with) an SLA",
+    r"no SLA is (?:offered|provided|included)",
+    r"(?:provided|offered|distributed|released) without any SLA",
+    r"(?:it|this|this package) is not an SLA-backed service",
+    r"(?:the )?maintainers do not offer an SLA",
+    r"commercial operationali[sz]ation (?:may|might|could) (?:someday |eventually |in the future )?include "
+    r"SLA-backed (?:service|support)",
+    r"the term `SLA` refers to a service-level agreement",
+    r"SLAs (?:are|remain) outside (?:this|the) (?:package|release|tool|library|artifact|project|bundle|primitive)",
+))
+# The moat enum value "SLA" names a surface retained outside the artifact; the schema fixes it.
+SLA_ENUM_PATH = re.compile(r"^\$\.minimum_viable_moat\.retained_surfaces\[\d+\]$")
 
 # Source locators. They may appear only inside an approved source_attribution
 # block (PUBLIC_SOURCE / PUBLIC_ATTRIBUTED_PRIVATE_ORIGIN); everywhere else, at
@@ -452,13 +474,29 @@ def scan_personal_and_control(doc, where: str, findings: list) -> None:
                 findings.append(Finding("PERSONAL_DATA", where, f"{path}: {kind} pattern present"))
 
 
-def scan_claims(text: str, where: str, findings: list) -> None:
+def sla_claims(text: str) -> list:
+    """Every sentence in ``text`` that mentions an SLA and is not one of the exact non-claim statements."""
+    text = " ".join(unicodedata.normalize("NFKC", text).split())
+    out = []
+    for sentence in re.split(r"(?<=[.!?])\s+", text):
+        if SLA_TERM.search(sentence):
+            body = sentence.rstrip(".!? ")
+            if not any(p.fullmatch(body) for p in SLA_NOT_A_CLAIM):
+                out.append(sentence)
+    return out
+
+
+def scan_claims(text: str, where: str, findings: list, path: str = "") -> None:
     text = unicodedata.normalize("NFKC", text)
     for kind, pattern in PROHIBITED_CLAIM_PATTERNS:
         match = re.search(pattern, text, flags=re.IGNORECASE)
         if match:
             findings.append(Finding("PROHIBITED_CLAIM", where,
                                     f"{kind} claim language {match.group(0)!r}"))
+    if not SLA_ENUM_PATH.match(path):
+        for sentence in sla_claims(text)[:1]:
+            findings.append(Finding("PROHIBITED_CLAIM", where,
+                                    f"assurance claim language {SLA_TERM.search(sentence).group(0)!r}"))
 
 
 # --------------------------------------------------------------------------
@@ -522,7 +560,7 @@ def check_release(manifest_path: Path, receipt_path: Path | None, bundle_root: P
         if path.startswith("$.public_claim_boundary.does_not_establish") or path.endswith(".<key>") \
                 or PATH_VALUED.match(path):
             continue
-        scan_claims(text, f"manifest{path[1:]}", findings)
+        scan_claims(text, f"manifest{path[1:]}", findings, path)
 
     # License, notices, dependencies.
     lic = m.get("license")
@@ -670,7 +708,7 @@ def _check_receipt(m: dict, receipt_path: Path | None, schema_dir, findings: lis
     scan_personal_and_control(r, "receipt", findings)
     for path, text in iter_strings(r):
         if not path.endswith(".<key>"):
-            scan_claims(text, f"receipt{path[1:]}", findings)
+            scan_claims(text, f"receipt{path[1:]}", findings, path)
 
 
 def _sorted(findings: list) -> list:
