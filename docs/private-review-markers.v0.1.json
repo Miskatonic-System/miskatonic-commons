@@ -1,0 +1,34 @@
+{
+  "clearances": [],
+  "markers": [
+    {
+      "id": "REVIEW_VERDICT",
+      "pattern": "\\b(REVISE|REPAIR_REQUIRED|ACCEPT_WITH_LIMITATIONS|REQUEST_CHANGES|INDEPENDENT_REVIEW_BLOCKING)\\b",
+      "targets": "a private review verdict token"
+    },
+    {
+      "id": "REVIEW_ROUND",
+      "pattern": "\\b(review|reviewer)\\s+rounds?\\b|\\bround\\s+\\d+\\b|\\b(one|two|three|\\d+)\\s+(REVISE\\s+)?rounds?\\b|\\bR\\d+\\s+(verdict|review)\\b",
+      "targets": "how many private review rounds ran, or which round said what"
+    },
+    {
+      "id": "FINDING_ID",
+      "pattern": "\\b(R\\d+-)?NB-?\\d+\\b|\\bB-\\d+\\b",
+      "targets": "identifiers of private review findings"
+    },
+    {
+      "id": "INTERNAL_COMMERCIAL_LABEL",
+      "pattern": "\\bexport_authorized\\b|\\bUNCERTAIN\\b",
+      "targets": "internal commercial-review labels that have appeared on a public candidate before; labels that have never been public are checked during private clearance, not listed here"
+    },
+    {
+      "id": "PRIVATE_REVIEWER_REASONING",
+      "pattern": "\\b(reviewer|review)\\s+(found|noted|flagged|caught|objected|asked|required|argued)\\b",
+      "targets": "what a private reviewer found or argued"
+    }
+  ],
+  "property": "PRIVATE_REVIEW_CONTENT_PUBLICATION_REQUIRES_EXPLICIT_CLEARANCE",
+  "rule": "In every file that carries a private-origin release (the bundle of each PUBLIC_ATTRIBUTED_PRIVATE_ORIGIN package, its release records under releases/<package>/, and its approved records in provenance/ORIGIN_DISCLOSURE_LOCATIONS_V0_1.json), a marker match is an error unless a clearance entry names the path, the marker id and the exact matched text, with its basis. Ordinary public statements such as 'independently reviewed' or 'review accepted' match no marker. This is a bounded pattern check: it targets the categories that crossed the membrane in WO-COMMONS-FIRST-EXPORT-01A and does not understand prose.",
+  "schema_version": "commons.private-review-markers.v0.1",
+  "work_order": "WO-COMMONS-MEMBRANE-EVALUATION-01B"
+}

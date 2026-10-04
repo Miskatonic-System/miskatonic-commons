@@ -1,0 +1,917 @@
+{
+  "defect_search": {
+    "KNOWN_INVALID_PUBLIC_CONTRACT_TRACE_ACCEPTED": false,
+    "documented_boundaries": [
+      "A frame scope is checked against its storage and its nearest enclosing scope only; accesses inside the frame are not restricted to it. Documented in the README; pinned by a positive test.",
+      "An exception raised by a pinned semantics module after it starts executing is not rewritten into the error envelope."
+    ],
+    "probes": [
+      "boolean in place of an integer in COMPARE result, READ value, location index, result.final, result.best and problem: rejected (SCHEMA_INVALID or PROFILE_SCHEMA_INVALID)",
+      "CRLF line ends: NONCANONICAL_LINE; UTF-8 BOM: FRAMING_INVALID; negative index: SCHEMA_INVALID; seed set: PROFILE_INPUT_INVALID",
+      "integer outside the RFC 8785 domain: NONCANONICAL_LINE"
+    ]
+  },
+  "method": "Each raise statement under src/algorithm_trace_core was replaced by pass, one at a time, in a scratch copy, and the library suite was run with -x. Each surviving mutant was then run against the core-isolating controls (tests/core_cases.py), which were first confirmed on the unmutated package: every hostile control is rejected with its code and every positive twin is accepted. Classification follows the observed outcome.",
+  "package": "algorithm-trace-core",
+  "rejection_obligations": {
+    "control_to_site": {
+      "core:algorithm_id_differs": {
+        "code": "ALGORITHM_ID_MISMATCH",
+        "site": "replay.py:112"
+      },
+      "core:compare_operand_not_at_location": {
+        "code": "COMPARE_OPERAND_MISMATCH",
+        "site": "replay.py:221"
+      },
+      "core:compare_parameter_misreported": {
+        "code": "COMPARE_PARAMETER_MISMATCH",
+        "site": "replay.py:224"
+      },
+      "core:config_not_empty": {
+        "code": "PROFILE_INPUT_INVALID",
+        "site": "replay.py:127"
+      },
+      "core:core_operand_kind_not_permitted": {
+        "code": "OPERAND_KIND_NOT_PERMITTED",
+        "site": "replay.py:214"
+      },
+      "core:event_after_run_end": {
+        "code": "EVENT_AFTER_RUN_END",
+        "site": "replay.py:159"
+      },
+      "core:event_schema_extra_field": {
+        "code": "SCHEMA_INVALID",
+        "site": "replay.py:103"
+      },
+      "core:execution_after_precondition_violation": {
+        "code": "EXECUTION_AFTER_PRECONDITION_VIOLATION",
+        "site": "replay.py:179"
+      },
+      "core:frame_id_not_sequential": {
+        "code": "FRAME_ID_INVALID",
+        "site": "replay.py:236"
+      },
+      "core:frame_scope_exceeds_parent": {
+        "code": "FRAME_RANGE_INVALID",
+        "site": "replay.py:245"
+      },
+      "core:frame_scope_outside_storage": {
+        "code": "FRAME_RANGE_INVALID",
+        "site": "replay.py:241"
+      },
+      "core:framing_final_lf_replaced": {
+        "code": "FRAMING_INVALID",
+        "site": "framing.py:43"
+      },
+      "core:framing_integer_outside_rfc8785_domain": {
+        "code": "NONCANONICAL_LINE",
+        "site": "framing.py:55"
+      },
+      "core:framing_interior_empty_line": {
+        "code": "FRAMING_INVALID",
+        "site": "framing.py:47"
+      },
+      "core:framing_malformed_json_line": {
+        "code": "FRAMING_INVALID",
+        "site": "framing.py:51"
+      },
+      "core:framing_non_bytes_input": {
+        "code": "TRACE_EMPTY",
+        "site": "framing.py:41"
+      },
+      "core:implementation_id_differs": {
+        "code": "IMPLEMENTATION_ID_MISMATCH",
+        "site": "replay.py:112"
+      },
+      "core:op_not_permitted": {
+        "code": "MUTATION_FORBIDDEN",
+        "site": "replay.py:177"
+      },
+      "core:op_not_permitted_non_mutating": {
+        "code": "OP_NOT_PERMITTED",
+        "site": "replay.py:177"
+      },
+      "core:precondition_schema_violation": {
+        "code": "PROFILE_SCHEMA_INVALID",
+        "site": "profiles.py:131"
+      },
+      "core:probe_compare_empty_operand": {
+        "code": "COMPARE_EMPTY_OPERAND",
+        "site": "replay.py:87"
+      },
+      "core:probe_compare_type_mismatch": {
+        "code": "COMPARE_TYPE_MISMATCH",
+        "site": "replay.py:231"
+      },
+      "core:probe_duplicate_storage_name": {
+        "code": "STORAGE_INVALID",
+        "site": "replay.py:130"
+      },
+      "core:probe_initial_length_differs": {
+        "code": "STORAGE_INVALID",
+        "site": "replay.py:143"
+      },
+      "core:probe_initial_values_outside_types": {
+        "code": "STORAGE_INVALID",
+        "site": "replay.py:149"
+      },
+      "core:probe_swap_immutable": {
+        "code": "MUTATION_FORBIDDEN",
+        "site": "replay.py:208"
+      },
+      "core:probe_write_immutable": {
+        "code": "MUTATION_FORBIDDEN",
+        "site": "replay.py:194"
+      },
+      "core:problem_schema_violation": {
+        "code": "PROFILE_SCHEMA_INVALID",
+        "site": "profiles.py:131"
+      },
+      "core:run_begin_duplicate": {
+        "code": "RUN_BEGIN_DUPLICATE",
+        "site": "replay.py:161"
+      },
+      "core:run_begin_missing": {
+        "code": "RUN_BEGIN_MISSING",
+        "site": "replay.py:107"
+      },
+      "core:run_end_missing": {
+        "code": "RUN_END_MISSING",
+        "site": "replay.py:261"
+      },
+      "core:run_end_with_open_frame": {
+        "code": "RUN_END_OPEN_FRAMES",
+        "site": "replay.py:172"
+      },
+      "core:run_id_differs_in_one_event": {
+        "code": "RUN_ID_MISMATCH",
+        "site": "replay.py:112"
+      },
+      "core:run_record_digest_differs": {
+        "code": "TRACE_DIGEST_MISMATCH",
+        "site": "replay.py:277"
+      },
+      "core:run_record_field_differs": {
+        "code": "RUN_RECORD_MISMATCH",
+        "site": "replay.py:286"
+      },
+      "core:run_record_schema_invalid": {
+        "code": "RUN_RECORD_INVALID",
+        "site": "replay.py:275"
+      },
+      "core:storage_set_not_admissible": {
+        "code": "STORAGE_INVALID",
+        "site": "replay.py:133"
+      },
+      "core:swap_endpoints_equal": {
+        "code": "SWAP_MALFORMED",
+        "site": "replay.py:204"
+      },
+      "core:swap_writes_not_exchanged": {
+        "code": "SWAP_CONSTITUENTS_MISMATCH",
+        "site": "replay.py:169"
+      },
+      "core:swap_wrong_constituent": {
+        "code": "SWAP_CONSTITUENTS_MISMATCH",
+        "site": "replay.py:167"
+      },
+      "v010:compare_operand_kind_not_permitted": {
+        "code": "OPERAND_KIND_NOT_PERMITTED",
+        "site": "replay.py:214"
+      },
+      "v010:compare_unread_operand": {
+        "code": "COMPARE_UNREAD_OPERAND",
+        "site": "replay.py:217"
+      },
+      "v010:compare_wrong_result": {
+        "code": "COMPARE_RESULT_WRONG",
+        "site": "replay.py:233"
+      },
+      "v010:duplicate_json_keys": {
+        "code": "FRAMING_INVALID",
+        "site": "framing.py:51"
+      },
+      "v010:duplicate_sequence": {
+        "code": "SEQ_DUPLICATE",
+        "site": "framing.py:68"
+      },
+      "v010:invalid_write_type": {
+        "code": "WRITE_TYPE_INVALID",
+        "site": "replay.py:196"
+      },
+      "v010:malformed_frame_nesting": {
+        "code": "FRAME_EXIT_INVALID",
+        "site": "replay.py:251"
+      },
+      "v010:missing_terminal_lf": {
+        "code": "FRAMING_INVALID",
+        "site": "framing.py:43"
+      },
+      "v010:nan_input": {
+        "code": "FRAMING_INVALID",
+        "site": "framing.py:51"
+      },
+      "v010:noncanonical_jsonl": {
+        "code": "NONCANONICAL_LINE",
+        "site": "framing.py:57"
+      },
+      "v010:out_of_order_sequence": {
+        "code": "SEQ_OUT_OF_ORDER",
+        "site": "framing.py:71"
+      },
+      "v010:out_of_range_access": {
+        "code": "INDEX_OUT_OF_RANGE",
+        "site": "replay.py:81"
+      },
+      "v010:profile_digest_mismatch": {
+        "code": "PROFILE_DIGEST_MISMATCH",
+        "site": "profiles.py:98"
+      },
+      "v010:profile_document_schema_violation": {
+        "code": "PROFILE_DOCUMENT_INVALID",
+        "site": "profiles.py:103"
+      },
+      "v010:read_value_mismatch": {
+        "code": "READ_VALUE_MISMATCH",
+        "site": "replay.py:183"
+      },
+      "v010:result_schema_violation": {
+        "code": "PROFILE_SCHEMA_INVALID",
+        "site": "profiles.py:131"
+      },
+      "v010:run_id_derivation_mismatch": {
+        "code": "RUN_ID_NOT_DERIVED",
+        "site": "replay.py:120"
+      },
+      "v010:semantics_module_digest_mismatch": {
+        "code": "PROFILE_SEMANTICS_MISMATCH",
+        "site": "profiles.py:107"
+      },
+      "v010:sequence_gap": {
+        "code": "SEQ_GAP",
+        "site": "framing.py:71"
+      },
+      "v010:trace_digest_mismatch": {
+        "code": "TRACE_DIGEST_MISMATCH",
+        "site": "replay.py:270"
+      },
+      "v010:undeclared_storage": {
+        "code": "STORAGE_NOT_DECLARED",
+        "site": "replay.py:77"
+      },
+      "v010:unknown_profile": {
+        "code": "PROFILE_UNKNOWN",
+        "site": "profiles.py:98"
+      },
+      "v010:wrong_location_kind": {
+        "code": "LOCATION_KIND_MISMATCH",
+        "site": "replay.py:79"
+      }
+    },
+    "controls": 63,
+    "definition": "An obligation is a distinct (raise site, stable code) pair in canonical, framing, profiles and replay that a hostile control reaches.",
+    "distinct_obligations_by_guarded_condition": 61,
+    "distinct_obligations_exercised": 57,
+    "shared_obligation_notes": [
+      "framing.py:43 and replay.py:214 are each reached by a 0.1.0 control and its core-isolating twin. In the unmutated package both hit the same branch. With that branch removed, the 0.1.0 control is still rejected through a backup path (the strict-JSON parse; the example profile's check_argument hook), while the twin is accepted. Only the twin isolates the obligation. These are the only two alias pairs, and both are deliberate.",
+      "framing.py:51 re-raises three different strict-JSON failures: a duplicate key and a non-finite number, both detected in canonical.py, and malformed JSON. They are three obligations at one site.",
+      "profiles.py:131 is the shared validate_part helper for the problem, precondition and result schemas. They are three obligations at one site."
+    ],
+    "shared_obligations": [
+      {
+        "code": "FRAMING_INVALID",
+        "controls": [
+          "core:framing_final_lf_replaced",
+          "v010:missing_terminal_lf"
+        ],
+        "site": "framing.py:43"
+      },
+      {
+        "code": "FRAMING_INVALID",
+        "controls": [
+          "core:framing_malformed_json_line",
+          "v010:duplicate_json_keys",
+          "v010:nan_input"
+        ],
+        "site": "framing.py:51"
+      },
+      {
+        "code": "PROFILE_SCHEMA_INVALID",
+        "controls": [
+          "core:precondition_schema_violation",
+          "core:problem_schema_violation",
+          "v010:result_schema_violation"
+        ],
+        "site": "profiles.py:131"
+      },
+      {
+        "code": "OPERAND_KIND_NOT_PERMITTED",
+        "controls": [
+          "core:core_operand_kind_not_permitted",
+          "v010:compare_operand_kind_not_permitted"
+        ],
+        "site": "replay.py:214"
+      }
+    ]
+  },
+  "schema_version": "commons.hostile-control-audit.v0.1",
+  "version_0_1_0": {
+    "ACTUAL_REPLAY_ACCEPTANCE_DEFECT": 0,
+    "INDETERMINATE": 0,
+    "blind_spots_accepted_invalid_trace": 26,
+    "blind_spots_escaped_error_envelope": 6,
+    "killed": 29,
+    "mutants": [
+      {
+        "classification": "KILLED_BY_0_1_0_SUITE",
+        "id": "M00",
+        "justification": "",
+        "raise": "raise ValueError(f\"non-finite JSON number: {token}\")",
+        "site": "canonical.py:37"
+      },
+      {
+        "classification": "KILLED_BY_0_1_0_SUITE",
+        "id": "M01",
+        "justification": "",
+        "raise": "raise ValueError(f\"duplicate JSON object key: {key!r}\")",
+        "site": "canonical.py:31"
+      },
+      {
+        "classification": "KILLED_BY_0_1_0_SUITE",
+        "id": "M02",
+        "justification": "",
+        "raise": "raise ReplayError(\"OPERAND_KIND_NOT_PERMITTED\", \"INTEGER_SEQUENCE_EXAMPLE has no operation arguments\", seq)",
+        "site": "integer_sequence.py:49"
+      },
+      {
+        "classification": "KILLED_BY_0_1_0_SUITE",
+        "id": "M03",
+        "justification": "",
+        "raise": "raise ReplayError(\"PROFILE_INPUT_INVALID\", \"seq length must equal the number of problem values\", 0)",
+        "site": "integer_sequence.py:24"
+      },
+      {
+        "classification": "KILLED_BY_0_1_0_SUITE",
+        "id": "M04",
+        "justification": "",
+        "raise": "raise ReplayError(\"PROFILE_OPERAND_INVALID\", f\"INTEGER operand {value} outside [-{INTEGER_BOUND}, {INTEGER_BOUND}]\", seq)",
+        "site": "integer_sequence.py:45"
+      },
+      {
+        "classification": "KILLED_BY_0_1_0_SUITE",
+        "id": "M05",
+        "justification": "",
+        "raise": "raise ReplayError(\"RESULT_MISMATCH\", \"result.final differs from the replayed array\")",
+        "site": "integer_sequence.py:62"
+      },
+      {
+        "classification": "KILLED_BY_0_1_0_SUITE",
+        "id": "M06",
+        "justification": "",
+        "raise": "raise ReplayError(\"RESULT_MISMATCH\", \"result.best differs from the replayed scalar\")",
+        "site": "integer_sequence.py:64"
+      },
+      {
+        "classification": "TEST_ORACLE_BLIND_SPOT",
+        "id": "M07",
+        "justification": "Witness control framing_non_bytes_input: with the raise removed, the invalid trace is rejected outside the error envelope (TypeError).",
+        "mutated_outcome": "TypeError",
+        "raise": "raise ReplayError(\"TRACE_EMPTY\", \"trace has no bytes\")",
+        "site": "framing.py:41",
+        "witness_control": "framing_non_bytes_input"
+      },
+      {
+        "classification": "TEST_ORACLE_BLIND_SPOT",
+        "id": "M08",
+        "justification": "Witness control framing_final_lf_replaced: with the raise removed, the invalid trace is ACCEPTED.",
+        "mutated_outcome": "ACCEPTED",
+        "raise": "raise ReplayError(\"FRAMING_INVALID\", \"trace must end with a final LF\")",
+        "site": "framing.py:43",
+        "witness_control": "framing_final_lf_replaced"
+      },
+      {
+        "classification": "SEMANTICALLY_EQUIVALENT",
+        "id": "M09",
+        "justification": "An empty line always fails strict JSON parsing, which raises the same FRAMING_INVALID.",
+        "raise": "raise ReplayError(\"FRAMING_INVALID\", f\"empty line {lineno}\")",
+        "site": "framing.py:47"
+      },
+      {
+        "classification": "KILLED_BY_0_1_0_SUITE",
+        "id": "M10",
+        "justification": "",
+        "raise": "raise ReplayError(\"NONCANONICAL_LINE\", f\"line {lineno} is not RFC 8785 canonical\")",
+        "site": "framing.py:57"
+      },
+      {
+        "classification": "KILLED_BY_0_1_0_SUITE",
+        "id": "M11",
+        "justification": "",
+        "raise": "raise ReplayError(\"SEQ_DUPLICATE\", f\"seq {seq} repeated\", seq)",
+        "site": "framing.py:68"
+      },
+      {
+        "classification": "KILLED_BY_0_1_0_SUITE",
+        "id": "M12",
+        "justification": "",
+        "raise": "raise ReplayError(code, f\"expected seq {expected}, found {seq}\", seq)",
+        "site": "framing.py:71"
+      },
+      {
+        "classification": "KILLED_BY_0_1_0_SUITE",
+        "id": "M13",
+        "justification": "",
+        "raise": "raise ReplayError(\"FRAMING_INVALID\", f\"line {lineno} is not strict JSON: {exc}\") from None",
+        "site": "framing.py:51"
+      },
+      {
+        "classification": "TEST_ORACLE_BLIND_SPOT",
+        "id": "M14",
+        "justification": "Witness control framing_integer_outside_rfc8785_domain: with the raise removed, the invalid trace is rejected outside the error envelope (UnboundLocalError).",
+        "mutated_outcome": "UnboundLocalError",
+        "raise": "raise ReplayError(\"NONCANONICAL_LINE\", f\"line {lineno}: {exc}\") from None",
+        "site": "framing.py:55",
+        "witness_control": "framing_integer_outside_rfc8785_domain"
+      },
+      {
+        "classification": "KILLED_BY_0_1_0_SUITE",
+        "id": "M15",
+        "justification": "",
+        "raise": "raise ReplayError(code, f\"{profile_id} @ {digest} is not a catalogued profile document\")",
+        "site": "profiles.py:92"
+      },
+      {
+        "classification": "KILLED_BY_0_1_0_SUITE",
+        "id": "M16",
+        "justification": "",
+        "raise": "raise ReplayError(\"PROFILE_SEMANTICS_MISMATCH\", f\"{doc['semantics_module']} does not have the pinned SHA-256\")",
+        "site": "profiles.py:101"
+      },
+      {
+        "classification": "OUTSIDE_CLAIMED_REJECTION_SURFACE",
+        "id": "M17",
+        "justification": "profile_for is a recorder-side lookup helper, not replay.",
+        "raise": "raise LookupError(f\"{profile_id}: {len(matches)} catalogued documents\")",
+        "site": "profiles.py:133"
+      },
+      {
+        "classification": "KILLED_BY_0_1_0_SUITE",
+        "id": "M18",
+        "justification": "",
+        "raise": "raise ReplayError(\"PROFILE_DOCUMENT_INVALID\", exc.message) from None",
+        "site": "profiles.py:97"
+      },
+      {
+        "classification": "KILLED_BY_0_1_0_SUITE",
+        "id": "M19",
+        "justification": "",
+        "raise": "raise ReplayError(code, exc.message) from None",
+        "site": "profiles.py:125"
+      },
+      {
+        "classification": "OUTSIDE_CLAIMED_REJECTION_SURFACE",
+        "id": "M20",
+        "justification": "Recorder read guard. Python raises the same IndexError for overflow; a negative index produces a trace that replay rejects as SCHEMA_INVALID.",
+        "raise": "raise IndexError(f\"{loc} out of range\")",
+        "site": "recorder.py:83"
+      },
+      {
+        "classification": "OUTSIDE_CLAIMED_REJECTION_SURFACE",
+        "id": "M21",
+        "justification": "Recorder write guard. A trace with such a write is rejected by replay as MUTATION_FORBIDDEN.",
+        "raise": "raise PermissionError(f\"{loc['storage']} is immutable\")",
+        "site": "recorder.py:88"
+      },
+      {
+        "classification": "KILLED_BY_0_1_0_SUITE",
+        "id": "M22",
+        "justification": "",
+        "raise": "raise TypeError(f\"{value['type']} not admissible in {loc['storage']}\")",
+        "site": "recorder.py:90"
+      },
+      {
+        "classification": "KILLED_BY_0_1_0_SUITE",
+        "id": "M23",
+        "justification": "",
+        "raise": "raise ValueError(\"a swap needs two distinct locations\")",
+        "site": "recorder.py:111"
+      },
+      {
+        "classification": "KILLED_BY_0_1_0_SUITE",
+        "id": "M24",
+        "justification": "",
+        "raise": "raise RuntimeError(\"frame exit does not match innermost frame\")",
+        "site": "recorder.py:130"
+      },
+      {
+        "classification": "KILLED_BY_0_1_0_SUITE",
+        "id": "M25",
+        "justification": "",
+        "raise": "raise RuntimeError(\"RUN_END with open frames\")",
+        "site": "recorder.py:135"
+      },
+      {
+        "classification": "OUTSIDE_CLAIMED_REJECTION_SURFACE",
+        "id": "M26",
+        "justification": "Recorder write guard. Python raises the same IndexError for overflow; a negative index produces a trace that replay rejects as SCHEMA_INVALID.",
+        "raise": "raise IndexError(f\"{loc} out of range\")",
+        "site": "recorder.py:96"
+      },
+      {
+        "classification": "KILLED_BY_0_1_0_SUITE",
+        "id": "M27",
+        "justification": "",
+        "raise": "raise ReplayError(\"STORAGE_NOT_DECLARED\", f\"{loc['storage']} is not declared storage\", seq)",
+        "site": "replay.py:77"
+      },
+      {
+        "classification": "KILLED_BY_0_1_0_SUITE",
+        "id": "M28",
+        "justification": "",
+        "raise": "raise ReplayError(\"LOCATION_KIND_MISMATCH\", f\"{loc['kind']} location on {decl['kind']} storage\", seq)",
+        "site": "replay.py:79"
+      },
+      {
+        "classification": "KILLED_BY_0_1_0_SUITE",
+        "id": "M29",
+        "justification": "",
+        "raise": "raise ReplayError(\"INDEX_OUT_OF_RANGE\", f\"{loc['storage']}[{loc['index']}] outside {decl['length']}\", seq)",
+        "site": "replay.py:81"
+      },
+      {
+        "classification": "TEST_ORACLE_BLIND_SPOT",
+        "id": "M30",
+        "justification": "Witness control probe_compare_empty_operand: with the raise removed, the invalid trace is rejected outside the error envelope (KeyError).",
+        "mutated_outcome": "KeyError",
+        "raise": "raise ReplayError(\"COMPARE_EMPTY_OPERAND\", \"EMPTY is not comparable\", seq)",
+        "site": "replay.py:87",
+        "witness_control": "probe_compare_empty_operand"
+      },
+      {
+        "classification": "TEST_ORACLE_BLIND_SPOT",
+        "id": "M31",
+        "justification": "Witness control run_begin_missing: with the raise removed, the invalid trace is rejected outside the error envelope (KeyError).",
+        "mutated_outcome": "KeyError",
+        "raise": "raise ReplayError(\"RUN_BEGIN_MISSING\", \"first event must be RUN_BEGIN\", first[\"seq\"])",
+        "site": "replay.py:107",
+        "witness_control": "run_begin_missing"
+      },
+      {
+        "classification": "KILLED_BY_0_1_0_SUITE",
+        "id": "M32",
+        "justification": "",
+        "raise": "raise ReplayError(\"RUN_ID_NOT_DERIVED\", \"run_id does not bind profile, digest, problem, storage and identity\", 0)",
+        "site": "replay.py:120"
+      },
+      {
+        "classification": "TEST_ORACLE_BLIND_SPOT",
+        "id": "M33",
+        "justification": "Witness control config_not_empty: with the raise removed, the invalid trace is ACCEPTED.",
+        "mutated_outcome": "ACCEPTED",
+        "raise": "raise ReplayError(\"PROFILE_INPUT_INVALID\", \"v0.4 runs take empty config and no seed\", 0)",
+        "site": "replay.py:127",
+        "witness_control": "config_not_empty"
+      },
+      {
+        "classification": "TEST_ORACLE_BLIND_SPOT",
+        "id": "M34",
+        "justification": "Witness control probe_duplicate_storage_name: with the raise removed, the invalid trace is ACCEPTED.",
+        "mutated_outcome": "ACCEPTED",
+        "raise": "raise ReplayError(\"STORAGE_INVALID\", \"duplicate storage name\", 0)",
+        "site": "replay.py:130",
+        "witness_control": "probe_duplicate_storage_name"
+      },
+      {
+        "classification": "TEST_ORACLE_BLIND_SPOT",
+        "id": "M35",
+        "justification": "Witness control storage_set_not_admissible: with the raise removed, the invalid trace is ACCEPTED.",
+        "mutated_outcome": "ACCEPTED",
+        "raise": "raise ReplayError(\"STORAGE_INVALID\", f\"storage {names} is not an admissible set for {b['profile_id']}\", 0)",
+        "site": "replay.py:133",
+        "witness_control": "storage_set_not_admissible"
+      },
+      {
+        "classification": "TEST_ORACLE_BLIND_SPOT",
+        "id": "M36",
+        "justification": "Witness control run_end_missing: with the raise removed, the invalid trace is rejected outside the error envelope (TypeError).",
+        "mutated_outcome": "TypeError",
+        "raise": "raise ReplayError(\"RUN_END_MISSING\", \"trace does not terminate with RUN_END\", events[-1][\"seq\"])",
+        "site": "replay.py:261",
+        "witness_control": "run_end_missing"
+      },
+      {
+        "classification": "SEMANTICALLY_EQUIVALENT",
+        "id": "M37",
+        "justification": "Unreachable. A trace that ends inside a SWAP either has a RUN_END, rejected earlier as a SWAP constituent mismatch, or has none, rejected earlier as RUN_END_MISSING.",
+        "raise": "raise ReplayError(\"SWAP_CONSTITUENTS_MISMATCH\", \"trace ends inside a SWAP\", events[-1][\"seq\"])",
+        "site": "replay.py:263"
+      },
+      {
+        "classification": "KILLED_BY_0_1_0_SUITE",
+        "id": "M38",
+        "justification": "",
+        "raise": "raise ReplayError(\"TRACE_DIGEST_MISMATCH\", f\"computed {digest}, expected {expected_digest}\")",
+        "site": "replay.py:270"
+      },
+      {
+        "classification": "TEST_ORACLE_BLIND_SPOT",
+        "id": "M39",
+        "justification": "Witness control probe_initial_values_outside_types: with the raise removed, the invalid trace is ACCEPTED.",
+        "mutated_outcome": "ACCEPTED",
+        "raise": "raise ReplayError(\"STORAGE_INVALID\", f\"{d['name']} initial values outside its element types\", 0)",
+        "site": "replay.py:149",
+        "witness_control": "probe_initial_values_outside_types"
+      },
+      {
+        "classification": "TEST_ORACLE_BLIND_SPOT",
+        "id": "M40",
+        "justification": "Witness control event_after_run_end: with the raise removed, the invalid trace is ACCEPTED.",
+        "mutated_outcome": "ACCEPTED",
+        "raise": "raise ReplayError(\"EVENT_AFTER_RUN_END\", f\"{op} after RUN_END\", seq)",
+        "site": "replay.py:159",
+        "witness_control": "event_after_run_end"
+      },
+      {
+        "classification": "TEST_ORACLE_BLIND_SPOT",
+        "id": "M41",
+        "justification": "Witness control run_begin_duplicate: with the raise removed, the invalid trace is ACCEPTED.",
+        "mutated_outcome": "ACCEPTED",
+        "raise": "raise ReplayError(\"RUN_BEGIN_DUPLICATE\", \"second RUN_BEGIN\", seq)",
+        "site": "replay.py:161",
+        "witness_control": "run_begin_duplicate"
+      },
+      {
+        "classification": "TEST_ORACLE_BLIND_SPOT",
+        "id": "M42",
+        "justification": "Witness control op_not_permitted: with the raise removed, the invalid trace is ACCEPTED.",
+        "mutated_outcome": "ACCEPTED",
+        "raise": "raise ReplayError(code, f\"{op} is not permitted by profile {b['profile_id']}\", seq)",
+        "site": "replay.py:177",
+        "witness_control": "op_not_permitted"
+      },
+      {
+        "classification": "TEST_ORACLE_BLIND_SPOT",
+        "id": "M43",
+        "justification": "Witness control execution_after_precondition_violation: with the raise removed, the invalid trace is ACCEPTED.",
+        "mutated_outcome": "ACCEPTED",
+        "raise": "raise ReplayError(\"EXECUTION_AFTER_PRECONDITION_VIOLATION\", f\"{op} on a rejected input\", seq)",
+        "site": "replay.py:179",
+        "witness_control": "execution_after_precondition_violation"
+      },
+      {
+        "classification": "TEST_ORACLE_BLIND_SPOT",
+        "id": "M44",
+        "justification": "Witness control run_record_schema_invalid: with the raise removed, the invalid trace is rejected outside the error envelope (KeyError).",
+        "mutated_outcome": "KeyError",
+        "raise": "raise ReplayError(\"RUN_RECORD_INVALID\", error.message)",
+        "site": "replay.py:275",
+        "witness_control": "run_record_schema_invalid"
+      },
+      {
+        "classification": "TEST_ORACLE_BLIND_SPOT",
+        "id": "M45",
+        "justification": "Witness control run_record_digest_differs: with the raise removed, the invalid trace is ACCEPTED.",
+        "mutated_outcome": "ACCEPTED",
+        "raise": "raise ReplayError(\"TRACE_DIGEST_MISMATCH\", \"run record digest differs\")",
+        "site": "replay.py:277",
+        "witness_control": "run_record_digest_differs"
+      },
+      {
+        "classification": "TEST_ORACLE_BLIND_SPOT",
+        "id": "M46",
+        "justification": "Witness control event_schema_extra_field: with the raise removed, the invalid trace is ACCEPTED.",
+        "mutated_outcome": "ACCEPTED",
+        "raise": "raise ReplayError(\"SCHEMA_INVALID\", f\"line {pos}: {exc.message}\") from None",
+        "site": "replay.py:103",
+        "witness_control": "event_schema_extra_field"
+      },
+      {
+        "classification": "TEST_ORACLE_BLIND_SPOT",
+        "id": "M47",
+        "justification": "Witness control algorithm_id_differs: with the raise removed, the invalid trace is ACCEPTED.",
+        "mutated_outcome": "ACCEPTED",
+        "raise": "raise ReplayError(code, f\"{fld} differs from RUN_BEGIN\", event[\"seq\"])",
+        "site": "replay.py:112",
+        "witness_control": "algorithm_id_differs"
+      },
+      {
+        "classification": "TEST_ORACLE_BLIND_SPOT",
+        "id": "M48",
+        "justification": "Witness control probe_initial_length_differs: with the raise removed, the invalid trace is ACCEPTED.",
+        "mutated_outcome": "ACCEPTED",
+        "raise": "raise ReplayError(\"STORAGE_INVALID\", f\"{d['name']} initial length differs from declared length\", 0)",
+        "site": "replay.py:143",
+        "witness_control": "probe_initial_length_differs"
+      },
+      {
+        "classification": "TEST_ORACLE_BLIND_SPOT",
+        "id": "M49",
+        "justification": "Witness control swap_wrong_constituent: with the raise removed, the invalid trace is ACCEPTED.",
+        "mutated_outcome": "ACCEPTED",
+        "raise": "raise ReplayError(\"SWAP_CONSTITUENTS_MISMATCH\", f\"SWAP step {stage} expected {want_op} {want_loc}\", seq)",
+        "site": "replay.py:167",
+        "witness_control": "swap_wrong_constituent"
+      },
+      {
+        "classification": "TEST_ORACLE_BLIND_SPOT",
+        "id": "M50",
+        "justification": "Witness control swap_writes_not_exchanged: with the raise removed, the invalid trace is ACCEPTED.",
+        "mutated_outcome": "ACCEPTED",
+        "raise": "raise ReplayError(\"SWAP_CONSTITUENTS_MISMATCH\", \"SWAP writes must exchange the values read\", seq)",
+        "site": "replay.py:169",
+        "witness_control": "swap_writes_not_exchanged"
+      },
+      {
+        "classification": "TEST_ORACLE_BLIND_SPOT",
+        "id": "M51",
+        "justification": "Witness control run_end_with_open_frame: with the raise removed, the invalid trace is ACCEPTED.",
+        "mutated_outcome": "ACCEPTED",
+        "raise": "raise ReplayError(\"RUN_END_OPEN_FRAMES\", f\"{len(ctx.frames)} frames still open\", seq)",
+        "site": "replay.py:172",
+        "witness_control": "run_end_with_open_frame"
+      },
+      {
+        "classification": "KILLED_BY_0_1_0_SUITE",
+        "id": "M52",
+        "justification": "",
+        "raise": "raise ReplayError(\"READ_VALUE_MISMATCH\", f\"{p['location']} holds {ctx.get(p['location'])}\", seq)",
+        "site": "replay.py:183"
+      },
+      {
+        "classification": "TEST_ORACLE_BLIND_SPOT",
+        "id": "M53",
+        "justification": "Witness control run_record_field_differs: with the raise removed, the invalid trace is ACCEPTED.",
+        "mutated_outcome": "ACCEPTED",
+        "raise": "raise ReplayError(\"RUN_RECORD_MISMATCH\", f\"run record {fld} disagrees with the trace\")",
+        "site": "replay.py:286",
+        "witness_control": "run_record_field_differs"
+      },
+      {
+        "classification": "TEST_ORACLE_BLIND_SPOT",
+        "id": "M54",
+        "justification": "Witness control probe_write_immutable: with the raise removed, the invalid trace is ACCEPTED.",
+        "mutated_outcome": "ACCEPTED",
+        "raise": "raise ReplayError(\"MUTATION_FORBIDDEN\", f\"{loc['storage']} is immutable\", seq)",
+        "site": "replay.py:194",
+        "witness_control": "probe_write_immutable"
+      },
+      {
+        "classification": "KILLED_BY_0_1_0_SUITE",
+        "id": "M55",
+        "justification": "",
+        "raise": "raise ReplayError(\"WRITE_TYPE_INVALID\", f\"{value['type']} not admissible in {loc['storage']}\", seq)",
+        "site": "replay.py:196"
+      },
+      {
+        "classification": "TEST_ORACLE_BLIND_SPOT",
+        "id": "M56",
+        "justification": "Witness control swap_endpoints_equal: with the raise removed, the invalid trace is ACCEPTED.",
+        "mutated_outcome": "ACCEPTED",
+        "raise": "raise ReplayError(\"SWAP_MALFORMED\", \"swap endpoints must differ\", seq)",
+        "site": "replay.py:204",
+        "witness_control": "swap_endpoints_equal"
+      },
+      {
+        "classification": "REDUNDANT_MUTATION",
+        "id": "M57",
+        "justification": "Without it, the SWAP's constituent WRITE to the immutable storage is rejected with the same code, MUTATION_FORBIDDEN, one event later.",
+        "raise": "raise ReplayError(\"MUTATION_FORBIDDEN\", f\"{loc['storage']} is immutable\", seq)",
+        "site": "replay.py:208"
+      },
+      {
+        "classification": "TEST_ORACLE_BLIND_SPOT",
+        "id": "M58",
+        "justification": "Witness control probe_compare_type_mismatch: with the raise removed, the invalid trace is ACCEPTED.",
+        "mutated_outcome": "ACCEPTED",
+        "raise": "raise ReplayError(\"COMPARE_TYPE_MISMATCH\", \"operands are not comparable under the profile's comparison\", seq)",
+        "site": "replay.py:231",
+        "witness_control": "probe_compare_type_mismatch"
+      },
+      {
+        "classification": "KILLED_BY_0_1_0_SUITE",
+        "id": "M59",
+        "justification": "",
+        "raise": "raise ReplayError(\"COMPARE_RESULT_WRONG\", f\"compare{tuple(keys)} != {p['result']}\", seq)",
+        "site": "replay.py:233"
+      },
+      {
+        "classification": "TEST_ORACLE_BLIND_SPOT",
+        "id": "M60",
+        "justification": "Witness control core_operand_kind_not_permitted: with the raise removed, the invalid trace is ACCEPTED.",
+        "mutated_outcome": "ACCEPTED",
+        "raise": "raise ReplayError(\"OPERAND_KIND_NOT_PERMITTED\", f\"{operand['kind']} in {b['profile_id']}\", seq)",
+        "site": "replay.py:214",
+        "witness_control": "core_operand_kind_not_permitted"
+      },
+      {
+        "classification": "TEST_ORACLE_BLIND_SPOT",
+        "id": "M61",
+        "justification": "Witness control frame_id_not_sequential: with the raise removed, the invalid trace is ACCEPTED.",
+        "mutated_outcome": "ACCEPTED",
+        "raise": "raise ReplayError(\"FRAME_ID_INVALID\", f\"expected frame_id {next_frame}\", seq)",
+        "site": "replay.py:236",
+        "witness_control": "frame_id_not_sequential"
+      },
+      {
+        "classification": "KILLED_BY_0_1_0_SUITE",
+        "id": "M62",
+        "justification": "",
+        "raise": "raise ReplayError(\"COMPARE_UNREAD_OPERAND\", f\"{side} value was never READ\", seq)",
+        "site": "replay.py:217"
+      },
+      {
+        "classification": "TEST_ORACLE_BLIND_SPOT",
+        "id": "M63",
+        "justification": "Witness control frame_scope_outside_storage: with the raise removed, the invalid trace is ACCEPTED.",
+        "mutated_outcome": "ACCEPTED",
+        "raise": "raise ReplayError(\"FRAME_RANGE_INVALID\", \"scope outside declared array storage\", seq)",
+        "site": "replay.py:241",
+        "witness_control": "frame_scope_outside_storage"
+      },
+      {
+        "classification": "TEST_ORACLE_BLIND_SPOT",
+        "id": "M64",
+        "justification": "Witness control frame_scope_exceeds_parent: with the raise removed, the invalid trace is ACCEPTED.",
+        "mutated_outcome": "ACCEPTED",
+        "raise": "raise ReplayError(\"FRAME_RANGE_INVALID\", \"nested scope exceeds its parent\", seq)",
+        "site": "replay.py:245",
+        "witness_control": "frame_scope_exceeds_parent"
+      },
+      {
+        "classification": "KILLED_BY_0_1_0_SUITE",
+        "id": "M65",
+        "justification": "",
+        "raise": "raise ReplayError(\"FRAME_EXIT_INVALID\", f\"frame {p['frame_id']} is not innermost\", seq)",
+        "site": "replay.py:251"
+      },
+      {
+        "classification": "TEST_ORACLE_BLIND_SPOT",
+        "id": "M66",
+        "justification": "Witness control compare_operand_not_at_location: with the raise removed, the invalid trace is ACCEPTED.",
+        "mutated_outcome": "ACCEPTED",
+        "raise": "raise ReplayError(\"COMPARE_OPERAND_MISMATCH\", f\"{side} not at its declared location\", seq)",
+        "site": "replay.py:221",
+        "witness_control": "compare_operand_not_at_location"
+      },
+      {
+        "classification": "TEST_ORACLE_BLIND_SPOT",
+        "id": "M67",
+        "justification": "Witness control compare_parameter_misreported: with the raise removed, the invalid trace is ACCEPTED.",
+        "mutated_outcome": "ACCEPTED",
+        "raise": "raise ReplayError(\"COMPARE_PARAMETER_MISMATCH\", f\"{side} is not the declared parameter\", seq)",
+        "site": "replay.py:224",
+        "witness_control": "compare_parameter_misreported"
+      }
+    ],
+    "note_on_prior_count": "An informal pass during WO-COMMONS-FIRST-EXPORT-01A reported 66 sites (31 killed, 35 survived). Its script was not kept. This audit's enumeration finds 68 raise statements.",
+    "raise_sites": 68,
+    "survived": 39,
+    "survivor_classes": {
+      "OUTSIDE_CLAIMED_REJECTION_SURFACE": 4,
+      "REDUNDANT_MUTATION": 1,
+      "SEMANTICALLY_EQUIVALENT": 2,
+      "TEST_ORACLE_BLIND_SPOT": 32
+    }
+  },
+  "version_0_1_1": {
+    "killed": 62,
+    "raise_sites": 69,
+    "survived": 7,
+    "survivor_classes": {
+      "OUTSIDE_CLAIMED_REJECTION_SURFACE": 4,
+      "REDUNDANT_MUTATION": 1,
+      "SEMANTICALLY_EQUIVALENT": 2
+    },
+    "survivors": [
+      {
+        "raise": "raise ReplayError(\"FRAMING_INVALID\", f\"empty line {lineno}\")",
+        "site": "framing.py:47"
+      },
+      {
+        "raise": "raise LookupError(f\"{profile_id}: {len(matches)} catalogued documents\")",
+        "site": "profiles.py:139"
+      },
+      {
+        "raise": "raise IndexError(f\"{loc} out of range\")",
+        "site": "recorder.py:83"
+      },
+      {
+        "raise": "raise PermissionError(f\"{loc['storage']} is immutable\")",
+        "site": "recorder.py:88"
+      },
+      {
+        "raise": "raise IndexError(f\"{loc} out of range\")",
+        "site": "recorder.py:96"
+      },
+      {
+        "raise": "raise ReplayError(\"SWAP_CONSTITUENTS_MISMATCH\", \"trace ends inside a SWAP\", events[-1][\"seq\"])",
+        "site": "replay.py:263"
+      },
+      {
+        "raise": "raise ReplayError(\"MUTATION_FORBIDDEN\", f\"{loc['storage']} is immutable\", seq)",
+        "site": "replay.py:208"
+      }
+    ]
+  },
+  "work_order": "WO-COMMONS-MEMBRANE-EVALUATION-01B"
+}

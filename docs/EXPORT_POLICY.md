@@ -125,14 +125,43 @@ access to any Miskatonic service. Public signals such as stars, forks, issues
 and contributions may be observed, but they are not evidence of willingness to
 pay, profitability or scientific validity.
 
-## 8. Current state
+## 8. Disclosure of a private origin
+
+A release that discloses its origin names the origin repository in a fixed set of
+places only:
+
+- the package's `PROVENANCE.json`;
+- its release manifests and clearance receipts under `releases/<package>/`;
+- the exact files listed for that package in
+  [`provenance/ORIGIN_DISCLOSURE_LOCATIONS_V0_1.json`](../provenance/ORIGIN_DISCLOSURE_LOCATIONS_V0_1.json).
+
+A file does not qualify by sitting in a particular directory. The repository test
+suite checks the bare name, its underscore form and the `Miskatonic-System/` form.
+
+Private review content needs an explicit clearance entry before it appears on a
+private-origin release surface. Statements such as "independently reviewed" are
+ordinary public statements. Review verdicts, round counts, finding identifiers,
+internal commercial labels and reviewer reasoning are private review content. The
+markers and any clearance entries are in
+[`private-review-markers.v0.1.json`](private-review-markers.v0.1.json).
+
+## 9. Maintenance releases
+
+A new version of an already-released package is a maintenance release, not a new
+export, when it adds no private source and does not widen the cleared source. It
+needs its own manifest and clearance receipt, an updated `PROVENANCE.json`, updated
+tests and the same review and merge gates as any other change. Earlier release
+records stay in `releases/` unchanged.
+
+## 10. Current state
 
 Two packages are released:
 
-- `commons-export-lint`, written directly in Commons;
-- `algorithm-trace-core`, the generic AlgorithmTrace v0.4 core extracted from
-  one private repository under WO-COMMONS-FIRST-EXPORT-01A.
+- `commons-export-lint` 0.1.1, written directly in Commons;
+- `algorithm-trace-core` 0.1.1, the generic AlgorithmTrace v0.4 core extracted
+  from one private repository under WO-COMMONS-FIRST-EXPORT-01A (0.1.0) and
+  maintained under WO-COMMONS-MEMBRANE-EVALUATION-01B (0.1.1).
 
-The second release clears only its own bytes. It does not clear anything else
+The private-origin release clears only its own bytes. It does not clear anything else
 in its origin, and it gives no other artifact a path to release. Each future
 export needs its own specific clearance.

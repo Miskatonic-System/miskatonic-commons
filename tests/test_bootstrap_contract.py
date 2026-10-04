@@ -172,7 +172,7 @@ ORIGIN = "msk-" + "algorithms"  # assembled, so this test file is not itself a d
     ("docs/SUPPORT.md", f"Questions about {ORIGIN} go to the maintainers."),           # bare name
     ("README.md", f"import {ORIGIN.replace('-', '_')}"),                                 # underscore form
     ("libraries/algorithm-trace-core/README.md", f"Derived from {ORIGIN}."),          # bundle file other than PROVENANCE
-    ("releases/algorithm-trace-core/0.1.1/manifest.json", "Miskatonic-System/msk-" + "ventures"),  # another repository
+    ("releases/algorithm-trace-core/0.1.1/manifest.json", "Miskatonic-System" + "/msk-" + "ventures"),  # another repository
 ])
 def test_t13_origin_name_hostile_controls(rel, text):
     assert origin_name_offenders([(rel, text)], disclosed_origins()) != []
