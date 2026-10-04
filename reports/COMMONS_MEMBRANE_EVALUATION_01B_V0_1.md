@@ -30,10 +30,10 @@ Fact classes:
 | Acceptance defects found by direct search | 1 in 0.1.0: run-record comparison; repaired in 0.1.1 |
 | Hostile-control mutants, 0.1.1 | 69 raise sites: 62 killed, 7 survived (the 2 + 4 + 1 above) |
 | Known invalid public-contract input accepted by 0.1.1 | none |
-| Origin-name controls | 12 negative, 4 positive |
+| Origin-name controls | 17 negative, 4 positive |
 | Profile-resolution controls | 2 negative, 2 positive |
-| Claim-scan SLA controls | 25 negative wordings, 8 exact non-claim statements, 1 structural |
-| Disclosure controls | 8 negative, 6 positive, 1 clearance-semantics control |
+| Claim-scan SLA controls | 27 negative wordings, 8 exact non-claim statements, 1 structural |
+| Disclosure controls | 10 negative, 6 positive, 1 clearance-semantics control |
 | Commons fence | `COMMONS_FENCE_MATCHES_EXPECTED` **[P]** |
 
 The full mutation matrix, the control-to-obligation map and the defect search are in
@@ -69,7 +69,7 @@ Future membrane records use SHA-256 of RFC 8785 bytes. No recorded digest was re
   - Run-record fields are compared as JSON (by RFC 8785 bytes). 0.1.0 compared them with Python
     `!=`, under which `true` equals `1`, so it accepted a run record whose result said
     `[2, false, 3, true]` for a trace whose result was `[2, 0, 3, 1]`. The frozen source has the same
-    comparison. It was found during independent review and is the only acceptance defect found.
+    comparison. It is the only acceptance defect found.
   - 41 core-isolating hostile controls, each with a positive twin that must replay cleanly.
   - The README documents the error boundaries and the frame-scope semantics.
 - **`commons-export-lint` 0.1.1.**
@@ -78,9 +78,9 @@ Future membrane records use SHA-256 of RFC 8785 bytes. No recorded digest was re
     service, a reference to the term, or a statement that SLAs are outside the artifact. Added words
     anywhere in the sentence make it a claim again. The schema-fixed moat value is exempt by path.
   - Detection now also covers plural and spelled-out forms.
-  - A first, looser design judged each occurrence by its nearby words. Review showed that it passed
-    affirmative wordings that 0.1.0 had rejected. It was replaced before merge, and those wordings
-    are now hostile controls.
+  - A first, looser design judged each occurrence by its nearby words. It passed affirmative
+    wordings that 0.1.0 had rejected. It was replaced before merge, and those wordings are now
+    hostile controls.
 
 The 0.1.0 release records stay unchanged in `releases/`.
 
@@ -112,7 +112,7 @@ The origin of a release may now be named only in:
 
 A file anywhere under `reports/` no longer qualifies.
 
-Text is folded before matching: case, Unicode dashes and a percent-encoded `/`. The disclosed name
+Text is folded before matching: HTML entities and percent-encoding, case, Unicode dashes, and `\` as `/`. The disclosed name
 is matched bare and with any short separator between its parts. The earlier check matched neither.
 Names of private repositories that were never disclosed cannot be listed without publishing them,
 so they are caught only with the organization prefix.
@@ -143,7 +143,7 @@ history, consistent with the no-rewrite policy.
 **The new control.** `PRIVATE_REVIEW_CONTENT_PUBLICATION_REQUIRES_EXPLICIT_CLEARANCE` is a bounded
 marker check over every private-origin release surface and every file under `reports/`, with exact
 clearance entries
-([`docs/private-review-markers.v0.1.json`](../docs/private-review-markers.v0.1.json)). The 11
+([`docs/private-review-markers.v0.1.json`](../docs/private-review-markers.v0.1.json)). The 14
 clearance entries cover the records of this repository's own public pull-request reviews in the
 00A–00C reports. Run
 against the content of `fe2f49e6`, it catches the review outcome, the round count and the
@@ -154,7 +154,7 @@ wording. Ordinary statements such as "independently reviewed" pass.
 
 The first version of this work was opened as pull request #11. A hostile test string in two of its
 commits named a private organization repository: the string was split so that the repository's own
-name check did not see it. It was found during independent review. Pull request #11 was closed unmerged,
+name check did not see it. Pull request #11 was closed unmerged,
 and this version was rebuilt from `main`, so the name never entered `main`. It remains visible in
 the closed pull request's commits. Nothing was force-pushed.
 
@@ -182,8 +182,8 @@ records the expected state of ruleset 24431688 and the workflow digest. Its expe
 is `23788d6bdd3e29f7607c4b5ffcf228fb0d6990135acd285bf6bcf19f2a24ae8a` (RFC 8785).
 `scripts/audit_commons_fence.py` reports `COMMONS_FENCE_MATCHES_EXPECTED`, `COMMONS_FENCE_DRIFT`
 or `COMMONS_FENCE_UNOBSERVABLE`. A deleted ruleset is reported as drift. Fourteen offline drift
-controls (thirteen ruleset changes and a deleted ruleset), one changed-workflow control and three
-unobservable controls cover it. It detects administrator changes; it cannot prevent them.
+controls (thirteen ruleset changes and a deleted ruleset), two workflow controls (changed and deleted)
+and three unobservable controls cover it. It detects administrator changes; it cannot prevent them.
 
 ## History-rewrite policy [A]
 

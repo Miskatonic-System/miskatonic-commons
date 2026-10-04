@@ -9,6 +9,7 @@ clearance entry. The markers live in docs/private-review-markers.v0.1.json.
 
 import json
 import re
+from collections import Counter
 
 import pytest
 
@@ -33,12 +34,16 @@ def release_surfaces(root=ROOT) -> list:
 
 
 def findings(rel: str, text: str, registry=REGISTRY) -> list:
-    cleared = {(c["path"], c["marker_id"], c["text"]) for c in registry["clearances"]}
+    """Marker matches beyond the counted clearances for this path."""
+    allowance = {(c["path"], c["marker_id"], c["text"]): c["count"] for c in registry["clearances"]}
     out = []
     for marker in registry["markers"]:
         for m in re.finditer(marker["pattern"], text):
-            if (rel, marker["id"], m.group(0)) not in cleared:
-                out.append((rel, marker["id"], m.group(0)))
+            key = (rel, marker["id"], m.group(0))
+            if allowance.get(key, 0) > 0:
+                allowance[key] -= 1
+            else:
+                out.append(key)
     return out
 
 
@@ -66,6 +71,8 @@ HOSTILE = [
     "R1 verdict: ACCEPT_WITH_LIMITATIONS.",
     "Fixed NB6 and R1-NB3.",
     "The reviewer found a leaking assertion in a draft test.",
+    "It was found during independent review.",
+    "Review showed that the first design passed affirmative wordings.",
     "Held as REPAIR_REQUIRED until the receipt was repaired.",
 ]
 
@@ -92,20 +99,21 @@ def test_ordinary_public_statements_pass(text):
 def test_explicit_clearance_is_exact():
     text = "one REVISE round"
     reg = dict(REGISTRY, clearances=[{"path": "reports/X.md", "marker_id": "REVIEW_VERDICT", "text": "REVISE",
-                                      "basis": "test"}])
+                                      "count": 1, "basis": "test"}])
     remaining = findings("reports/X.md", text, reg)
     assert ("reports/X.md", "REVIEW_VERDICT", "REVISE") not in remaining
     assert remaining  # the round count is a separate marker and is not cleared
     assert findings("reports/Y.md", "REVISE", reg)  # clearance is per path
+    assert findings("reports/X.md", "REVISE and REVISE", reg) == [("reports/X.md", "REVIEW_VERDICT", "REVISE")]  # and counted
 
 
 def test_clearance_entries_are_complete_and_used():
-    used = set()
+    used = Counter()
     for path in release_surfaces():
         rel = path.relative_to(ROOT).as_posix()
         text = path.read_text(encoding="utf-8", errors="replace")
         for marker in REGISTRY["markers"]:
-            used |= {(rel, marker["id"], m.group(0)) for m in re.finditer(marker["pattern"], text)}
+            used.update((rel, marker["id"], m.group(0)) for m in re.finditer(marker["pattern"], text))
     for c in REGISTRY["clearances"]:
-        assert {"path", "marker_id", "text", "basis"} <= set(c) and c["basis"].strip()
-        assert (c["path"], c["marker_id"], c["text"]) in used, c  # no stale clearance
+        assert {"path", "marker_id", "text", "count", "basis"} <= set(c) and c["basis"].strip()
+        assert used[(c["path"], c["marker_id"], c["text"])] == c["count"], c  # exact, not stale

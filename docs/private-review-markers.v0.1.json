@@ -2,66 +2,98 @@
   "clearances": [
     {
       "basis": "Record of a Commons-native public pull-request review (00A-00C); it describes reviews of this repository's own changes, not private review content.",
+      "count": 1,
       "marker_id": "REVIEW_ROUND",
       "path": "reports/COMMONS_00A_INTEGRATION_HARDENING_V0_1.md",
       "text": "two REVISE rounds"
     },
     {
       "basis": "Record of a Commons-native public pull-request review (00A-00C); it describes reviews of this repository's own changes, not private review content.",
+      "count": 1,
       "marker_id": "REVIEW_VERDICT",
       "path": "reports/COMMONS_00A_INTEGRATION_HARDENING_V0_1.md",
       "text": "REVISE"
     },
     {
       "basis": "Record of a Commons-native public pull-request review (00A-00C); it describes reviews of this repository's own changes, not private review content.",
+      "count": 3,
       "marker_id": "INTERNAL_COMMERCIAL_LABEL",
       "path": "reports/COMMONS_BOOTSTRAP_VALIDATION_V0_1.md",
       "text": "UNCERTAIN"
     },
     {
       "basis": "Record of a Commons-native public pull-request review (00A-00C); it describes reviews of this repository's own changes, not private review content.",
+      "count": 1,
+      "marker_id": "REVIEW_ROUND",
+      "path": "reports/COMMONS_BOOTSTRAP_VALIDATION_V0_1.md",
+      "text": "Round 0"
+    },
+    {
+      "basis": "Record of a Commons-native public pull-request review (00A-00C); it describes reviews of this repository's own changes, not private review content.",
+      "count": 2,
+      "marker_id": "REVIEW_ROUND",
+      "path": "reports/COMMONS_BOOTSTRAP_VALIDATION_V0_1.md",
+      "text": "Round 1"
+    },
+    {
+      "basis": "Record of a Commons-native public pull-request review (00A-00C); it describes reviews of this repository's own changes, not private review content.",
+      "count": 1,
+      "marker_id": "REVIEW_ROUND",
+      "path": "reports/COMMONS_BOOTSTRAP_VALIDATION_V0_1.md",
+      "text": "Two round"
+    },
+    {
+      "basis": "Record of a Commons-native public pull-request review (00A-00C); it describes reviews of this repository's own changes, not private review content.",
+      "count": 1,
       "marker_id": "REVIEW_ROUND",
       "path": "reports/COMMONS_BOOTSTRAP_VALIDATION_V0_1.md",
       "text": "review round"
     },
     {
       "basis": "Record of a Commons-native public pull-request review (00A-00C); it describes reviews of this repository's own changes, not private review content.",
+      "count": 1,
       "marker_id": "REVIEW_ROUND",
       "path": "reports/COMMONS_BOOTSTRAP_VALIDATION_V0_1.md",
       "text": "round 0"
     },
     {
       "basis": "Record of a Commons-native public pull-request review (00A-00C); it describes reviews of this repository's own changes, not private review content.",
+      "count": 2,
       "marker_id": "REVIEW_ROUND",
       "path": "reports/COMMONS_BOOTSTRAP_VALIDATION_V0_1.md",
       "text": "round 1"
     },
     {
       "basis": "Record of a Commons-native public pull-request review (00A-00C); it describes reviews of this repository's own changes, not private review content.",
+      "count": 1,
       "marker_id": "REVIEW_ROUND",
       "path": "reports/COMMONS_BOOTSTRAP_VALIDATION_V0_1.md",
       "text": "round 2"
     },
     {
       "basis": "Record of a Commons-native public pull-request review (00A-00C); it describes reviews of this repository's own changes, not private review content.",
+      "count": 2,
       "marker_id": "REVIEW_VERDICT",
       "path": "reports/COMMONS_BOOTSTRAP_VALIDATION_V0_1.md",
       "text": "REVISE"
     },
     {
       "basis": "Record of a Commons-native public pull-request review (00A-00C); it describes reviews of this repository's own changes, not private review content.",
+      "count": 2,
+      "marker_id": "REVIEW_ROUND",
+      "path": "reports/COMMONS_PUBLICATION_FENCE_00C_V0_1.md",
+      "text": "Review round"
+    },
+    {
+      "basis": "Record of a Commons-native public pull-request review (00A-00C); it describes reviews of this repository's own changes, not private review content.",
+      "count": 1,
       "marker_id": "REVIEW_ROUND",
       "path": "reports/COMMONS_PUBLICATION_FENCE_00C_V0_1.md",
       "text": "review round"
     },
     {
       "basis": "Record of a Commons-native public pull-request review (00A-00C); it describes reviews of this repository's own changes, not private review content.",
-      "marker_id": "REVIEW_ROUND",
-      "path": "reports/COMMONS_PUBLICATION_FENCE_00C_V0_1.md",
-      "text": "round 0"
-    },
-    {
-      "basis": "Record of a Commons-native public pull-request review (00A-00C); it describes reviews of this repository's own changes, not private review content.",
+      "count": 1,
       "marker_id": "REVIEW_ROUND",
       "path": "reports/WO-COMMONS-BOOTSTRAP-00A_COMPLETION.md",
       "text": "review round"
@@ -75,7 +107,7 @@
     },
     {
       "id": "REVIEW_ROUND",
-      "pattern": "\\b(review|reviewer)\\s+rounds?\\b|\\bround\\s+\\d+\\b|\\b(one|two|three|\\d+)\\s+(REVISE\\s+)?rounds?\\b|\\bR\\d+\\s+(verdict|review)\\b",
+      "pattern": "(?i)\\b(review|reviewer)\\s+rounds?\\b|\\bround\\s+\\d+\\b|\\b(one|two|three|\\d+)\\s+(REVISE\\s+)?rounds?\\b|\\bR\\d+\\s+(verdict|review)\\b",
       "targets": "how many private review rounds ran, or which round said what"
     },
     {
@@ -90,12 +122,12 @@
     },
     {
       "id": "PRIVATE_REVIEWER_REASONING",
-      "pattern": "\\b(reviewer|review)\\s+(found|noted|flagged|caught|objected|asked|required|argued)\\b",
-      "targets": "what a private reviewer found or argued"
+      "pattern": "(?i)\\b(reviewer|review|reviewers)\\s+(found|noted|flagged|caught|objected|asked|required|argued|showed|identified|discovered|spotted|reported)\\b|\\b(found|identified|discovered|caught|flagged)\\s+(during|in|by)\\s+(an?\\s+)?(independent\\s+|private\\s+)?(review|reviewer)",
+      "targets": "what a private reviewer found, showed or argued, or that something was found during review"
     }
   ],
   "property": "PRIVATE_REVIEW_CONTENT_PUBLICATION_REQUIRES_EXPLICIT_CLEARANCE",
-  "rule": "In every file that carries a private-origin release (the bundle of each PUBLIC_ATTRIBUTED_PRIVATE_ORIGIN package, its release records under releases/<package>/, and its approved records in provenance/ORIGIN_DISCLOSURE_LOCATIONS_V0_1.json) and in every file under reports/, a marker match is an error unless a clearance entry names the path, the marker id and the exact matched text, with its basis. Ordinary public statements such as 'independently reviewed' or 'review accepted' match no marker. This is a bounded pattern check: it targets the categories that crossed the membrane in WO-COMMONS-FIRST-EXPORT-01A and does not understand prose.",
+  "rule": "In every file that carries a private-origin release (the bundle of each PUBLIC_ATTRIBUTED_PRIVATE_ORIGIN package, its release records under releases/<package>/, and its approved records in provenance/ORIGIN_DISCLOSURE_LOCATIONS_V0_1.json) and in every file under reports/, a marker match is an error unless a clearance entry names the path, the marker id, the exact matched text and how many times it occurs there, with its basis. Ordinary public statements such as 'independently reviewed' or 'review accepted' match no marker. This is a bounded pattern check: it targets the categories that crossed the membrane in WO-COMMONS-FIRST-EXPORT-01A and does not understand prose.",
   "schema_version": "commons.private-review-markers.v0.1",
   "work_order": "WO-COMMONS-MEMBRANE-EVALUATION-01B"
 }

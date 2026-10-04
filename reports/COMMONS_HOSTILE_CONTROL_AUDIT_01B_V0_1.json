@@ -5,7 +5,6 @@
       {
         "classification": "ACTUAL_REPLAY_ACCEPTANCE_DEFECT",
         "description": "Run-record fields were compared with Python !=, where true == 1 and false == 0. A run record whose result said [2, false, 3, true] was accepted against a trace whose result was [2, 0, 3, 1].",
-        "found_by": "independent review of the 01B candidate",
         "id": "RUN_RECORD_JSON_EQUALITY",
         "present_in": [
           "0.1.0",

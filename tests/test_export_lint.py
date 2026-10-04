@@ -290,6 +290,8 @@ SLA_AFFIRMATIVE = [
     "This package does not provide an SLA, except for enterprise users.",
     "No SLA is offered to free users.",
     "SLAs remain outside this package for now, but are coming.",
+    "No SLA is offered; enterprise users get one at 99.9%.",
+    "This package does not provide an SLA: the hosted edition does.",
 ]
 
 SLA_NOT_A_CLAIM = [

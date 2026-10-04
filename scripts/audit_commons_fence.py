@@ -82,6 +82,8 @@ def differences(expected, observed, path="$") -> list:
 def audit(expected_doc: dict, ruleset: dict | None, workflow: bytes | None) -> tuple[str, list]:
     if isinstance(ruleset, dict) and str(ruleset.get("status")) == "404":
         return "COMMONS_FENCE_DRIFT", ["ruleset: the provider reports it does not exist (404)"]
+    if workflow == b"<absent>":
+        return "COMMONS_FENCE_DRIFT", ["workflow: the provider reports it does not exist on main (404)"]
     if not isinstance(ruleset, dict) or "rules" not in ruleset or workflow is None:
         return "COMMONS_FENCE_UNOBSERVABLE", ["ruleset or workflow could not be read"]
     observed = {"ruleset": project(ruleset),
@@ -126,7 +128,10 @@ def main(argv=None) -> int:
         workflow = args.workflow_file.read_bytes() if args.workflow_file.is_file() else None
     else:
         doc = _gh(f"repos/{repo}/contents/{expected_doc['expected_state']['workflow']['path']}?ref=main")
-        workflow = base64.b64decode(doc["content"]) if doc and "content" in doc else None
+        if doc and str(doc.get("status")) == "404":
+            workflow = b"<absent>"
+        else:
+            workflow = base64.b64decode(doc["content"]) if doc and "content" in doc else None
     verdict, diffs = audit(expected_doc, ruleset, workflow)
     print(verdict)
     for d in diffs:

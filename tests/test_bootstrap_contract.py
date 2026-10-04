@@ -4,6 +4,7 @@
 
 import ast
 import hashlib
+import html
 import json
 import os
 import re
@@ -11,6 +12,7 @@ import shutil
 import socket
 import subprocess
 import unicodedata
+import urllib.parse
 import sys
 from pathlib import Path
 
@@ -138,12 +140,14 @@ _DASHES = dict.fromkeys(map(ord, "\u2010\u2011\u2012\u2013\u2014\u2015\u2212\ufe
 
 
 def _fold(text: str) -> str:
-    """NFKC, case-folded, Unicode dashes mapped to '-', and percent-encoded '/' decoded."""
+    """HTML entities and percent-encoding decoded (repeatedly), NFKC, case-folded, dashes mapped to '-', '\\' to '/'."""
+    for _ in range(3):
+        text = urllib.parse.unquote(html.unescape(text))
     text = unicodedata.normalize("NFKC", text).translate(_DASHES).casefold()
-    return re.sub(r"%2f", "/", text)
+    return text.replace("\\", "/")
 
 
-ORG_REF = re.compile(r"miskatonic[\W_]{0,2}system[\W_]{0,2}/([a-z0-9._-]+)")
+ORG_REF = re.compile(r"miskatonic[\W_]{0,2}system[\W_]{0,2}/\s*([a-z0-9._-]+)")
 
 
 def _name_form(name: str):
@@ -206,6 +210,11 @@ ORG = "Miskatonic-" + "System"   # assembled for the same reason; the repository
     ("docs/SUPPORT.md", f"x.{ORIGIN}"),                                        # dotted prefix
     ("docs/SUPPORT.md", f"{ORG}%2F{ORIGIN}"),                                  # percent-encoded slash
     ("docs/SUPPORT.md", f"{ORG}%2Fexample-private-repo"),                      # another repository, encoded
+    ("docs/SUPPORT.md", f"{ORG}/ example-private-repo"),                       # space after the slash
+    ("docs/SUPPORT.md", f"{ORG}\\example-private-repo"),                      # backslash
+    ("docs/SUPPORT.md", f"{ORG}%252F{ORIGIN}"),                                # double-encoded slash
+    ("docs/SUPPORT.md", ORIGIN.replace("-", "%2D")),                          # encoded hyphen
+    ("docs/SUPPORT.md", ORIGIN.replace("-", "&#45;")),                        # HTML entity
 ])
 def test_t13_origin_name_hostile_controls(rel, text):
     assert origin_name_offenders([(rel, text)], disclosed_origins()) != []

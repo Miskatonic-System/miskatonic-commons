@@ -478,9 +478,9 @@ def sla_claims(text: str) -> list:
     """Every sentence in ``text`` that mentions an SLA and is not one of the exact non-claim statements."""
     text = " ".join(unicodedata.normalize("NFKC", text).split())
     out = []
-    for sentence in re.split(r"(?<=[.!?;:])\s+", text):
+    for sentence in re.split(r"(?<=[.!?])\s+", text):
         if SLA_TERM.search(sentence):
-            body = sentence.rstrip(".!?;: ")
+            body = sentence.rstrip(".!? ")
             if not any(p.fullmatch(body) for p in SLA_NOT_A_CLAIM):
                 out.append(sentence)
     return out

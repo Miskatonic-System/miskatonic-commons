@@ -109,6 +109,11 @@ def test_workflow_change_is_drift():
     assert verdict == "COMMONS_FENCE_DRIFT" and any("workflow" in d for d in diffs)
 
 
+def test_deleted_workflow_is_drift():
+    verdict, diffs = audit.audit(RECORD, provider_view(), b"<absent>")
+    assert verdict == "COMMONS_FENCE_DRIFT" and any("workflow" in d for d in diffs)
+
+
 def test_deleted_ruleset_is_drift():
     verdict, diffs = audit.audit(RECORD, {"message": "Not Found", "status": "404"}, WORKFLOW)
     assert verdict == "COMMONS_FENCE_DRIFT" and diffs

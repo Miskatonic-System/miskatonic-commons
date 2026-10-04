@@ -1,7 +1,7 @@
 {
   "approved_at": "2026-10-04T16:31:59Z",
   "bundle_digest_algorithm": "commons.bundle-digest.v0.1",
-  "bundle_sha256": "bd50edc9b28f556fa46e87d46c3d654537ab24b54e4444ab1cdb7478b0ab1fd6",
+  "bundle_sha256": "3fd454519b655fbf926821aa909a7d0716f91ad7b3e4f14c624740033364d78c",
   "clearance_receipt_id": "ccr-algorithm-trace-core-0-1-1",
   "clearance_status": "CLEARED",
   "commercial_impact": "COMPLEMENTARY",
@@ -49,9 +49,9 @@
       "sha256": "6cff69db9a8b3365ee37561137402e5dcd42cb6a88049265438d0ff4d24ad414"
     },
     {
-      "bytes": 21958,
+      "bytes": 22348,
       "path": "PROVENANCE.json",
-      "sha256": "c0be6eaf396a43f110cb1d59b2fb08ab059c8339a738f2aaa5f1c0d14589fe2e"
+      "sha256": "95f92e4083fc5cc249016d8f0351bb2bfdb2942601d6d9ffcb7d1848a191702a"
     },
     {
       "bytes": 6101,
