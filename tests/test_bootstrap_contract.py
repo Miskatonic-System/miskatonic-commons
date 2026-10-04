@@ -91,8 +91,8 @@ def test_t12_standalone_tool_runs_isolated_from_repository(tmp_path):
     shutil.copytree(TOOL_DIR, bundle, ignore=shutil.ignore_patterns("__pycache__"))
     env = {"PATH": os.environ.get("PATH", ""), "PYTHONDONTWRITEBYTECODE": "1"}
     proc = subprocess.run([sys.executable, "-I", str(bundle / "commons_export_lint.py"), "check-release",
-                           "--manifest", str(ROOT / "releases/commons-export-lint/0.1.0/manifest.json"),
-                           "--receipt", str(ROOT / "releases/commons-export-lint/0.1.0/clearance-receipt.json"),
+                           "--manifest", str(ROOT / lint_entry()["manifest_path"]),
+                           "--receipt", str(ROOT / lint_entry()["clearance_receipt_path"]),
                            "--bundle-root", str(bundle)],
                           capture_output=True, text=True, env=env, cwd=tmp_path)
     assert proc.returncode == 0, proc.stdout + proc.stderr
@@ -100,34 +100,93 @@ def test_t12_standalone_tool_runs_isolated_from_repository(tmp_path):
 
 # T13 ------------------------------------------------------------------------
 
-def disclosed_origins() -> dict:
-    """Origin repository name -> paths where its disclosure is approved (its bundle, release metadata, reports)."""
+def lint_entry() -> dict:
+    """The current commons-export-lint entry in the package index."""
     index = json.loads((ROOT / "releases/package-index-v0.1.json").read_text())
+    return next(p for p in index["packages"] if p["package_id"] == "commons-export-lint")
+
+
+ORIGIN_LOCATIONS = "provenance/ORIGIN_DISCLOSURE_LOCATIONS_V0_1.json"
+
+
+def disclosed_origins(root: Path = ROOT) -> dict:
+    """Disclosed origin repository name -> exact paths where it may appear (WO-COMMONS-MEMBRANE-EVALUATION-01B §9).
+
+    Derived locations: the package's PROVENANCE.json and every release manifest and clearance receipt
+    under releases/<package>/. Explicit locations: the exact paths in the approved-records registry.
+    """
+    index = json.loads((root / "releases/package-index-v0.1.json").read_text())
+    registry = json.loads((root / ORIGIN_LOCATIONS).read_text())
     out = {}
     for entry in index["packages"]:
-        manifest = json.loads((ROOT / entry["manifest_path"]).read_text())
+        manifest = json.loads((root / entry["manifest_path"]).read_text())
         attribution = manifest.get("source_attribution")
-        if manifest["source_disclosure_level"] in ("PUBLIC_ATTRIBUTED_PRIVATE_ORIGIN", "PUBLIC_SOURCE") and attribution:
-            name = attribution["public_origin_name"].split("/", 1)[-1]
-            out.setdefault(name, set()).update({entry["bundle_root"] + "/", str(Path(entry["manifest_path"]).parent) + "/", "reports/",
-                                         "scripts/build_release_metadata.py"})
+        if manifest["source_disclosure_level"] not in ("PUBLIC_ATTRIBUTED_PRIVATE_ORIGIN", "PUBLIC_SOURCE") or not attribution:
+            continue
+        name = attribution["public_origin_name"].split("/", 1)[-1]
+        paths = {f"{entry['bundle_root']}/PROVENANCE.json"}
+        for release in sorted((root / "releases" / entry["package_id"]).iterdir()):
+            paths |= {f"releases/{entry['package_id']}/{release.name}/manifest.json",
+                      f"releases/{entry['package_id']}/{release.name}/clearance-receipt.json"}
+        paths |= {r["path"] for r in registry["approved_records"] if r["package_id"] == entry["package_id"]}
+        out.setdefault(name, set()).update(paths)
     return out
 
 
-def test_t13_no_private_repository_is_referenced_or_required():
-    """Commons may name other organization repositories only where a release discloses its origin."""
-    allowed = disclosed_origins()
+def origin_name_offenders(files, allowed: dict) -> list:
+    """Every mention of an organization repository outside the locations that may disclose it."""
+    forms = {name: re.compile(rf"(?<![A-Za-z0-9_.-])({re.escape(name)}|{re.escape(name.replace('-', '_'))})(?![A-Za-z0-9])")
+             for name in allowed}
     offenders = []
-    for path, text in tracked_text_files():
-        rel = path.relative_to(ROOT).as_posix()
+    for rel, text in files:
         for match in re.finditer(r"Miskatonic-System/([A-Za-z0-9._-]+)", text):
             name = match.group(1)
-            if name == "miskatonic-commons":
-                continue
-            if any(rel.startswith(prefix) for prefix in allowed.get(name, ())):
+            if name == "miskatonic-commons" or rel in allowed.get(name, ()):
                 continue
             offenders.append(f"{rel}: {match.group(0)}")
-    assert offenders == []
+        for name, form in forms.items():
+            if rel not in allowed[name]:
+                offenders += [f"{rel}: {m.group(0)}" for m in form.finditer(text)]
+    return sorted(set(offenders))
+
+
+def test_t13_no_private_repository_is_referenced_or_required():
+    """Commons may name another organization repository only where a release discloses its origin."""
+    files = [(p.relative_to(ROOT).as_posix(), text) for p, text in tracked_text_files()]
+    assert origin_name_offenders(files, disclosed_origins()) == []
+
+
+def test_t13_approved_records_are_exact_existing_files():
+    registry = json.loads((ROOT / ORIGIN_LOCATIONS).read_text())
+    for record in registry["approved_records"]:
+        assert (ROOT / record["path"]).is_file(), record["path"]
+        assert not record["path"].endswith("/") and "*" not in record["path"]
+        assert record["basis"].strip()
+
+
+ORIGIN = "msk-" + "algorithms"  # assembled, so this test file is not itself a disclosure
+
+
+@pytest.mark.parametrize("rel,text", [
+    ("reports/UNRELATED_NOTES.md", f"See Miskatonic-System/{ORIGIN} for details."),   # a report is not approved by location
+    ("docs/SUPPORT.md", f"Questions about {ORIGIN} go to the maintainers."),           # bare name
+    ("README.md", f"import {ORIGIN.replace('-', '_')}"),                                 # underscore form
+    ("libraries/algorithm-trace-core/README.md", f"Derived from {ORIGIN}."),          # bundle file other than PROVENANCE
+    ("releases/algorithm-trace-core/0.1.1/manifest.json", "Miskatonic-System/msk-" + "ventures"),  # another repository
+])
+def test_t13_origin_name_hostile_controls(rel, text):
+    assert origin_name_offenders([(rel, text)], disclosed_origins()) != []
+
+
+@pytest.mark.parametrize("rel", [
+    "libraries/algorithm-trace-core/PROVENANCE.json",
+    "releases/algorithm-trace-core/0.1.0/manifest.json",
+    "releases/algorithm-trace-core/0.1.1/clearance-receipt.json",
+    "reports/COMMONS_FIRST_EXPORT_01A_V0_1.md",
+])
+def test_t13_origin_name_positive_controls(rel):
+    text = f"Miskatonic-System/{ORIGIN} and {ORIGIN}-maintainers"
+    assert origin_name_offenders([(rel, text)], disclosed_origins()) == []
 
 
 def test_t13_tests_and_scripts_need_no_credentials_or_remote_clones():
@@ -190,7 +249,7 @@ def test_t15_license_is_byte_identical_to_root_commit():
 def test_t15_bundle_ships_license_and_notice():
     for name in ("LICENSE", "NOTICE"):
         assert (TOOL_DIR / name).read_bytes() == (ROOT / name).read_bytes()
-    manifest = json.loads((ROOT / "releases/commons-export-lint/0.1.0/manifest.json").read_text())
+    manifest = json.loads((ROOT / lint_entry()["manifest_path"]).read_text())
     assert set(manifest["notices"]) == {"LICENSE", "NOTICE"}
     assert manifest["license"] == "Apache-2.0"
 

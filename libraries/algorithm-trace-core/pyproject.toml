@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "algorithm-trace-core"
-version = "0.1.0"
+version = "0.1.1"
 description = "AlgorithmTrace v0.4 Public Core: typed execution traces, canonical JSONL, content-addressed profiles, replay and logical metrics."
 readme = "README.md"
 license = "Apache-2.0"

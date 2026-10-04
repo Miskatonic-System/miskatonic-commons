@@ -93,5 +93,5 @@
   },
   "format": "commons.fixture-replay.v0.1",
   "tool": "commons-export-lint",
-  "tool_version": "0.1.0"
+  "tool_version": "0.1.1"
 }

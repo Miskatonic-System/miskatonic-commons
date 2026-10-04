@@ -1,6 +1,6 @@
 # algorithm-trace-core
 
-AlgorithmTrace v0.4 Public Core (protocol 0.4, package 0.1.0) is a small Python library for
+AlgorithmTrace v0.4 Public Core (protocol 0.4, package 0.1.1) is a small Python library for
 recording and checking execution traces of programs that operate on declared storage.
 
 It provides:
@@ -49,7 +49,24 @@ this package. They demonstrate the core. They are not benchmarks.
 Your own profiles live in your own directories. Pass `profile_dirs=[...]` to `replay_v04`,
 `resolve` and `profile_for`. Python must be able to import the semantics module a profile names,
 and its bytes must match the pinned SHA-256. Locating that module imports its parent packages,
-but the module itself is imported only after its digest matches.
+but the module itself is imported only after its digest matches. The pin covers the module file
+only. Parent packages run before the check, so install only semantics packages you trust.
+
+## Errors
+
+`replay_v04` reports every rejected trace as a `ReplayError` with a stable `code`. Two
+boundaries are deliberate:
+
+- **Profile module discovery.** If a parent package raises while the semantics module is being
+  located, replay reports `PROFILE_MODULE_RESOLUTION_FAILED` (since 0.1.1). A parent that raises
+  `ImportError`, or a module that cannot be found, is reported as `PROFILE_SEMANTICS_MISMATCH`.
+- **Semantics execution.** Once the pinned module has been imported, an exception it raises is
+  not rewritten. It propagates unchanged, because it is a fault in that profile's code rather
+  than a property of the trace.
+
+A frame `scope` is a declared range. Replay checks that it lies inside its array storage and
+inside the nearest enclosing scope on the same storage. It does not restrict which cells the
+events inside the frame may access.
 
 ## What it does not establish
 
@@ -80,6 +97,14 @@ inherits none of its research authority.
 
 Protocol identifiers use the `algorithm-trace-core.` namespace, so traces made with this package
 are distinguishable from traces made with the private source.
+
+## Changes
+
+- **0.1.1** (maintenance). Profile module discovery failures now stay inside the error envelope
+  (`PROFILE_MODULE_RESOLUTION_FAILED`). Forty hostile controls were added that reach the generic
+  core directly; several use a test-only `CORE_PROBE` profile whose hooks always accept. Each has
+  a positive twin that must replay cleanly. Replay acceptance is otherwise unchanged.
+- **0.1.0.** First release.
 
 ## Support
 

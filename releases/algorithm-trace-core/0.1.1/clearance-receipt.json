@@ -1,0 +1,69 @@
+{
+  "apache_patent_grant_acknowledged": true,
+  "bundle_sha256": "3f2f3681968c9ae3f21554dd34f39117f3c72c28ff1aeccf7aecbc9a7cbc8b78",
+  "clearance_receipt_id": "ccr-algorithm-trace-core-0-1-1",
+  "clearance_status": "CLEARED",
+  "commercial_impact": "COMPLEMENTARY",
+  "completed_at": "2026-10-04T15:47:57Z",
+  "dimensions": {
+    "commercial_impact": {
+      "basis": "Human commercial adjudication by the repository owner: COMPLEMENTARY. The commercial review inputs are recorded in the private clearance receipt.",
+      "owner": "repository-owner",
+      "status": "PASS"
+    },
+    "dependency_license": {
+      "basis": "Runtime dependencies rfc8785 (Apache-2.0), jsonschema (MIT), fastjsonschema (BSD-3-Clause); no private dependency; owner authorized Apache-2.0; patent grant acknowledged.",
+      "owner": "commons-maintainers",
+      "status": "PASS"
+    },
+    "originating_technical": {
+      "basis": "Source clearance by the originating repository: 11 allowlisted files at the frozen source, 6 extracted symbols, closed import set, approved transformation classes.",
+      "owner": "msk-algorithms-maintainers",
+      "status": "PASS"
+    },
+    "provenance": {
+      "basis": "Clean extraction onto Commons main with no private history; every public file mapped in PROVENANCE.json; private-to-public parity and transformation checks recorded there.",
+      "owner": "commons-maintainers",
+      "status": "PASS"
+    },
+    "public_packaging": {
+      "basis": "Standalone package with README, synthetic example profile, hostile-control tests, provenance record and best-effort support class.",
+      "owner": "commons-maintainers",
+      "status": "PASS"
+    },
+    "security": {
+      "basis": "gitleaks and the Commons sensitive-data check over the source allowlist and the public bundle; 0 findings. Absence of findings is not proof.",
+      "owner": "commons-maintainers",
+      "status": "PASS"
+    }
+  },
+  "minimum_viable_moat": {
+    "analysis": "Domain-specific profiles and their semantics, the research and evaluation infrastructure, organization-wide evidence custody and cross-repository provenance, managed verification, policy and identity governance, integrations, hosting, private deployment, audit reporting, assurance, support and SLAs all remain outside this primitive. Nothing was withheld to create scarcity.",
+    "question": "AFTER THIS ARTIFACT IS AVAILABLE FOR FREE, WHAT ECONOMICALLY VALUABLE FUNCTION REMAINS?",
+    "retained_surfaces": [
+      "MANAGED_PROVENANCE",
+      "ORGANIZATION_WIDE_GOVERNANCE",
+      "POLICY_MANAGEMENT",
+      "IDENTITY_INTEGRATION",
+      "ENTERPRISE_INTEGRATIONS",
+      "MANAGED_HOSTING",
+      "PRIVATE_DEPLOYMENT",
+      "ASSURANCE_SERVICES",
+      "SUPPORT",
+      "SLA",
+      "PROPRIETARY_ADAPTERS",
+      "OTHER"
+    ]
+  },
+  "package_id": "algorithm-trace-core",
+  "private_clearance_receipt": {
+    "opaque_reference": "SRC-CLEARANCE-WO-COMMONS-FIRST-EXPORT-01A",
+    "status": "HELD_PRIVATELY"
+  },
+  "public_release_id": "cpr-algorithm-trace-core-0.1.1",
+  "release_class": "P3_PUBLIC_RELEASE_APPROVED",
+  "schema_version": "commons.public-clearance-receipt.v0.1",
+  "scope_statement": "Release 0.1.1 of algorithm-trace-core: exactly the files listed in the manifest, bound by bundle_sha256. Maintenance of the already-cleared 0.1.0 artifact under WO-COMMONS-MEMBRANE-EVALUATION-01B: no new private source, no source membrane expansion, not a second private-origin export. Generic AlgorithmTrace v0.4 substrate only; no domain profile, algorithm implementation, experiment or research record of the origin is included.",
+  "source_disclosure_level": "PUBLIC_ATTRIBUTED_PRIVATE_ORIGIN",
+  "version": "0.1.1"
+}

@@ -60,10 +60,14 @@ def test_nc6_private_origin_export_count_is_recorded_and_consistent():
 
 
 def test_commons_native_package_preserved():
+    """The 00A release record of the tool is kept; the index lists the tool's current version."""
     (entry,) = [p for p in INDEX["packages"] if p["package_id"] == "commons-export-lint"]
     manifest = json.loads((ROOT / entry["manifest_path"]).read_text())
-    for doc in (entry, manifest, RECEIPT["released_packages"][0]):
-        assert doc["package_id"] == "commons-export-lint" and doc["version"] == "0.1.0"
+    record = json.loads((ROOT / "releases/commons-export-lint/0.1.0/manifest.json").read_text())
+    assert RECEIPT["released_packages"][0]["version"] == record["version"] == "0.1.0"
+    assert entry["version"] == manifest["version"] != "0.1.0"
+    for doc in (entry, manifest, record, RECEIPT["released_packages"][0]):
+        assert doc["package_id"] == "commons-export-lint"
         assert doc["release_class"] == "P3_PUBLIC_RELEASE_APPROVED"
         assert doc["commercial_impact"] == "NONE"
         assert doc["source_disclosure_level"] == "COMMONS_NATIVE"
