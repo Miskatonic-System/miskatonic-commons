@@ -1,0 +1,455 @@
+{
+  "artifact": "ALGORITHMTRACE_V0_4_PUBLIC_CORE",
+  "commercial_impact": {
+    "basis": "HUMAN_COMMERCIAL_ADJUDICATION by the repository owner; the commercial review inputs are recorded in the private clearance receipt",
+    "classification": "COMPLEMENTARY"
+  },
+  "invariants": [
+    "DIGEST_IDENTITY != PUBLICATION_OF_PRIVATE_HISTORY",
+    "PUBLIC_DERIVATIVE != CANONICAL_RESEARCH_SOURCE",
+    "AUTOMATIC_EXPORT_RELATIONSHIP = NONE",
+    "AUTOMATIC_BACKPORT_RELATIONSHIP = NONE",
+    "AUTHORITY_DELTA_OVER_RESEARCH = NONE"
+  ],
+  "namespace_substitution": {
+    "entries": 7,
+    "note": "Private identifiers replaced by the substitution are withheld from this public record; the table is bound by digest.",
+    "table_sha256": "d680400d779fc461fcdf9409ad49489b8c42cdaaa288c0cce85862394648b632"
+  },
+  "not_disclosed": [
+    "private source outside the cleared bytes",
+    "private experiments, evidence and reports",
+    "unrelated private commit metadata",
+    "private review content"
+  ],
+  "origin": {
+    "frozen_source_commit": "449bfdb2e823993c699a033d8a75e3c8171f9176",
+    "partial_extraction_symbols": [
+      {
+        "lines": "32-37",
+        "path": "src/msk_algorithms/replay.py",
+        "sha256_of_lines": "ea4aa52b64ae4581237e744f266122303628d9e7da3fc4019ec5ccbcced7ae1d",
+        "symbol": "ReplayError"
+      },
+      {
+        "lines": "39-42",
+        "path": "src/msk_algorithms/replay.py",
+        "sha256_of_lines": "8610aa2810dfff202d02bfcda4c3083d0ebfd64dc7e1a0a7f31b1971bd53e1d8",
+        "symbol": "load_schema"
+      },
+      {
+        "lines": "63-64",
+        "path": "src/msk_algorithms/replay.py",
+        "sha256_of_lines": "17d714499b5127098e69678beb237c5dd3fe9efae8887e3456808c5475dfee36",
+        "symbol": "_canon"
+      },
+      {
+        "lines": "71-93",
+        "path": "src/msk_algorithms/replay.py",
+        "sha256_of_lines": "82c9749faf3a939182371836ebc356ad2f1f79d37de32522524932d56dfe5310",
+        "symbol": "parse_jsonl"
+      },
+      {
+        "lines": "112-122",
+        "path": "src/msk_algorithms/replay.py",
+        "sha256_of_lines": "91882acd666caae31da8eb0d2531a31646d8343602ab9299fb6af761b5763c82",
+        "symbol": "_check_sequence"
+      },
+      {
+        "lines": "291-293",
+        "path": "src/msk_algorithms/trace.py",
+        "sha256_of_lines": "62556fc3ea9a3a1f52e249570bc50204916c03fd52c4d39575a67682f8303e6f",
+        "symbol": "serialize_jsonl"
+      }
+    ],
+    "private_clearance_receipt": {
+      "disposition": "ALGORITHMTRACE_V0_4_PUBLIC_CORE_SOURCE_CLEARED",
+      "path": "docs/exports/WO-COMMONS-FIRST-EXPORT-01A/SOURCE_CLEARANCE_RECEIPT_V0_1.json",
+      "sha256": "27025b0d2ebffd87642b3067b106dad36b8f9f811e97aa089e3b629456ae7169"
+    },
+    "repository": "Miskatonic-System/msk-algorithms",
+    "source_clearance_merge": "391e5171a4188aeb19fdfdeec37370017649def6",
+    "source_file_manifest": [
+      {
+        "bytes": 15580,
+        "export_scope": "WHOLE_FILE_ADAPTED",
+        "git_blob_sha1": "44b62e9596e5bf80473e0c5ad30686b5211b2f35",
+        "path": "src/msk_algorithms/schemas/algorithm-trace-core.v0.4.schema.json",
+        "sha256": "cbb81e9afd1738c9deae58baa2a21fa7e73e24213842b40dd68abc9585173161"
+      },
+      {
+        "bytes": 2017,
+        "export_scope": "WHOLE_FILE_ADAPTED",
+        "git_blob_sha1": "21a6a4bebf54ecd13a6f9b59c09c9a286d44a270",
+        "path": "src/msk_algorithms/schemas/algorithm-run.v0.4.schema.json",
+        "sha256": "e7b82865896e05736a20e56bbedb64dcaf2817de6b5b14a62ed4c55d30e1136f"
+      },
+      {
+        "bytes": 3366,
+        "export_scope": "WHOLE_FILE_ADAPTED",
+        "git_blob_sha1": "52481fcb6681d2506b565d07fc0b1cd28e7550a9",
+        "path": "src/msk_algorithms/schemas/trace-profile.v0.4.schema.json",
+        "sha256": "0bef5f226d2200ac479c7bc29fbfab02af5e7be6b81d09916a1febf8c56d7609"
+      },
+      {
+        "bytes": 614,
+        "export_scope": "WHOLE_FILE_ADAPTED",
+        "git_blob_sha1": "79746c56a1c485ba064bcc9ce7c3b27413441947",
+        "path": "src/msk_algorithms/trace_v04/__init__.py",
+        "sha256": "000b8dc24f5be64bb98b337dd8cd4b0caaec95fbe1563d0c799387bd4ad32d12"
+      },
+      {
+        "bytes": 7370,
+        "export_scope": "WHOLE_FILE_ADAPTED",
+        "git_blob_sha1": "adabcaf2cfa05a352276118fe1f67d0b59501d30",
+        "path": "src/msk_algorithms/trace_v04/recorder.py",
+        "sha256": "8c1e92e1f0dbc0199b2a99746d81cd57596bfc07d139d86d253fab881b690980"
+      },
+      {
+        "bytes": 15795,
+        "export_scope": "WHOLE_FILE_ADAPTED",
+        "git_blob_sha1": "cb45350dee20d1a7ec61a2074f4cf9eaca093bdc",
+        "path": "src/msk_algorithms/trace_v04/replay.py",
+        "sha256": "112c7015e619804a2b48c1984bb4536b4b8566cd1f49b64bb3cf3fcaef247c0c"
+      },
+      {
+        "bytes": 841,
+        "export_scope": "WHOLE_FILE",
+        "git_blob_sha1": "dcf0995c44ccc92861ea03452733c7c63dedcad2",
+        "path": "src/msk_algorithms/trace_v04/metrics.py",
+        "sha256": "8da8bb8c29ac916614c82c2e3d5cf7260f34e335c1f8edd6299923a3a146b5f6"
+      },
+      {
+        "bytes": 4483,
+        "export_scope": "WHOLE_FILE_ADAPTED",
+        "git_blob_sha1": "de5c28e1339a4ff7d5b48564e1480c69d409536d",
+        "path": "src/msk_algorithms/trace_v04/profiles.py",
+        "sha256": "abaaf5cf306d8e2539308f4ee000441f1b2bcb4aca5a0e6978fc171c6260ab27"
+      },
+      {
+        "bytes": 1063,
+        "export_scope": "WHOLE_FILE",
+        "git_blob_sha1": "8daab5c623e2b216394a01bd92c8fe187f9f7ea6",
+        "path": "src/msk_algorithms/canonical.py",
+        "sha256": "1c61c651c9413eff804d9e32f0b9d85257049832c9eb82c78c79bbe83eb0f79b"
+      },
+      {
+        "bytes": 15885,
+        "export_scope": "PARTIAL_FUNCTIONS_ONLY",
+        "git_blob_sha1": "6f852f46b3478d30a2d4ea5c0f7a1538ac99bd08",
+        "path": "src/msk_algorithms/replay.py",
+        "sha256": "13fcfda4f47b2c79818b3161815ae3820cb58584c88fd3847fb0e1d8804cecb9"
+      },
+      {
+        "bytes": 12330,
+        "export_scope": "PARTIAL_FUNCTIONS_ONLY",
+        "git_blob_sha1": "a6726c6de471bdab38c44d9d29363f4c97c34706",
+        "path": "src/msk_algorithms/trace.py",
+        "sha256": "35ae4867acd0337eb53d3f3fe55c14313fabeacd186126b4f43c69f3e3406f03"
+      }
+    ],
+    "visibility": "PRIVATE"
+  },
+  "package_id": "algorithm-trace-core",
+  "parity": {
+    "class": "PRIVATE_SOURCE_FACT",
+    "documented_divergences": {
+      "executed_path": "private helper hard-codes the private repository layout; public helper is root-relative (documented divergence)",
+      "profile catalog location and semantics-module lookup": "public catalog is configurable and uses importlib.util.find_spec; equivalence exercised by P5/P6 through both catalogs"
+    },
+    "harness": "private; runs the frozen source with only the substitution table applied, side by side with this package",
+    "hostile_cases": [
+      "compare_operand_kind_not_permitted",
+      "compare_unread_operand",
+      "compare_wrong_result",
+      "duplicate_json_keys",
+      "duplicate_sequence",
+      "invalid_write_type",
+      "malformed_frame_nesting",
+      "missing_terminal_lf",
+      "nan_input",
+      "noncanonical_jsonl",
+      "out_of_order_sequence",
+      "out_of_range_access",
+      "profile_digest_mismatch",
+      "profile_document_schema_violation",
+      "read_value_mismatch",
+      "result_schema_violation",
+      "run_id_derivation_mismatch",
+      "semantics_module_digest_mismatch",
+      "sequence_gap",
+      "trace_digest_mismatch",
+      "undeclared_storage",
+      "unknown_profile",
+      "wrong_location_kind"
+    ],
+    "report_sha256": "6964f46ca11f6e052f044cdf970c765e9a9975697111da384f09a0ed93fdd15b",
+    "results": {
+      "P1_canonical_json": {
+        "fail": 0,
+        "pass": 21
+      },
+      "P2_jsonl": {
+        "fail": 0,
+        "pass": 6
+      },
+      "P3_recorder": {
+        "fail": 0,
+        "pass": 12
+      },
+      "P4_run_id": {
+        "fail": 0,
+        "pass": 10
+      },
+      "P5_replay_acceptance": {
+        "fail": 0,
+        "pass": 6
+      },
+      "P6_replay_rejection": {
+        "fail": 0,
+        "pass": 23
+      },
+      "P7_profile_digest": {
+        "fail": 0,
+        "pass": 17
+      },
+      "P8_metrics": {
+        "fail": 0,
+        "pass": 6
+      },
+      "T_extracted_symbol_ast_equal": {
+        "fail": 0,
+        "pass": 6
+      },
+      "T_header_only_copy_body_identical": {
+        "fail": 0,
+        "pass": 2
+      }
+    }
+  },
+  "protocol_version": "0.4",
+  "schema_version": "commons.public-provenance-receipt.v0.1",
+  "transformation_manifest": [
+    {
+      "class": "COMMONS_NATIVE",
+      "path": "LICENSE",
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+      "sources": [],
+      "transformation": "Written for this package; contains no private-source payload."
+    },
+    {
+      "class": "COMMONS_NATIVE",
+      "path": "NOTICE",
+      "sha256": "6cff69db9a8b3365ee37561137402e5dcd42cb6a88049265438d0ff4d24ad414",
+      "sources": [],
+      "transformation": "Written for this package; contains no private-source payload."
+    },
+    {
+      "class": "COMMONS_NATIVE",
+      "path": "README.md",
+      "sha256": "d2be754c8efdcb0a547095c6bec6176bdcb42291e6a4909a7f44bc7ecaf39186",
+      "sources": [],
+      "transformation": "Written for this package; contains no private-source payload."
+    },
+    {
+      "class": "COMMONS_NATIVE",
+      "path": "pyproject.toml",
+      "sha256": "cbc040365f4ef6bf47ad944e02e0bbaa4716f59f69bd50a29ef1b21d551e1e21",
+      "sources": [],
+      "transformation": "Written for this package; contains no private-source payload."
+    },
+    {
+      "class": "COMMONS_NATIVE",
+      "path": "scripts/build_example_profile.py",
+      "sha256": "ceab8bd93437520f48d24272b868bd6a74faef3c7687272c5c80ac949c70d2cb",
+      "sources": [],
+      "transformation": "Written for this package; contains no private-source payload."
+    },
+    {
+      "class": "PUBLIC_PACKAGING_ADAPTATION",
+      "path": "src/algorithm_trace_core/__init__.py",
+      "sha256": "14282499ce2466a4cc8158472176c1381ceedef802f467b4e716b3df8aeb8752",
+      "sources": [
+        {
+          "git_blob_sha1": "79746c56a1c485ba064bcc9ce7c3b27413441947",
+          "path": "src/msk_algorithms/trace_v04/__init__.py",
+          "sha256": "000b8dc24f5be64bb98b337dd8cd4b0caaec95fbe1563d0c799387bd4ad32d12"
+        }
+      ],
+      "transformation": "Protocol constants moved to the algorithm-trace-core namespace; docstring rewritten without private protocol history; package version added."
+    },
+    {
+      "class": "PUBLIC_PACKAGING_ADAPTATION",
+      "path": "src/algorithm_trace_core/canonical.py",
+      "sha256": "0b8d450b8ba8ca57b0d29b91f27d14915c8482db3e0eb09f86235947c460fd2f",
+      "sources": [
+        {
+          "git_blob_sha1": "8daab5c623e2b216394a01bd92c8fe187f9f7ea6",
+          "path": "src/msk_algorithms/canonical.py",
+          "sha256": "1c61c651c9413eff804d9e32f0b9d85257049832c9eb82c78c79bbe83eb0f79b"
+        }
+      ],
+      "transformation": "SPDX header prepended; remaining bytes identical to the source file (verified)."
+    },
+    {
+      "class": "COMMONS_NATIVE",
+      "path": "src/algorithm_trace_core/examples/__init__.py",
+      "sha256": "207ea7a516a6cb9f0edaedf8417bcc4296ba626239d91056a73627d4f6780326",
+      "sources": [],
+      "transformation": "Written for this package; contains no private-source payload."
+    },
+    {
+      "class": "COMMONS_NATIVE",
+      "path": "src/algorithm_trace_core/examples/integer_sequence.py",
+      "sha256": "df3193ab62bb7a03ac5531848f63e90500d2bbdf150452b839a5e383f810a391",
+      "sources": [],
+      "transformation": "Written for this package; contains no private-source payload."
+    },
+    {
+      "class": "COMMONS_NATIVE",
+      "path": "src/algorithm_trace_core/examples/running_maximum.py",
+      "sha256": "7073478ccf8690f4167813e5276d01b3b1571f4908a7ff846ffeec5a3619840f",
+      "sources": [],
+      "transformation": "Written for this package; contains no private-source payload."
+    },
+    {
+      "class": "SURGICALLY_EXTRACTED_SOURCE",
+      "path": "src/algorithm_trace_core/framing.py",
+      "sha256": "7035f8b8635d93a5f7a10b3758c0ab8d60256188594cd04cf2b49e60c6b71405",
+      "sources": [
+        {
+          "git_blob_sha1": "6f852f46b3478d30a2d4ea5c0f7a1538ac99bd08",
+          "path": "src/msk_algorithms/replay.py",
+          "sha256": "13fcfda4f47b2c79818b3161815ae3820cb58584c88fd3847fb0e1d8804cecb9"
+        },
+        {
+          "git_blob_sha1": "a6726c6de471bdab38c44d9d29363f4c97c34706",
+          "path": "src/msk_algorithms/trace.py",
+          "sha256": "35ae4867acd0337eb53d3f3fe55c14313fabeacd186126b4f43c69f3e3406f03"
+        }
+      ],
+      "transformation": "ReplayError, load_schema, _canon, parse_jsonl, _check_sequence (replay.py) and serialize_jsonl (trace.py) only; each symbol AST-equal to source; load_schema's package-resource name adapted."
+    },
+    {
+      "class": "PUBLIC_PACKAGING_ADAPTATION",
+      "path": "src/algorithm_trace_core/metrics.py",
+      "sha256": "7faca81c65ae5ed6cac221550849257b0387d2341fea2601450f44c1c8b5126a",
+      "sources": [
+        {
+          "git_blob_sha1": "dcf0995c44ccc92861ea03452733c7c63dedcad2",
+          "path": "src/msk_algorithms/trace_v04/metrics.py",
+          "sha256": "8da8bb8c29ac916614c82c2e3d5cf7260f34e335c1f8edd6299923a3a146b5f6"
+        }
+      ],
+      "transformation": "SPDX header prepended; remaining bytes identical to the source file (verified)."
+    },
+    {
+      "class": "PUBLIC_PACKAGING_ADAPTATION",
+      "path": "src/algorithm_trace_core/profiles.py",
+      "sha256": "956d2a709b9d339732c4b71d9f125f73f3622c45e8002589a76b2cba634282a7",
+      "sources": [
+        {
+          "git_blob_sha1": "de5c28e1339a4ff7d5b48564e1480c69d409536d",
+          "path": "src/msk_algorithms/trace_v04/profiles.py",
+          "sha256": "abaaf5cf306d8e2539308f4ee000441f1b2bcb4aca5a0e6978fc171c6260ab27"
+        }
+      ],
+      "transformation": "Configurable profile directories (default: the package's profiles directory); semantics module located via importlib.util.find_spec and digest-checked before import."
+    },
+    {
+      "class": "COMMONS_NATIVE",
+      "path": "src/algorithm_trace_core/profiles/integer_sequence_example.profile.v0.4.json",
+      "sha256": "c00b7c35979a00825853014adc2a117b994b3cdc8a1ea4e473adb89e6fc2258d",
+      "sources": [],
+      "transformation": "Written for this package; contains no private-source payload."
+    },
+    {
+      "class": "PUBLIC_PACKAGING_ADAPTATION",
+      "path": "src/algorithm_trace_core/recorder.py",
+      "sha256": "bab77a936d9a95b1b99e22271ee994e86467cd6463a054cbebbaa49642bc04fe",
+      "sources": [
+        {
+          "git_blob_sha1": "adabcaf2cfa05a352276118fe1f67d0b59501d30",
+          "path": "src/msk_algorithms/trace_v04/recorder.py",
+          "sha256": "8c1e92e1f0dbc0199b2a99746d81cd57596bfc07d139d86d253fab881b690980"
+        }
+      ],
+      "transformation": "Import paths; executed_path no longer hard-codes the private repository layout (root-relative)."
+    },
+    {
+      "class": "PUBLIC_PACKAGING_ADAPTATION",
+      "path": "src/algorithm_trace_core/replay.py",
+      "sha256": "e6813b22c63cea89feb9c48dcda63b24fe9212246bd8f520f8b23d451d8cab7b",
+      "sources": [
+        {
+          "git_blob_sha1": "cb45350dee20d1a7ec61a2074f4cf9eaca093bdc",
+          "path": "src/msk_algorithms/trace_v04/replay.py",
+          "sha256": "112c7015e619804a2b48c1984bb4536b4b8566cd1f49b64bb3cf3fcaef247c0c"
+        }
+      ],
+      "transformation": "Import paths; optional profile_dirs passed through to profile resolution. Replay logic otherwise unchanged."
+    },
+    {
+      "class": "PUBLIC_PACKAGING_ADAPTATION",
+      "path": "src/algorithm_trace_core/schemas/algorithm-run.v0.4.schema.json",
+      "sha256": "e7daaff5c10b9ee018ca5e599a0ed7a4c246428d1aee89365149a9587d68f533",
+      "sources": [
+        {
+          "git_blob_sha1": "21a6a4bebf54ecd13a6f9b59c09c9a286d44a270",
+          "path": "src/msk_algorithms/schemas/algorithm-run.v0.4.schema.json",
+          "sha256": "e7b82865896e05736a20e56bbedb64dcaf2817de6b5b14a62ed4c55d30e1136f"
+        }
+      ],
+      "transformation": "Namespace substitution table applied; reformatted to Commons canonical JSON."
+    },
+    {
+      "class": "PUBLIC_PACKAGING_ADAPTATION",
+      "path": "src/algorithm_trace_core/schemas/algorithm-trace-core.v0.4.schema.json",
+      "sha256": "c2f218757718c4b1f8a0ddaa2ada1ab59946cf5875123655ac98aef3dc0fbc71",
+      "sources": [
+        {
+          "git_blob_sha1": "44b62e9596e5bf80473e0c5ad30686b5211b2f35",
+          "path": "src/msk_algorithms/schemas/algorithm-trace-core.v0.4.schema.json",
+          "sha256": "cbb81e9afd1738c9deae58baa2a21fa7e73e24213842b40dd68abc9585173161"
+        }
+      ],
+      "transformation": "Namespace substitution table applied ($id URIs, protocol constants); reformatted to Commons canonical JSON."
+    },
+    {
+      "class": "PUBLIC_PACKAGING_ADAPTATION",
+      "path": "src/algorithm_trace_core/schemas/trace-profile.v0.4.schema.json",
+      "sha256": "1511e58b4e63104604c5abb55cca70830ecdbe0183c280c3ccc6bdd7d5eaa3f0",
+      "sources": [
+        {
+          "git_blob_sha1": "52481fcb6681d2506b565d07fc0b1cd28e7550a9",
+          "path": "src/msk_algorithms/schemas/trace-profile.v0.4.schema.json",
+          "sha256": "0bef5f226d2200ac479c7bc29fbfab02af5e7be6b81d09916a1febf8c56d7609"
+        }
+      ],
+      "transformation": "Namespace substitution table applied; semantics_module pattern generalized from the private package to any dotted lowercase module path; reformatted to Commons canonical JSON."
+    },
+    {
+      "class": "COMMONS_NATIVE",
+      "path": "tests/cases.py",
+      "sha256": "e2aacb2051c82e31fee49d79c2f0e3ee3dd124e7c611f086cabeeb3bb5f9ad80",
+      "sources": [],
+      "transformation": "Written for this package; contains no private-source payload."
+    },
+    {
+      "class": "COMMONS_NATIVE",
+      "path": "tests/conftest.py",
+      "sha256": "3496ed70277b66292c3e4a38dabbf12499898cc4223d4f2f41e8e5a79ee0af2a",
+      "sources": [],
+      "transformation": "Written for this package; contains no private-source payload."
+    },
+    {
+      "class": "COMMONS_NATIVE",
+      "path": "tests/test_core.py",
+      "sha256": "a12fd89362663156fb64c2c06bd1dd9669028efd6e2d01a607922ca9339cb533",
+      "sources": [],
+      "transformation": "Written for this package; contains no private-source payload."
+    }
+  ],
+  "version": "0.1.0",
+  "work_order": "WO-COMMONS-FIRST-EXPORT-01A"
+}

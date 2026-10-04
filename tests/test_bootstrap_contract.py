@@ -100,13 +100,33 @@ def test_t12_standalone_tool_runs_isolated_from_repository(tmp_path):
 
 # T13 ------------------------------------------------------------------------
 
+def disclosed_origins() -> dict:
+    """Origin repository name -> paths where its disclosure is approved (its bundle, release metadata, reports)."""
+    index = json.loads((ROOT / "releases/package-index-v0.1.json").read_text())
+    out = {}
+    for entry in index["packages"]:
+        manifest = json.loads((ROOT / entry["manifest_path"]).read_text())
+        attribution = manifest.get("source_attribution")
+        if manifest["source_disclosure_level"] in ("PUBLIC_ATTRIBUTED_PRIVATE_ORIGIN", "PUBLIC_SOURCE") and attribution:
+            name = attribution["public_origin_name"].split("/", 1)[-1]
+            out.setdefault(name, set()).update({entry["bundle_root"] + "/", str(Path(entry["manifest_path"]).parent) + "/", "reports/",
+                                         "scripts/build_release_metadata.py"})
+    return out
+
+
 def test_t13_no_private_repository_is_referenced_or_required():
-    """The only organization repository named anywhere in tracked files is Commons itself."""
+    """Commons may name other organization repositories only where a release discloses its origin."""
+    allowed = disclosed_origins()
     offenders = []
     for path, text in tracked_text_files():
+        rel = path.relative_to(ROOT).as_posix()
         for match in re.finditer(r"Miskatonic-System/([A-Za-z0-9._-]+)", text):
-            if match.group(1) != "miskatonic-commons":
-                offenders.append(f"{path.relative_to(ROOT)}: {match.group(0)}")
+            name = match.group(1)
+            if name == "miskatonic-commons":
+                continue
+            if any(rel.startswith(prefix) for prefix in allowed.get(name, ())):
+                continue
+            offenders.append(f"{rel}: {match.group(0)}")
     assert offenders == []
 
 

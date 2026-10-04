@@ -1,0 +1,22 @@
+algorithm-trace-core (AlgorithmTrace v0.4 Public Core)
+Copyright 2026 The Miskatonic Commons Authors
+
+This product includes software developed in the Miskatonic Commons
+repository, licensed under the Apache License, Version 2.0 (see LICENSE).
+
+The Apache License covers only the files distributed in this package under
+it. It does not license any other Miskatonic software, private or public, and
+it grants no rights to use Miskatonic names, logos or other marks except as
+required for reasonable and customary use in describing the origin of the
+work and reproducing this NOTICE file.
+
+Third-party software
+--------------------
+This package depends on, but does not redistribute:
+
+- rfc8785 (Apache-2.0)
+- jsonschema (MIT), with its own dependencies
+- fastjsonschema (BSD-3-Clause)
+
+RFC 8785 and JSON Schema are public standards; this package implements or
+uses them and does not claim ownership of them.

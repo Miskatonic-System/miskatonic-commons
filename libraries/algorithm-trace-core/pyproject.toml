@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "algorithm-trace-core"
+version = "0.1.0"
+description = "AlgorithmTrace v0.4 Public Core: typed execution traces, canonical JSONL, content-addressed profiles, replay and logical metrics."
+readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
+requires-python = ">=3.10"
+dependencies = [
+  "rfc8785>=0.1.4,<0.2",
+  "jsonschema>=4.18,<5",
+  "fastjsonschema>=2.19,<3",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=8"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+algorithm_trace_core = ["schemas/*.json", "profiles/*.json"]

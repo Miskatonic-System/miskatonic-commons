@@ -1,0 +1,689 @@
+{
+  "$defs": {
+    "location": {
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "index": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "kind": {
+              "const": "ARRAY_CELL"
+            },
+            "storage": {
+              "pattern": "^[a-z][a-z0-9_]*$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind",
+            "storage",
+            "index"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "SCALAR"
+            },
+            "storage": {
+              "pattern": "^[a-z][a-z0-9_]*$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind",
+            "storage"
+          ],
+          "type": "object"
+        }
+      ]
+    },
+    "operand": {
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "at": {
+              "oneOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "$ref": "#/$defs/location"
+                }
+              ]
+            },
+            "kind": {
+              "const": "VALUE"
+            },
+            "value": {
+              "$ref": "#/$defs/value"
+            }
+          },
+          "required": [
+            "kind",
+            "value",
+            "at"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "PARAMETER"
+            },
+            "name": {
+              "pattern": "^[a-z][a-z0-9_]*$",
+              "type": "string"
+            },
+            "value": {
+              "maximum": 9007199254740991,
+              "minimum": -9007199254740991,
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "name",
+            "value"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "INTEGER"
+            },
+            "value": {
+              "maximum": 9007199254740991,
+              "minimum": -9007199254740991,
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "value"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "ARGUMENT"
+            },
+            "operation": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "value": {
+              "$ref": "#/$defs/value"
+            }
+          },
+          "required": [
+            "kind",
+            "operation",
+            "value"
+          ],
+          "type": "object"
+        }
+      ]
+    },
+    "payload_COMPARE": {
+      "additionalProperties": false,
+      "properties": {
+        "lhs": {
+          "$ref": "https://github.com/Miskatonic-System/miskatonic-commons/tree/main/libraries/algorithm-trace-core/src/algorithm_trace_core/schemas/algorithm-trace-core.v0.4.schema.json#/$defs/operand"
+        },
+        "result": {
+          "enum": [
+            -1,
+            0,
+            1
+          ]
+        },
+        "rhs": {
+          "$ref": "https://github.com/Miskatonic-System/miskatonic-commons/tree/main/libraries/algorithm-trace-core/src/algorithm_trace_core/schemas/algorithm-trace-core.v0.4.schema.json#/$defs/operand"
+        }
+      },
+      "required": [
+        "lhs",
+        "rhs",
+        "result"
+      ],
+      "type": "object"
+    },
+    "payload_FRAME_ENTER": {
+      "additionalProperties": false,
+      "properties": {
+        "frame_id": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "name": {
+          "pattern": "^[a-z][a-z0-9_]*$",
+          "type": "string"
+        },
+        "scope": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "hi": {
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "lo": {
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "storage": {
+                  "pattern": "^[a-z][a-z0-9_]*$",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "storage",
+                "lo",
+                "hi"
+              ],
+              "type": "object"
+            }
+          ]
+        }
+      },
+      "required": [
+        "frame_id",
+        "name",
+        "scope"
+      ],
+      "type": "object"
+    },
+    "payload_FRAME_EXIT": {
+      "additionalProperties": false,
+      "properties": {
+        "frame_id": {
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "frame_id"
+      ],
+      "type": "object"
+    },
+    "payload_READ": {
+      "additionalProperties": false,
+      "properties": {
+        "location": {
+          "$ref": "https://github.com/Miskatonic-System/miskatonic-commons/tree/main/libraries/algorithm-trace-core/src/algorithm_trace_core/schemas/algorithm-trace-core.v0.4.schema.json#/$defs/location"
+        },
+        "value": {
+          "$ref": "https://github.com/Miskatonic-System/miskatonic-commons/tree/main/libraries/algorithm-trace-core/src/algorithm_trace_core/schemas/algorithm-trace-core.v0.4.schema.json#/$defs/value"
+        }
+      },
+      "required": [
+        "location",
+        "value"
+      ],
+      "type": "object"
+    },
+    "payload_RUN_BEGIN": {
+      "additionalProperties": false,
+      "properties": {
+        "config": {
+          "type": "object"
+        },
+        "instrumentation_version": {
+          "const": "algorithm-trace-core.instrumented-storage.v0.4"
+        },
+        "precondition": {
+          "type": "object"
+        },
+        "problem": {
+          "type": "object"
+        },
+        "profile_id": {
+          "pattern": "^[A-Z][A-Z0-9_]*$",
+          "type": "string"
+        },
+        "profile_schema_digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "seed": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "storage": {
+          "items": {
+            "$ref": "https://github.com/Miskatonic-System/miskatonic-commons/tree/main/libraries/algorithm-trace-core/src/algorithm_trace_core/schemas/algorithm-trace-core.v0.4.schema.json#/$defs/storage_decl"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "profile_id",
+        "profile_schema_digest",
+        "problem",
+        "precondition",
+        "storage",
+        "config",
+        "seed",
+        "instrumentation_version"
+      ],
+      "type": "object"
+    },
+    "payload_RUN_END": {
+      "additionalProperties": false,
+      "properties": {
+        "result": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "result"
+      ],
+      "type": "object"
+    },
+    "payload_SWAP": {
+      "additionalProperties": false,
+      "properties": {
+        "a": {
+          "$ref": "https://github.com/Miskatonic-System/miskatonic-commons/tree/main/libraries/algorithm-trace-core/src/algorithm_trace_core/schemas/algorithm-trace-core.v0.4.schema.json#/$defs/location"
+        },
+        "b": {
+          "$ref": "https://github.com/Miskatonic-System/miskatonic-commons/tree/main/libraries/algorithm-trace-core/src/algorithm_trace_core/schemas/algorithm-trace-core.v0.4.schema.json#/$defs/location"
+        }
+      },
+      "required": [
+        "a",
+        "b"
+      ],
+      "type": "object"
+    },
+    "payload_WRITE": {
+      "additionalProperties": false,
+      "properties": {
+        "location": {
+          "$ref": "https://github.com/Miskatonic-System/miskatonic-commons/tree/main/libraries/algorithm-trace-core/src/algorithm_trace_core/schemas/algorithm-trace-core.v0.4.schema.json#/$defs/location"
+        },
+        "value": {
+          "$ref": "https://github.com/Miskatonic-System/miskatonic-commons/tree/main/libraries/algorithm-trace-core/src/algorithm_trace_core/schemas/algorithm-trace-core.v0.4.schema.json#/$defs/value"
+        }
+      },
+      "required": [
+        "location",
+        "value"
+      ],
+      "type": "object"
+    },
+    "storage_decl": {
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "element_types": {
+              "items": {
+                "enum": [
+                  "TAGGED_ITEM",
+                  "INTEGER",
+                  "EMPTY"
+                ]
+              },
+              "minItems": 1,
+              "type": "array",
+              "uniqueItems": true
+            },
+            "initial": {
+              "enum": [
+                "FROM_PROBLEM",
+                "IDENTITY",
+                "ONES",
+                "EMPTY"
+              ]
+            },
+            "kind": {
+              "const": "ARRAY"
+            },
+            "length": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "mutable": {
+              "type": "boolean"
+            },
+            "name": {
+              "pattern": "^[a-z][a-z0-9_]*$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "name",
+            "kind",
+            "element_types",
+            "length",
+            "initial",
+            "mutable"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "element_types": {
+              "items": {
+                "enum": [
+                  "TAGGED_ITEM",
+                  "INTEGER",
+                  "EMPTY"
+                ]
+              },
+              "minItems": 1,
+              "type": "array",
+              "uniqueItems": true
+            },
+            "initial": {
+              "enum": [
+                "FROM_PROBLEM",
+                "ZERO"
+              ]
+            },
+            "kind": {
+              "const": "SCALAR"
+            },
+            "mutable": {
+              "type": "boolean"
+            },
+            "name": {
+              "pattern": "^[a-z][a-z0-9_]*$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "name",
+            "kind",
+            "element_types",
+            "initial",
+            "mutable"
+          ],
+          "type": "object"
+        }
+      ]
+    },
+    "value": {
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "maximum": 9007199254740991,
+              "minimum": -9007199254740991,
+              "type": "integer"
+            },
+            "tag": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "type": {
+              "const": "TAGGED_ITEM"
+            }
+          },
+          "required": [
+            "type",
+            "key",
+            "tag"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "const": "INTEGER"
+            },
+            "value": {
+              "maximum": 9007199254740991,
+              "minimum": -9007199254740991,
+              "type": "integer"
+            }
+          },
+          "required": [
+            "type",
+            "value"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "const": "EMPTY"
+            }
+          },
+          "required": [
+            "type"
+          ],
+          "type": "object"
+        }
+      ]
+    }
+  },
+  "$id": "https://github.com/Miskatonic-System/miskatonic-commons/tree/main/libraries/algorithm-trace-core/src/algorithm_trace_core/schemas/algorithm-trace-core.v0.4.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "op": {
+            "const": "RUN_BEGIN"
+          }
+        },
+        "required": [
+          "op"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/payload_RUN_BEGIN"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "op": {
+            "const": "RUN_END"
+          }
+        },
+        "required": [
+          "op"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/payload_RUN_END"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "op": {
+            "const": "READ"
+          }
+        },
+        "required": [
+          "op"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/payload_READ"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "op": {
+            "const": "WRITE"
+          }
+        },
+        "required": [
+          "op"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/payload_WRITE"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "op": {
+            "const": "COMPARE"
+          }
+        },
+        "required": [
+          "op"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/payload_COMPARE"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "op": {
+            "const": "SWAP"
+          }
+        },
+        "required": [
+          "op"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/payload_SWAP"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "op": {
+            "const": "FRAME_ENTER"
+          }
+        },
+        "required": [
+          "op"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/payload_FRAME_ENTER"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "op": {
+            "const": "FRAME_EXIT"
+          }
+        },
+        "required": [
+          "op"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/payload_FRAME_EXIT"
+          }
+        }
+      }
+    }
+  ],
+  "description": "Stable generic execution envelope. Owns framing, identity, the eight generic event kinds, typed values (TAGGED_ITEM | INTEGER | EMPTY), locations (ARRAY_CELL | SCALAR), storage declarations (ARRAY | SCALAR), and operands (VALUE | PARAMETER | INTEGER | ARGUMENT). Problem, precondition and result are opaque objects here and are validated by the content-addressed profile the run binds (profile_id + profile_schema_digest). CORE_SCHEMA_VALID and PROFILE_SCHEMA_VALID are both required. No presentation fields.",
+  "properties": {
+    "algorithm_id": {
+      "pattern": "^[a-z][a-z0-9_]*_v[0-9]+\\.[0-9]+$",
+      "type": "string"
+    },
+    "implementation_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "op": {
+      "enum": [
+        "RUN_BEGIN",
+        "RUN_END",
+        "READ",
+        "WRITE",
+        "COMPARE",
+        "SWAP",
+        "FRAME_ENTER",
+        "FRAME_EXIT"
+      ]
+    },
+    "payload": {
+      "type": "object"
+    },
+    "run_id": {
+      "pattern": "^run-[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "algorithm-trace-core.algorithm-trace.v0.4"
+    },
+    "seq": {
+      "minimum": 0,
+      "type": "integer"
+    }
+  },
+  "required": [
+    "schema_version",
+    "run_id",
+    "seq",
+    "op",
+    "algorithm_id",
+    "implementation_id",
+    "payload"
+  ],
+  "title": "AlgorithmTrace Core v0.4 event",
+  "type": "object"
+}

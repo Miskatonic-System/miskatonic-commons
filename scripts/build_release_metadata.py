@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # Copyright 2026 The Miskatonic Commons Authors
 # SPDX-License-Identifier: Apache-2.0
-"""Regenerate release metadata for Commons-native packages.
+"""Regenerate release metadata for the packages listed in RELEASES.
 
 Writes, for each package listed in RELEASES, the release manifest and public
 clearance receipt under releases/<package>/<version>/, then the package index.
@@ -73,6 +73,72 @@ RELEASES = [
                                 "support class reviewed by Commons maintainers.",
         },
     },
+    {
+        "package_id": "algorithm-trace-core",
+        "display_name": "AlgorithmTrace v0.4 Public Core",
+        "version": "0.1.0",
+        "bundle_root": "libraries/algorithm-trace-core",
+        "summary": ("A Python library for typed execution traces over declared storage: canonical JSONL, "
+                    "content-addressed trace profiles, a generic recorder, a deterministic replay and reference "
+                    "validator with stable error codes, and logical metrics (protocol 0.4)."),
+        "release_class": "P3_PUBLIC_RELEASE_APPROVED",
+        "commercial_impact": "COMPLEMENTARY",
+        "source_disclosure_level": "PUBLIC_ATTRIBUTED_PRIVATE_ORIGIN",
+        "source_attribution": {
+            "public_origin_name": "Miskatonic-System/msk-algorithms",
+            "statement": ("Extracted from the generic AlgorithmTrace v0.4 core of the private repository "
+                          "Miskatonic-System/msk-algorithms at commit 449bfdb2e823993c699a033d8a75e3c8171f9176, "
+                          "under a source clearance merged there as 391e5171a4188aeb19fdfdeec37370017649def6. "
+                          "PROVENANCE.json in the bundle maps every public file to its source or marks it Commons-native."),
+        },
+        "claim_statement": ("Cleared for public distribution under its recorded scope: a generic trace, recording, "
+                            "profile-binding, replay and logical-metrics substrate with a synthetic example profile."),
+        "does_not_establish": [
+            "correctness or optimality of any implementation or algorithm",
+            "coverage of arbitrary algorithm domains; each profile is a separate claim",
+            "source provenance or producer identity from digests alone",
+            "any scientific result, or the research authority of the private origin",
+            "reproduction of any private qualification",
+            "production security or suitability for safety-critical use",
+            "commercial value, product status or paid support",
+        ],
+        "license": "Apache-2.0",
+        "notices": ["LICENSE", "NOTICE"],
+        "support_class": "COMMUNITY_BEST_EFFORT",
+        "clearance_receipt_id": "ccr-algorithm-trace-core-0-1-0",
+        "approved_at": "2026-10-04T00:19:55Z",
+        "dependencies": {"inventory_complete": True, "runtime": [
+            {"name": "rfc8785", "version": "0.1.4", "license": "Apache-2.0", "purpose": "RFC 8785 canonical JSON (supported range >=0.1.4,<0.2)"},
+            {"name": "jsonschema", "version": "4.26.0", "license": "MIT", "purpose": "Schema self-checks and run-record validation (supported range >=4.18,<5)"},
+            {"name": "fastjsonschema", "version": "2.22.2", "license": "BSD-3-Clause", "purpose": "Compiled event and profile validation (supported range >=2.19,<3)"}],
+            "development": [{"name": "pytest", "version": "9.1.1", "license": "MIT", "purpose": "Test runner"}]},
+        "scope_statement": ("Release 0.1.0 of algorithm-trace-core: exactly the files listed in the manifest, bound by "
+                            "bundle_sha256. Generic AlgorithmTrace v0.4 substrate only; no domain profile, algorithm "
+                            "implementation, experiment or research record of the origin is included."),
+        "dimension_owners": {"originating_technical": "msk-algorithms-maintainers", "provenance": "commons-maintainers",
+                             "security": "commons-maintainers", "dependency_license": "commons-maintainers",
+                             "commercial_impact": "repository-owner", "public_packaging": "commons-maintainers"},
+        "dimensions": {
+            "originating_technical": "Source clearance by the originating repository: 11 allowlisted files at the frozen source, 6 extracted symbols, closed import set, approved transformation classes.",
+            "provenance": "Clean extraction onto Commons main with no private history; every public file mapped in PROVENANCE.json; private-to-public parity and transformation checks recorded there.",
+            "security": "gitleaks and the Commons sensitive-data check over the source allowlist and the public bundle; 0 findings. Absence of findings is not proof.",
+            "dependency_license": "Runtime dependencies rfc8785 (Apache-2.0), jsonschema (MIT), fastjsonschema (BSD-3-Clause); no private dependency; owner authorized Apache-2.0; patent grant acknowledged.",
+            "commercial_impact": "Human commercial adjudication by the repository owner: COMPLEMENTARY. The commercial review inputs are recorded in the private clearance receipt.",
+            "public_packaging": "Standalone package with README, synthetic example profile, hostile-control tests, provenance record and best-effort support class.",
+        },
+        "private_clearance_receipt": {"status": "HELD_PRIVATELY", "opaque_reference": "SRC-CLEARANCE-WO-COMMONS-FIRST-EXPORT-01A"},
+        "minimum_viable_moat": {
+            "question": "AFTER THIS ARTIFACT IS AVAILABLE FOR FREE, WHAT ECONOMICALLY VALUABLE FUNCTION REMAINS?",
+            "retained_surfaces": ["MANAGED_PROVENANCE", "ORGANIZATION_WIDE_GOVERNANCE", "POLICY_MANAGEMENT", "IDENTITY_INTEGRATION",
+                                  "ENTERPRISE_INTEGRATIONS", "MANAGED_HOSTING", "PRIVATE_DEPLOYMENT", "ASSURANCE_SERVICES",
+                                  "SUPPORT", "PROPRIETARY_ADAPTERS", "OTHER"],
+            "analysis": ("Domain-specific profiles and their semantics, the research and evaluation infrastructure, "
+                         "organization-wide evidence custody and cross-repository provenance, managed verification, "
+                         "policy and identity governance, integrations, hosting, private deployment, audit reporting, "
+                         "assurance, support and SLAs all remain outside this primitive. Nothing was withheld to "
+                         "create scarcity."),
+        },
+    },
 ]
 
 
@@ -97,17 +163,21 @@ def build(rel: dict) -> tuple[dict, dict, dict]:
         "files": described["files"],
         "bundle_digest_algorithm": described["bundle_digest_algorithm"],
         "bundle_sha256": described["bundle_sha256"],
-        "dependencies": {"inventory_complete": True, "runtime": [], "development": []},
+        "dependencies": rel.get("dependencies", {"inventory_complete": True, "runtime": [], "development": []}),
         "support_class": rel["support_class"],
         "clearance_receipt_id": rel["clearance_receipt_id"],
         "clearance_status": "CLEARED",
         "approved_at": rel["approved_at"],
-        "imported_at": rel["approved_at"],
+        "imported_at": rel.get("imported_at", rel["approved_at"]),
     }
+    if "source_attribution" in rel:
+        manifest["source_attribution"] = rel["source_attribution"]
     dims = {}
+    native = rel["source_disclosure_level"] == "COMMONS_NATIVE"
     for name, basis in rel["dimensions"].items():
-        status = "NOT_APPLICABLE" if name == "commercial_impact" else "PASS"
-        dims[name] = {"status": status, "owner": "commons-maintainers", "basis": basis}
+        status = "NOT_APPLICABLE" if (name == "commercial_impact" and native) else "PASS"
+        owner = rel.get("dimension_owners", {}).get(name, "commons-maintainers")
+        dims[name] = {"status": status, "owner": owner, "basis": basis}
     receipt = {
         "schema_version": "commons.public-clearance-receipt.v0.1",
         "clearance_receipt_id": rel["clearance_receipt_id"],
@@ -121,10 +191,12 @@ def build(rel: dict) -> tuple[dict, dict, dict]:
         "clearance_status": "CLEARED",
         "scope_statement": rel["scope_statement"],
         "dimensions": dims,
-        "private_clearance_receipt": {"status": "NOT_APPLICABLE_COMMONS_NATIVE"},
+        "private_clearance_receipt": rel.get("private_clearance_receipt", {"status": "NOT_APPLICABLE_COMMONS_NATIVE"}),
         "apache_patent_grant_acknowledged": True,
         "completed_at": rel["approved_at"],
     }
+    if "minimum_viable_moat" in rel:
+        receipt["minimum_viable_moat"] = rel["minimum_viable_moat"]
     base = f"releases/{rel['package_id']}/{rel['version']}"
     entry = {key: manifest[key] for key in lint.INDEX_MIRRORED_FIELDS} | {
         "manifest_path": f"{base}/manifest.json",

@@ -1,0 +1,107 @@
+{
+  "comparison": "NUMERIC_KEY",
+  "contract_policy_schema": {
+    "type": "object"
+  },
+  "operand_kinds": [
+    "VALUE",
+    "PARAMETER",
+    "INTEGER"
+  ],
+  "permitted_ops": [
+    "RUN_BEGIN",
+    "RUN_END",
+    "READ",
+    "WRITE",
+    "COMPARE",
+    "SWAP",
+    "FRAME_ENTER",
+    "FRAME_EXIT"
+  ],
+  "precondition_schema": {
+    "additionalProperties": false,
+    "properties": {
+      "status": {
+        "const": "SATISFIED"
+      }
+    },
+    "required": [
+      "status"
+    ],
+    "type": "object"
+  },
+  "problem_schema": {
+    "additionalProperties": false,
+    "properties": {
+      "floor": {
+        "maximum": 1000,
+        "minimum": -1000,
+        "type": "integer"
+      },
+      "values": {
+        "items": {
+          "maximum": 1000,
+          "minimum": -1000,
+          "type": "integer"
+        },
+        "maxItems": 64,
+        "type": "array"
+      }
+    },
+    "required": [
+      "values",
+      "floor"
+    ],
+    "type": "object"
+  },
+  "profile_document_version": "algorithm-trace-core.trace-profile.v0.4",
+  "profile_id": "INTEGER_SEQUENCE_EXAMPLE",
+  "profile_version": "0.1.0",
+  "result_schema": {
+    "additionalProperties": false,
+    "properties": {
+      "best": {
+        "maximum": 1000,
+        "minimum": -1000,
+        "type": "integer"
+      },
+      "final": {
+        "items": {
+          "maximum": 1000,
+          "minimum": -1000,
+          "type": "integer"
+        },
+        "type": "array"
+      }
+    },
+    "required": [
+      "final",
+      "best"
+    ],
+    "type": "object"
+  },
+  "semantics_module": "algorithm_trace_core.examples.integer_sequence",
+  "semantics_module_sha256": "df3193ab62bb7a03ac5531848f63e90500d2bbdf150452b839a5e383f810a391",
+  "storage_sets": [
+    [
+      {
+        "element_types": [
+          "INTEGER"
+        ],
+        "initial": "FROM_PROBLEM",
+        "kind": "ARRAY",
+        "mutable": true,
+        "name": "seq"
+      },
+      {
+        "element_types": [
+          "INTEGER"
+        ],
+        "initial": "ZERO",
+        "kind": "SCALAR",
+        "mutable": true,
+        "name": "best"
+      }
+    ]
+  ]
+}
