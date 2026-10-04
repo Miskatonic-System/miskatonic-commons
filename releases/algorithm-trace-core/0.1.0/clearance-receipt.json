@@ -1,13 +1,13 @@
 {
   "apache_patent_grant_acknowledged": true,
-  "bundle_sha256": "81039bf0a18252f4f57a9a59b553a4318af222e083a6b8b26ba8a66122eb14d5",
+  "bundle_sha256": "72459fd9cedc401a6154646421dd347204849853258b7c0b53ceb1b3e51e3f5a",
   "clearance_receipt_id": "ccr-algorithm-trace-core-0-1-0",
   "clearance_status": "CLEARED",
   "commercial_impact": "COMPLEMENTARY",
   "completed_at": "2026-10-04T00:19:55Z",
   "dimensions": {
     "commercial_impact": {
-      "basis": "Human commercial adjudication by the repository owner: COMPLEMENTARY. An advisory UNCERTAIN label recorded by the commercial-review function is disclosed in the private clearance receipt.",
+      "basis": "Human commercial adjudication by the repository owner: COMPLEMENTARY. The commercial review inputs are recorded in the private clearance receipt.",
       "owner": "repository-owner",
       "status": "PASS"
     },

@@ -1,7 +1,7 @@
 {
   "artifact": "ALGORITHMTRACE_V0_4_PUBLIC_CORE",
   "commercial_impact": {
-    "basis": "HUMAN_COMMERCIAL_ADJUDICATION by the repository owner; an advisory UNCERTAIN label from the organization's commercial-review function is disclosed in the private clearance receipt",
+    "basis": "HUMAN_COMMERCIAL_ADJUDICATION by the repository owner; the commercial review inputs are recorded in the private clearance receipt",
     "classification": "COMPLEMENTARY"
   },
   "invariants": [
@@ -240,7 +240,7 @@
     {
       "class": "COMMONS_NATIVE",
       "path": "NOTICE",
-      "sha256": "d47f34e3abffd46de1f4511347f8da218e40ddabe2399c5376eafb9a590497fe",
+      "sha256": "6cff69db9a8b3365ee37561137402e5dcd42cb6a88049265438d0ff4d24ad414",
       "sources": [],
       "transformation": "Written for this package; contains no private-source payload."
     },
@@ -346,7 +346,7 @@
     {
       "class": "PUBLIC_PACKAGING_ADAPTATION",
       "path": "src/algorithm_trace_core/profiles.py",
-      "sha256": "5e267a1d977765149559933b8ef20048406f2be6994d5f9ff571f0b99e554417",
+      "sha256": "956d2a709b9d339732c4b71d9f125f73f3622c45e8002589a76b2cba634282a7",
       "sources": [
         {
           "git_blob_sha1": "de5c28e1339a4ff7d5b48564e1480c69d409536d",

@@ -20,8 +20,8 @@ Fact classes used below:
   symbols.
 - **[S]** The import closure stays within the allowlist, so no scope expansion
   was needed.
-- **[S]** The source clearance was independently reviewed (one REVISE round,
-  then accepted with limitations) and merged in the origin as `391e5171`.
+- **[S]** The source clearance was independently reviewed and merged in the
+  origin as `391e5171`.
   Disposition: `ALGORITHMTRACE_V0_4_PUBLIC_CORE_SOURCE_CLEARED`.
 - **[R]** `libraries/algorithm-trace-core/PROVENANCE.json` binds the clearance
   receipt by SHA-256, together with every source file's blob SHA and SHA-256
@@ -33,7 +33,7 @@ Fact classes used below:
 
 | Class | Files |
 | --- | --- |
-| Surgically extracted | `framing.py`: the 6 symbols, each AST-equal to its source; `load_schema`'s package-resource name adapted |
+| Surgically extracted | `framing.py`: the 6 symbols. 5 are AST-equal to their source; `load_schema` differs only by its adapted package-resource name |
 | Packaging adaptation | `canonical.py` and `metrics.py` (SPDX header only); `recorder.py`, `replay.py`, `profiles.py`, `__init__.py`; the 3 schemas |
 | Commons-native | the synthetic example profile and its semantics module, the demo, the tests, README, packaging, LICENSE and NOTICE |
 
@@ -65,9 +65,9 @@ applied, side by side with this package:
 | P4 run id | 10/10 |
 | P5 replay acceptance | 6/6 |
 | P6 replay rejection (23 hostile cases, identical codes) | 23/23 |
-| P7 profile digest (the example and all 14 private profile documents: 16 digest comparisons plus 1 catalog-identity check) | 17/17 |
+| P7 profile digest (the example document, compared from each catalog, and all 14 private profile documents; plus 1 check that both catalogs hold the identical example document) | 17/17 |
 | P8 metrics | 6/6 |
-| Extracted-symbol AST equality | 6/6 |
+| Extracted-symbol AST equality (5 exact, plus `load_schema` after its documented name substitution) | 6/6 |
 | Header-only copies byte-identical in body | 2/2 |
 
 The report is bound in `PROVENANCE.json` by SHA-256. Two divergences are
@@ -96,16 +96,13 @@ Over both the source allowlist and the public bundle:
 - a targeted scan for usernames, local paths, machine names, internal hosts,
   hidden files and PR or issue links found 0 findings.
 
-An earlier draft test spelled out a withheld private identifier while
-asserting its absence. That test was replaced by a structural allowlist
-before any public commit.
+The bundle's own tests enforce a URL and protocol-namespace allowlist, so no
+withheld identifier can appear in it.
 
 ## Commercial [C]
 
-The organization's commercial-review function recorded the related family as
-`UNCERTAIN`, `export_authorized: false`. This is a registry-wide default label.
-The work order required a stop. The repository owner adjudicated
-**COMPLEMENTARY**. Both the label and the decision are recorded in the private
+**COMPLEMENTARY**, by explicit adjudication of the repository owner. The
+commercial review inputs and the decision are recorded in the private
 clearance receipt.
 
 Minimum viable moat: domain profiles, research infrastructure, organization-wide

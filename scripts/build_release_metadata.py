@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # Copyright 2026 The Miskatonic Commons Authors
 # SPDX-License-Identifier: Apache-2.0
-"""Regenerate release metadata for Commons-native packages.
+"""Regenerate release metadata for the packages listed in RELEASES.
 
 Writes, for each package listed in RELEASES, the release manifest and public
 clearance receipt under releases/<package>/<version>/, then the package index.
@@ -123,7 +123,7 @@ RELEASES = [
             "provenance": "Clean extraction onto Commons main with no private history; every public file mapped in PROVENANCE.json; private-to-public parity and transformation checks recorded there.",
             "security": "gitleaks and the Commons sensitive-data check over the source allowlist and the public bundle; 0 findings. Absence of findings is not proof.",
             "dependency_license": "Runtime dependencies rfc8785 (Apache-2.0), jsonschema (MIT), fastjsonschema (BSD-3-Clause); no private dependency; owner authorized Apache-2.0; patent grant acknowledged.",
-            "commercial_impact": "Human commercial adjudication by the repository owner: COMPLEMENTARY. An advisory UNCERTAIN label recorded by the commercial-review function is disclosed in the private clearance receipt.",
+            "commercial_impact": "Human commercial adjudication by the repository owner: COMPLEMENTARY. The commercial review inputs are recorded in the private clearance receipt.",
             "public_packaging": "Standalone package with README, synthetic example profile, hostile-control tests, provenance record and best-effort support class.",
         },
         "private_clearance_receipt": {"status": "HELD_PRIVATELY", "opaque_reference": "SRC-CLEARANCE-WO-COMMONS-FIRST-EXPORT-01A"},

@@ -1,7 +1,7 @@
 {
   "approved_at": "2026-10-04T00:19:55Z",
   "bundle_digest_algorithm": "commons.bundle-digest.v0.1",
-  "bundle_sha256": "81039bf0a18252f4f57a9a59b553a4318af222e083a6b8b26ba8a66122eb14d5",
+  "bundle_sha256": "72459fd9cedc401a6154646421dd347204849853258b7c0b53ceb1b3e51e3f5a",
   "clearance_receipt_id": "ccr-algorithm-trace-core-0-1-0",
   "clearance_status": "CLEARED",
   "commercial_impact": "COMPLEMENTARY",
@@ -44,14 +44,14 @@
       "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
     },
     {
-      "bytes": 899,
+      "bytes": 906,
       "path": "NOTICE",
-      "sha256": "d47f34e3abffd46de1f4511347f8da218e40ddabe2399c5376eafb9a590497fe"
+      "sha256": "6cff69db9a8b3365ee37561137402e5dcd42cb6a88049265438d0ff4d24ad414"
     },
     {
-      "bytes": 18578,
+      "bytes": 18528,
       "path": "PROVENANCE.json",
-      "sha256": "ea659a6a9dd040cf1ea97f4d03aac31995f0621449fc2cd80e41acd6ece380b8"
+      "sha256": "d194cae3cd88f06f986c5d6282ac8137960820baeba7fd2887120223ce27759f"
     },
     {
       "bytes": 4288,
@@ -104,9 +104,9 @@
       "sha256": "7faca81c65ae5ed6cac221550849257b0387d2341fea2601450f44c1c8b5126a"
     },
     {
-      "bytes": 5433,
+      "bytes": 5578,
       "path": "src/algorithm_trace_core/profiles.py",
-      "sha256": "5e267a1d977765149559933b8ef20048406f2be6994d5f9ff571f0b99e554417"
+      "sha256": "956d2a709b9d339732c4b71d9f125f73f3622c45e8002589a76b2cba634282a7"
     },
     {
       "bytes": 2107,

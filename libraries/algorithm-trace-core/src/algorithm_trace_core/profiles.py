@@ -68,7 +68,11 @@ def catalog(profile_dirs: ProfileDirs = None) -> dict[tuple[str, str], Path]:
 
 
 def _module_file(module_name: str) -> Path | None:
-    """The source file Python would import for ``module_name``, located without executing it."""
+    """The source file Python would import for ``module_name``.
+
+    Locating it imports the parent packages (as ``find_spec`` does) but not the module itself; the
+    module is imported only after its bytes match the pinned SHA-256.
+    """
     try:
         spec = importlib.util.find_spec(module_name)
     except (ImportError, ValueError):
